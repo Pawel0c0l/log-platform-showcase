@@ -1,0 +1,21 @@
+[Unit]
+Description=5-minute trigger for Workflow A dispatcher
+# NO ACTIVATING DEPENDENCY ON THE SERVICE, DELIBERATELY. A timer's [Unit]
+# dependencies are pulled in when the TIMER starts, not when it fires, so
+# `Requires=log-job@dispatcher.service` made `systemctl start` and
+# `enable --now` fire an unscheduled dispatcher tick immediately, and repeat
+# it at every boot. A tick is idempotent and claims at most one due fire, so
+# nothing was corrupted by that — but the tick cadence is `*:0/5` below, and a
+# fire outside it is one the central schedule model cannot account for.
+# `Unit=` in [Timer] is the only binding a timer needs.
+# Guarded by test_starting_a_timer_does_not_start_its_service.
+
+[Timer]
+# Tick every 5 minutes — laptop-friendly, easy to tighten to 1 minute later
+# without code changes (the dispatcher reads the DB fresh on every tick).
+OnCalendar=*:0/5
+Persistent=true
+Unit=log-job@dispatcher.service
+
+[Install]
+WantedBy=timers.target

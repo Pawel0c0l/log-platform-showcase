@@ -1,0 +1,7 @@
+# The late-arrival audit companion is RFC 4180 CSV: CRLF-terminated by
+# specification, and it is shared with Telematics support alongside
+# docs/19_telematics_trips_late_arrival_audit.md. It is evidence and must round-trip
+# byte-identically, so `-text` stops Git normalising the line endings and
+# `whitespace=-trailing-space` stops `git diff --check` reading each CR as trailing
+# whitespace. The file stays diffable; only the whitespace warning is suppressed.
+artifacts/telematics_late_arrival_audit.csv -text whitespace=-trailing-space

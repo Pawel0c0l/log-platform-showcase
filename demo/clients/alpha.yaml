@@ -1,0 +1,13 @@
+# Synthetic demo client. Secrets come from ALPHA_API_USERNAME, ALPHA_API_KEY,
+# ALPHA_DB_USERNAME and ALPHA_DB_KEY, set by demo/up.sh for this run only.
+client_name: Alpha
+client_code: ALPHA00001
+enabled: true
+provider_type: telematics_fleet
+provider_base_url: https://fleetapi.telematics-provider.example/rest
+client_db_host: postgres
+client_db_port: 5432
+client_db_name: alpha_main
+client_db_schema: public
+trip_metrics_population_source: api_migration
+speed_trigger_filter_text: SPEEDING

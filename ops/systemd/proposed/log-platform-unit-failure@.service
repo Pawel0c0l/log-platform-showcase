@@ -1,0 +1,48 @@
+[Unit]
+Description=Record a failed systemd unit as an operator incident (%I)
+# Deliberately NO OnFailure= of its own: a failure handler that can trigger
+# itself is a loop. Its own failures surface via journald and via the fact that
+# the originally failed unit stays failed.
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=logplatform
+Group=logplatform
+# INTENTIONALLY HOST-BOUND — the one unit in the alert path that must NOT
+# resolve /usr/local/bin/log-ops-runner.sh.
+#
+# This handler fires from PID 1 when some other unit has already failed. A
+# broken or half-promoted release pointer makes *every* release-bound unit fail
+# at once, which is precisely the fault an operator most needs to be told about
+# — and a release-bound handler would be unable to start to tell them. Binding
+# the last-resort reporter to the same pointer whose failure it must report is a
+# fail-closed loop, not consistency.
+#
+# The mixed-version boundary this creates is bounded and proven, not accidental.
+# ops/systemd_failure_adapter.py imports exactly four names from repository code
+# — INCIDENT_UNIT_FAILURE, is_self_alerting, report_operational_failure and
+# utcnow, all from ops.operational_alert — and touches no outbox, watchdog or
+# incident-fingerprint internals. Its persistence contract is set by migrations
+# 052/059, not by release code. ops/tests_manual/test_release_runtime_isolation.py
+# asserts that surface is present and call-compatible in BOTH the baseline and
+# the candidate release, so a future release cannot silently move it.
+WorkingDirectory=/opt/log-platform
+UMask=0077
+Environment=PYTHONPATH=/opt/log-platform
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+# Talks straight to PostgreSQL, never through the platform HTTP API, because the
+# API may be exactly what failed.
+# %i is the instance string verbatim. %I unescapes it, and systemd's escaping
+# maps '-' to '/', so %I turns log-workflow-b.service into log/workflow/b.service
+# — a unit name that does not exist, breaking systemctl show, incident identity
+# and every suggested recovery command. Proof: systemd-escape --unescape.
+ExecStart=/opt/log-platform/.venv/bin/python -m ops.systemd_failure_adapter %i
+TimeoutStartSec=120
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false

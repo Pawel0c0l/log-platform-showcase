@@ -1,0 +1,53 @@
+[Unit]
+Description=Enforce platform backup retention
+After=network-online.target docker.service log-backup.service
+Wants=network-online.target
+OnFailure=log-platform-unit-failure@%n.service
+
+[Service]
+Type=oneshot
+User=logplatform
+Group=logplatform
+WorkingDirectory=/opt/log-platform
+UMask=0077
+Environment=PYTHONPATH=/opt/log-platform
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+# --execute is required for deletion; the module is dry-run by default.
+# The keep-minimum safety floor guarantees the newest known-good sets survive
+# even if the preceding backup run failed.
+#
+# Retention runs BEHIND ops/run_with_environment_identity.py, the same identity
+# bootstrap every other host job reaches through /usr/local/bin/log-job-runner.sh.
+# `ops.backup_retention` is one of only two modules that attest the platform
+# identity (`ops.verify_backup_set` is the other), and `load_runtime_identity()`
+# needs LOG_PLATFORM_EXPECTED_PLATFORM_IDENTITY_ID plus the four expected
+# PostgreSQL values. Those live in the repository .env; the EnvironmentFiles
+# below carry only runtime configuration and the canonical target environment.
+# Invoked directly, this unit therefore failed closed on EVERY fire with
+# `EXPECTED_PLATFORM_IDENTITY_MISSING` — deleting nothing, but never retaining
+# anything either, while OnFailure= raised a nightly operator incident. Found on
+# 2026-08-09 during the controlled P0 deployment, before the timer was enabled.
+#
+# The wrapper is the single source of truth: it loads the repository environment
+# without overriding anything systemd already supplied, applies the canonical
+# identity file with reject_conflict=True, and sets
+# LOG_PLATFORM_REQUIRE_CANONICAL_IDENTITY=1. Duplicating the expected identity
+# values into runtime.env would work and is deliberately NOT done — two copies of
+# an identity contract is how the identity drifts.
+ExecStart=/opt/log-platform/.venv/bin/python /opt/log-platform/ops/run_with_environment_identity.py -- /opt/log-platform/.venv/bin/python -m ops.backup_retention --execute
+TimeoutStartSec=1800
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+ReadWritePaths=/opt/log-platform/backups
+
+# Deliberately NO [Install] section. These are timer-driven oneshot jobs: the
+# timer is the only thing that should ever schedule them. With
+# `WantedBy=multi-user.target` the unit runs on every boot as well, which for
+# backup-retention.service means destructive deletion at boot. Omitting [Install]
+# makes `systemctl enable <this>.service` fail loudly instead of silently wiring
+# an unwanted activation. Enable the .timer; run the .service by hand with
+# `systemctl start` only when a one-off execution is explicitly intended.

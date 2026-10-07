@@ -1,0 +1,1656 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver Eco Driving Dashboard V1 — wzorzec UI (Nordic BI / Telematics)</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #F5F7FA; }
+  * { box-sizing: border-box; }
+  a { color: #8F3A04; text-decoration: none; }
+  a:hover { color: #8F3A04; text-decoration: underline; }
+  button { font: inherit; }
+  @keyframes drawRing { from { stroke-dashoffset: 1400; } }
+  @keyframes lineIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes growCol { from { transform: scaleY(0); } }
+  @keyframes growRow { from { transform: scaleX(0); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, Helvetica, Arial, sans-serif; color: #101828; background: radial-gradient(900px 420px at 12% -8%, rgba(255,115,0,0.13), transparent 65%), linear-gradient(180deg, #F2F5F9, #F7F9FC 420px); min-height: 100vh; padding: 0 0 76px 0;">
+
+  <div style="background: #101828; color: #E4E7EC; padding: 12px 26px; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; position: sticky; top: 0; z-index: 40;">
+    <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #C7CEDB; border-right: 1px solid #344054; padding-right: 18px; line-height: 1.4;">Wzorzec projektowy<br>nie część produktu</div>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <button onClick="{{ setWeekly }}" style="padding: 7px 13px; border-radius: 9px; border: 1px solid #344054; background: {{ weeklyBtnBg }}; color: {{ weeklyBtnFg }}; font-size: 12px; font-weight: 700; cursor: pointer;">Tygodniowy</button>
+      <button onClick="{{ setMonthly }}" style="padding: 7px 13px; border-radius: 9px; border: 1px solid #344054; background: {{ monthlyBtnBg }}; color: {{ monthlyBtnFg }}; font-size: 12px; font-weight: 700; cursor: pointer;">Miesięczny</button>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <button onClick="{{ setSummary }}" style="padding: 7px 13px; border-radius: 9px; border: 1px solid #344054; background: {{ summaryBtnBg }}; color: {{ summaryBtnFg }}; font-size: 12px; font-weight: 700; cursor: pointer;">Podsumowanie</button>
+      <button onClick="{{ setDetailed }}" style="padding: 7px 13px; border-radius: 9px; border: 1px solid #344054; background: {{ detailedBtnBg }}; color: {{ detailedBtnFg }}; font-size: 12px; font-weight: 700; cursor: pointer;">Szczegóły</button>
+    </div>
+    <select value="{{ profileKey }}" onChange="{{ onProfile }}" style="padding: 7px 10px; border-radius: 9px; border: 1px solid #344054; background: #1D2939; color: #E4E7EC; font-size: 12px; cursor: pointer; max-width: 300px;">
+      <sc-for list="{{ profileOptions }}" as="opt" hint-placeholder-count="9">
+        <option value="{{ opt.key }}">{{ opt.label }}</option>
+      </sc-for>
+    </select>
+  </div>
+
+  <div style="max-width: 1240px; margin: 0 auto; padding: 26px 26px 0 26px;">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; animation: fadeUp .5s ease both;">
+      <div style="display: flex; gap: 13px; align-items: center;">
+        <div style="width: 42px; height: 42px; border-radius: 14px; background: linear-gradient(140deg, #FF7300, #FF9A3D); box-shadow: 0 6px 18px rgba(255,115,0,0.32);"></div>
+        <div>
+          <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; color: #8F3A04;">Program Ecodriving</div>
+          <div style="font-size: 23px; font-weight: 800; letter-spacing: -0.02em;">Twoje Eco Driving</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+        <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 12px; padding: 8px 14px; font-size: 12px; font-weight: 600; color: #475467; box-shadow: 0 1px 2px rgba(16,24,40,0.05);">
+          <span style="color: #667085;">Dane zaktualizowane:</span> <span style="font-variant-numeric: tabular-nums;">{{ updatedAt }}</span>
+        </div>
+        <div style="display: flex; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 12px; padding: 4px; box-shadow: 0 1px 2px rgba(16,24,40,0.05);">
+          <button onClick="{{ setWeekly }}" style="padding: 7px 14px; border-radius: 9px; border: 0; cursor: pointer; background: {{ pillWeeklyBg }}; color: {{ pillWeeklyFg }}; font-size: 12px; font-weight: 700;">Tygodniowy</button>
+          <button onClick="{{ setMonthly }}" style="padding: 7px 14px; border-radius: 9px; border: 0; cursor: pointer; background: {{ pillMonthlyBg }}; color: {{ pillMonthlyFg }}; font-size: 12px; font-weight: 700;">Miesięczny</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: space-between; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 20px; padding: 18px 22px; margin-top: 18px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .55s ease both;">
+      <div style="flex: 1 1 340px; min-width: 290px;">
+        <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">{{ periodKindLabel }}</div>
+        <div style="font-variant-numeric: tabular-nums; font-size: 25px; font-weight: 600; letter-spacing: -0.02em; margin-top: 5px;">{{ rangeDisplay }}</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px;">
+          <span style="background: #FFF3E8; border: 1px solid #FFD8B5; color: #A34400; border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 700;">{{ cumulativeChip }}</span>
+          <span style="background: #F7F9FC; border: 1px solid #E9EDF5; color: #475467; border-radius: 8px; padding: 4px 10px; font-size: 12px; font-weight: 600;">{{ sequenceChip }}</span>
+        </div>
+      </div>
+      <div style="text-align: right; flex: 0 1 380px; min-width: 250px;">
+        <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">Baza porównania</div>
+        <div style="font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; margin-top: 5px;">{{ prevRangeDisplay }}</div>
+        <div style="font-size: 12px; color: #667085; line-height: 1.5; margin-top: 4px;">{{ comparisonNote }}</div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 6px; margin-top: 16px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 14px; padding: 5px; box-shadow: 0 1px 2px rgba(16,24,40,0.05); width: fit-content; animation: fadeUp .6s ease both;">
+      <button onClick="{{ setSummary }}" style="padding: 9px 18px; border-radius: 10px; border: 0; cursor: pointer; background: {{ tabSummaryBg }}; color: {{ tabSummaryFg }}; font-size: 13px; font-weight: 700;">Podsumowanie</button>
+      <button onClick="{{ setDetailed }}" style="padding: 9px 18px; border-radius: 10px; border: 0; cursor: pointer; background: {{ tabDetailedBg }}; color: {{ tabDetailedFg }}; font-size: 13px; font-weight: 700;">Szczegóły dzienne</button>
+    </div>
+
+    <sc-if value="{{ isNotReady }}" hint-placeholder-val="{{ false }}">
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 44px 26px 48px 26px; margin-top: 18px; text-align: center; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .5s ease both;">
+        <div style="width: 52px; height: 52px; margin: 0 auto; border-radius: 16px; background: #F2F4F7; border: 1px solid #E3E8F0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: #475467;">–</div>
+        <div style="font-size: 20px; font-weight: 800; margin-top: 16px;">Raport tego okresu nie jest jeszcze gotowy</div>
+        <div style="font-size: 13px; color: #475467; line-height: 1.65; margin-top: 10px; max-width: 560px; margin-left: auto; margin-right: auto;">Wynik Eco Driving powstaje z wszystkich obszarów punktacji razem. Dla tego okresu komplet danych nie jest jeszcze dostępny, dlatego nie pokazujemy częściowego wyniku — zobaczysz pełne podsumowanie, gdy okres zostanie zamknięty i przeliczony.</div>
+        <div style="display: inline-block; margin-top: 18px; background: #F7F9FC; border: 1px solid #E9EDF5; border-radius: 12px; padding: 12px 16px; font-size: 12px; color: #475467; text-align: left; max-width: 560px;">
+          <strong style="color: #101828;">Kontrakt implementacyjny:</strong> raport okresu, który nie spełnia kompletnego kontraktu punktacji, <strong style="color: #101828;">nie jest publikowana</strong> jako zwykły dashboard. Zamiast tego serwowany jest ten stan. Nigdy nie renderuj ekranu, który wygląda na kompletny, pomijając obszar wymagany do wyliczenia wyniku.
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isInsufficientDistance }}" hint-placeholder-val="{{ false }}">
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 44px 26px 48px 26px; margin-top: 18px; text-align: center; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .5s ease both;">
+        <div style="width: 52px; height: 52px; margin: 0 auto; border-radius: 16px; background: #F2F4F7; border: 1px solid #E3E8F0; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; color: #475467;">100</div>
+        <div style="font-size: 20px; font-weight: 800; margin-top: 16px;">Za mały dystans do wyliczenia wyniku</div>
+        <div style="font-size: 13px; color: #475467; line-height: 1.65; margin-top: 10px; max-width: 620px; margin-left: auto; margin-right: auto;">Dla tego zamkniętego okresu łączny dystans kwalifikujący nie osiągnął 100 km. Zgodnie z zasadami Eco Driving nie pokazujemy danych ani wyniku dla tego okresu.</div>
+        <div style="display: inline-block; margin-top: 18px; background: #F7F9FC; border: 1px solid #E9EDF5; border-radius: 12px; padding: 12px 16px; font-size: 12px; color: #475467; text-align: left; max-width: 620px;">
+          <strong style="color: #101828;">Kontrakt implementacyjny:</strong> próg 100 km dotyczy wyłącznie sumy dystansu całego okresu raportowego. Ten stan nie ujawnia rzeczywistego dystansu, wyniku, rankingu, klasyfikacji, obszarów, wykroczeń, trendów, coachingu ani szczegółów dziennych. Po zakwalifikowaniu całego okresu nie ma progu dziennego 50/100 km — dni z 1–99 km są normalnie pokazywane w Szczegółach.
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isReady }}" hint-placeholder-val="{{ true }}">
+    <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ true }}">
+    <div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(238px, 1fr)); gap: 16px; margin-top: 18px;">
+        <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 20px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); transition: transform .18s ease, box-shadow .18s ease; animation: fadeUp .65s ease both;" style-hover="transform: translateY(-3px); box-shadow: 0 12px 26px rgba(16,24,40,0.10);">
+            <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+              <div style="font-size: 12px; font-weight: 700; color: #667085;">{{ t.label }}</div>
+              <div style="width: 30px; height: 30px; border-radius: 10px; background: {{ t.tint }}; color: {{ t.tintFg }}; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700;">{{ t.glyph }}</div>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 10px;">
+              <span style="font-variant-numeric: tabular-nums; font-size: 28px; font-weight: 600; letter-spacing: -0.02em; color: {{ t.valueColor }};">{{ t.value }}</span>
+              <span style="font-size: 13px; font-weight: 600; color: #667085;">{{ t.unit }}</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; align-items: center; gap: 7px; margin-top: 10px;">
+              <span style="display: inline-flex; gap: 4px; align-items: center; background: {{ t.badgeBg }}; border: 1px solid {{ t.badgeBorder }}; color: {{ t.badgeFg }}; border-radius: 8px; padding: 3px 8px; font-size: 11px; font-weight: 700;">{{ t.badge }}</span>
+              <span style="font-size: 11px; color: #667085;">{{ t.note }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 16px; margin-top: 16px;">
+
+        <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .7s ease both;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+            <div style="font-size: 15px; font-weight: 800;">Wynik okresu</div>
+            <div style="font-size: 11px; color: #667085;">{{ ratingRangeNote }}</div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 24px; align-items: center; margin-top: 16px;">
+            <div style="position: relative; width: 196px; height: 196px;">
+              <svg width="196" height="196" viewBox="0 0 196 196" style="transform: rotate(-90deg);">
+                <defs>
+                  <linearGradient id="scoreGrad" x1="0" y1="0" x2="1" y2="1">
+                    <stop offset="0%" stopColor="{{ ringFrom }}"></stop>
+                    <stop offset="100%" stopColor="{{ ringTo }}"></stop>
+                  </linearGradient>
+                </defs>
+                <circle cx="98" cy="98" r="80" fill="none" stroke="#EEF2F7" strokeWidth="15"></circle>
+                <circle cx="98" cy="98" r="63" fill="none" stroke="#F5F7FA" strokeWidth="8"></circle>
+                <sc-if value="{{ hasScore }}" hint-placeholder-val="{{ true }}">
+                  <circle cx="98" cy="98" r="80" fill="none" stroke="url(#scoreGrad)" strokeWidth="15" strokeLinecap="round" strokeDasharray="503" strokeDashoffset="{{ ringOffset }}" style="animation: drawRing 1.4s cubic-bezier(.2,.9,.2,1) both;"></circle>
+                </sc-if>
+                <sc-if value="{{ hasPrevScore }}" hint-placeholder-val="{{ true }}">
+                  <circle cx="98" cy="98" r="63" fill="none" stroke="#C7CEDB" strokeWidth="8" strokeLinecap="round" strokeDasharray="396" strokeDashoffset="{{ prevRingOffset }}" style="animation: drawRing 1.7s cubic-bezier(.2,.9,.2,1) both;"></circle>
+                </sc-if>
+                <circle cx="98" cy="98" r="80" fill="none" stroke="#101828" strokeWidth="15" strokeDasharray="2 501" strokeDashoffset="{{ safeTickOffset }}" opacity="0.28"></circle>
+              </svg>
+              <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                <div style="font-variant-numeric: tabular-nums; font-size: 52px; font-weight: 600; line-height: 1; letter-spacing: -0.03em; color: {{ scoreColor }};">{{ scoreDisplay }}</div>
+                <div style="font-size: 11px; font-weight: 700; color: #667085; margin-top: 4px;">z 100 pkt</div>
+                <div style="font-size: 10px; color: #667085; margin-top: 7px; text-align: center; line-height: 1.35; max-width: 118px;">{{ ringInnerNote }}</div>
+              </div>
+            </div>
+            <div style="flex: 1; min-width: 200px;">
+              <div style="display: inline-flex; gap: 7px; align-items: center; background: {{ ratingTint }}; border: 1px solid {{ ratingBorder }}; color: {{ ratingPillFg }}; border-radius: 10px; padding: 7px 13px; font-size: 13px; font-weight: 800;">
+                <span style="font-variant-numeric: tabular-nums;">{{ ratingGlyph }}</span>{{ ratingLabel }}
+              </div>
+              <div style="display: grid; gap: 9px; margin-top: 16px;">
+                <sc-for list="{{ scoreRows }}" as="r" hint-placeholder-count="4">
+                  <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px; border-bottom: 1px solid #F2F4F7; padding-bottom: 8px;">
+                    <span style="font-size: 12px; color: #667085;">{{ r.label }}</span>
+                    <span style="font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 700; color: {{ r.color }}; white-space: nowrap;">{{ r.value }}</span>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="margin-top: 14px;">
+                <div style="height: 10px; border-radius: 999px; background: #EEF2F7; position: relative; overflow: hidden;">
+                  <div style="position: absolute; left: 0; top: 0; bottom: 0; width: {{ scoreBarW }}; border-radius: 999px; background: linear-gradient(90deg, {{ ringFrom }}, {{ ringTo }}); transform-origin: left; animation: growRow 1.3s cubic-bezier(.2,.9,.2,1) both;"></div>
+                  <div style="position: absolute; left: 40%; top: -3px; bottom: -3px; width: 2px; background: #98A2B3;"></div>
+                  <div style="position: absolute; left: 85%; top: -3px; bottom: -3px; width: 2px; background: #475467;"></div>
+                </div>
+                <div style="display: flex; justify-content: space-between; font-size: 10px; color: #667085; margin-top: 6px;">
+                  <span>0</span><span>40 · akceptowalny</span><span>85 · bezpieczny</span><span>100</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .75s ease both;">
+          <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+            <div style="font-size: 15px; font-weight: 800;">Udział strat według obszarów</div>
+            <div style="font-size: 11px; color: #667085;">najedź na pierścień lub legendę</div>
+          </div>
+          <sc-if value="{{ hasLosses }}" hint-placeholder-val="{{ true }}">
+            <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: center; margin-top: 18px;">
+              <div style="position: relative; width: 186px; height: 186px;">
+                <svg width="186" height="186" viewBox="0 0 186 186" style="transform: rotate(-90deg);">
+                  <circle cx="93" cy="93" r="70" fill="none" stroke="#F2F4F7" strokeWidth="20"></circle>
+                  <sc-for list="{{ donut }}" as="seg" hint-placeholder-count="5">
+                    <circle cx="93" cy="93" r="70" fill="none" stroke="{{ seg.color }}" strokeWidth="{{ seg.width }}" strokeDasharray="{{ seg.dash }}" strokeDashoffset="{{ seg.offset }}" onMouseEnter="{{ seg.enter }}" aria-hidden="true" style="cursor: pointer; opacity: {{ seg.opacity }}; transition: stroke-width .18s ease, opacity .18s ease; animation: drawRing 1.5s cubic-bezier(.2,.9,.2,1) both;"></circle>
+                  </sc-for>
+                </svg>
+                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 30px;">
+                  <div style="font-variant-numeric: tabular-nums; font-size: 27px; font-weight: 700; color: {{ activeColor }};">{{ activeValue }}</div>
+                  <div style="font-size: 10px; font-weight: 700; color: #475467; line-height: 1.3; margin-top: 4px;">{{ activeLabel }}</div>
+                  <div style="font-size: 10px; color: #667085; margin-top: 4px;">{{ activeShareLabel }}</div>
+                </div>
+              </div>
+              <div style="flex: 1; min-width: 200px; display: grid; gap: 5px;">
+                <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5">
+                  <button onMouseEnter="{{ l.enter }}" onFocus="{{ l.enter }}" onClick="{{ l.click }}" aria-expanded="{{ l.expanded }}" style="display: grid; width: 100%; text-align: left; font: inherit; color: inherit; border: 0; grid-template-columns: 11px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; background: {{ l.rowBg }}; cursor: pointer; transition: background .16s ease;">
+                    <span style="width: 11px; height: 11px; border-radius: 4px; background: {{ l.color }};"></span>
+                    <span style="font-size: 12px; font-weight: 600; color: #344054;">{{ l.label }}</span>
+                    <span style="font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700; color: #667085;">{{ l.value }}</span>
+                  </button>
+                </sc-for>
+                <div style="font-size: 11px; color: #667085; line-height: 1.5; margin-top: 6px;">Kliknij obszar, aby rozwinąć jego oś punktacji poniżej.</div>
+              </div>
+            </div>
+          </sc-if>
+          <sc-if value="{{ noLosses }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 18px; background: #F7F9FC; border: 1px solid #E9EDF5; border-radius: 14px; padding: 18px; font-size: 13px; color: #475467; line-height: 1.6;">{{ noLossesNote }}</div>
+          </sc-if>
+        </div>
+      </div>
+
+      <div style="margin-top: 24px; animation: fadeUp .8s ease both;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between;">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 800;">Co teraz najbardziej wpływa na Twój wynik</h2>
+          <span style="font-size: 12px; color: #667085;">wnioski wyliczone z tabeli progów — bez prognoz</span>
+        </div>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(256px, 1fr)); gap: 14px; margin-top: 14px;">
+          <sc-for list="{{ coaching }}" as="tip" hint-placeholder-count="4">
+            <div style="background: {{ tip.cardBg }}; border: 1px solid {{ tip.cardBorder }}; border-radius: 20px; padding: 18px; display: flex; flex-direction: column; gap: 9px; transition: transform .18s ease, box-shadow .18s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 12px 26px rgba(16,24,40,0.10);">
+              <div style="display: flex; gap: 9px; align-items: center;">
+                <span style="width: 26px; height: 26px; border-radius: 9px; background: {{ tip.accentBg }}; color: {{ tip.accentText }}; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700;">{{ tip.glyph }}</span>
+                <span style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: {{ tip.kindFg }};">{{ tip.kindLabel }}</span>
+              </div>
+              <div style="font-size: 15px; font-weight: 800; line-height: 1.3;">{{ tip.category }}</div>
+              <div style="display: flex; align-items: baseline; gap: 8px;">
+                <span style="font-variant-numeric: tabular-nums; font-size: 26px; font-weight: 700; color: {{ tip.accentText }};">{{ tip.value }}</span>
+                <div style="flex: 1; height: 6px; border-radius: 999px; background: {{ tip.trackBg }}; overflow: hidden;">
+                  <div style="height: 100%; width: {{ tip.barW }}; border-radius: 999px; background: {{ tip.barBg }}; transform-origin: left; animation: growRow 1.2s cubic-bezier(.2,.9,.2,1) both;"></div>
+                </div>
+              </div>
+              <div style="font-size: 12px; color: #344054; line-height: 1.55;">{{ tip.body }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <sc-if value="{{ coachingSuppressed }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top: 14px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 18px; padding: 16px 18px; font-size: 13px; color: #475467; line-height: 1.6;">{{ coachingSuppressedNote }}</div>
+        </sc-if>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); margin-top: 24px; animation: fadeUp .85s ease both;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline;">
+          <div style="font-size: 15px; font-weight: 800;">{{ trendTitle }}</div>
+          <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; font-size: 11px; color: #667085;">
+            <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 4px; background: #1F8A4C;"></span>85–100 bezpieczny</span>
+            <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 4px; background: #F5B700;"></span>40–84 akceptowalny</span>
+            <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 4px; background: #DC2626;"></span>0–39 niebezpieczny</span>
+            <span>{{ trendSubtitle }}</span>
+          </div>
+        </div>
+        <div style="position: relative; height: 210px; margin-top: 22px;">
+          <div style="position: absolute; left: 0; right: 0; top: 0; bottom: 0; pointer-events: none;">
+            <div style="position: absolute; left: 0; right: 0; top: 15%; border-top: 1px dashed #E3E8F0;"></div>
+            <div style="position: absolute; left: 0; right: 0; top: 60%; border-top: 1px dashed #E3E8F0;"></div>
+            <div style="position: absolute; right: 0; top: 15%; transform: translateY(-100%); font-size: 10px; color: #667085;">85 pkt</div>
+            <div style="position: absolute; right: 0; top: 60%; transform: translateY(-100%); font-size: 10px; color: #667085;">40 pkt</div>
+          </div>
+          <div style="position: absolute; inset: 0; display: flex; gap: 0; align-items: flex-end;">
+            <sc-for list="{{ trendSeries }}" as="pt" hint-placeholder-count="5">
+              <div style="flex: 1; position: relative; height: 100%;">
+                <div style="position: absolute; left: 0; right: 0; text-align: center; bottom: {{ pt.labelBottom }}; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums; color: {{ pt.labelColor }}; white-space: nowrap;">{{ pt.score }}</div>
+                <div style="position: absolute; left: 0; right: 0; bottom: 0; margin: 0 auto; width: 68%; max-width: 66px; height: {{ pt.barH }}; border-radius: 12px 12px 4px 4px; background: {{ pt.barBg }}; background-image: {{ pt.barPattern }}; border: {{ pt.barBorder }}; transform-origin: bottom; animation: growCol .8s {{ pt.delay }} cubic-bezier(.2,.9,.2,1) both;">
+                  <div style="position: absolute; left: 0; right: 0; margin: 0 auto; top: -6px; width: 11px; height: 11px; border-radius: 50%; background: {{ pt.dotBg }}; border: 2px solid #FFFFFF; box-shadow: 0 0 0 1px {{ pt.dotRing }};"></div>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+          <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; pointer-events: none;">
+            <polyline points="{{ trendLinePoints }}" fill="none" stroke="#101828" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke" style="animation: lineIn .5s {{ lineDelay }} ease both;"></polyline>
+          </svg>
+        </div>
+        <div style="display: flex; gap: 0; margin-top: 10px;">
+          <sc-for list="{{ trendSeries }}" as="pt" hint-placeholder-count="5">
+            <div style="flex: 1; text-align: center; font-size: 11px; font-variant-numeric: tabular-nums; font-weight: {{ pt.labelWeight }}; color: {{ pt.labelColor }};">{{ pt.label }}</div>
+          </sc-for>
+        </div>
+        <div style="font-size: 11px; color: #667085; line-height: 1.55; margin-top: 12px;">{{ trendFootnote }}</div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); margin-top: 16px; animation: fadeUp .9s ease both;">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: baseline;">
+          <div>
+            <div style="font-size: 15px; font-weight: 800;">Co się zmieniło w każdym obszarze</div>
+            <div style="font-size: 12px; color: #667085; margin-top: 4px;">{{ changeSubhead }}</div>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
+            <sc-for list="{{ changeSummary }}" as="cs" hint-placeholder-count="0">
+              <span style="display: inline-flex; gap: 6px; align-items: center; background: {{ cs.bg }}; border: 1px solid {{ cs.border }}; color: {{ cs.fg }}; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">
+                <span>{{ cs.glyph }}</span>{{ cs.label }}
+              </span>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: minmax(190px, 1.5fr) minmax(150px, 1fr) minmax(190px, 1.3fr) 120px; gap: 14px; padding: 12px 0 10px 0; margin-top: 14px; border-bottom: 1px solid #EEF2F7; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #667085;">
+          <div>Obszar</div>
+          <div>Wskaźnik na 100 km</div>
+          <div>Utracone punkty</div>
+          <div style="text-align: right;">Zmiana</div>
+        </div>
+
+        <sc-for list="{{ categoryTrends }}" as="ct" hint-placeholder-count="7">
+          <div style="display: grid; grid-template-columns: minmax(190px, 1.5fr) minmax(150px, 1fr) minmax(190px, 1.3fr) 120px; gap: 14px; padding: 13px 0; border-bottom: 1px solid #F4F6F9; align-items: center;">
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <span style="width: 4px; height: 34px; border-radius: 999px; background: {{ ct.railColor }};"></span>
+              <div>
+                <div style="font-size: 13px; font-weight: 700;">{{ ct.label }}</div>
+                <div style="font-size: 11px; color: #667085; margin-top: 2px;">{{ ct.stateNote }}</div>
+              </div>
+            </div>
+            <div style="display: flex; gap: 7px; align-items: center; font-size: 12px; font-variant-numeric: tabular-nums;">
+              <span style="color: #667085;">{{ ct.coefPrev }}</span>
+              <span aria-hidden="true" style="color: #667085;">→</span>
+              <span style="font-weight: 800; color: #101828;">{{ ct.coefNow }}</span>
+            </div>
+            <div style="display: flex; gap: 10px; align-items: center;">
+              <div style="flex: 1; display: flex; gap: 6px; align-items: flex-end; height: 34px; padding-top: 16px; box-sizing: content-box;">
+                <sc-for list="{{ ct.points }}" as="p" hint-placeholder-count="2">
+                  <div style="flex: 1; position: relative; height: 100%; display: flex; align-items: flex-end;">
+                    <div style="position: relative; width: 100%; height: {{ p.h }}; border-radius: 5px; background: {{ p.bg }}; background-image: {{ p.pattern }}; border: 1px solid {{ p.border }}; transform-origin: bottom; animation: growCol .9s {{ p.delay }} cubic-bezier(.2,.9,.2,1) both;">
+                      <span style="position: absolute; left: 50%; transform: translateX(-50%); bottom: calc(100% + 3px); font-size: 10px; font-weight: 700; font-variant-numeric: tabular-nums; color: {{ p.labelColor }}; white-space: nowrap;">{{ p.label }}</span>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="font-size: 11px; color: #667085; width: 74px; line-height: 1.35;">{{ ct.pointsNote }}</div>
+            </div>
+            <div style="text-align: right;">
+              <span style="display: inline-flex; gap: 5px; align-items: center; background: {{ ct.deltaBg }}; border: 1px solid {{ ct.deltaBorder }}; color: {{ ct.deltaColor }}; border-radius: 8px; padding: 4px 9px; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;">
+                <span>{{ ct.deltaGlyph }}</span>{{ ct.deltaLabel }}
+              </span>
+            </div>
+          </div>
+        </sc-for>
+        <div style="font-size: 11px; color: #667085; line-height: 1.55; margin-top: 14px;">{{ categoryTrendFootnote }}</div>
+      </div>
+
+      <div style="margin-top: 24px; animation: fadeUp .95s ease both;">
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between;">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 800;">Punkty według obszarów</h2>
+          <span style="font-size: 12px; color: #667085;">liczba zdarzeń → wskaźnik na 100 km → próg punktowy · kolor pochodzi z progu</span>
+        </div>
+
+        <sc-if value="{{ hasNear }}" hint-placeholder-val="{{ true }}">
+        <div style="margin-top: 14px; background: linear-gradient(150deg, #FFF7F0, #FFFFFF 70%); border: 1px solid #FFD8B5; border-radius: 22px; padding: 20px 22px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: space-between; align-items: baseline;">
+            <div>
+              <div style="font-size: 15px; font-weight: 800; color: #A34400;">Tu niewielka poprawa daje punkty</div>
+              <div style="font-size: 12px; color: #667085; margin-top: 4px;">Dwa obszary są najbliżej lepszego progu — pozostałe wymagają dużo większej zmiany.</div>
+            </div>
+            <span style="background: #FFFFFF; border: 1px solid #FFD8B5; color: #A34400; border-radius: 999px; padding: 6px 12px; font-size: 12px; font-weight: 700;">razem {{ nearTotalGain }}</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 16px;">
+            <sc-for list="{{ nearCards }}" as="nc" hint-placeholder-count="2">
+              <button onClick="{{ nc.open }}" aria-expanded="{{ nc.expanded }}" style="display: block; width: 100%; text-align: left; font: inherit; color: inherit; background: #FFFFFF; border: 1px solid #FFD8B5; border-radius: 18px; padding: 18px; cursor: pointer; transition: transform .18s ease, box-shadow .18s ease;" style-hover="transform: translateY(-3px); box-shadow: 0 12px 26px rgba(255,115,0,0.16);">
+                <div style="display: flex; justify-content: space-between; gap: 12px; align-items: flex-start;">
+                  <div>
+                    <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #8F3A04;">{{ nc.rankLabel }}</div>
+                    <div style="font-size: 15px; font-weight: 800; margin-top: 5px;">{{ nc.label }}</div>
+                  </div>
+                  <div style="text-align: right; white-space: nowrap;">
+                    <div style="font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; color: #A34400; line-height: 1;">{{ nc.gain }}</div>
+                    <div style="font-size: 10px; color: #667085;">do zdobycia</div>
+                  </div>
+                </div>
+
+                <div style="display: flex; gap: 10px; align-items: center; margin-top: 16px;">
+                  <div style="text-align: center; background: #F2F4F7; border: 1px solid #E3E8F0; border-radius: 12px; padding: 8px 12px; min-width: 66px;">
+                    <div style="font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums;">{{ nc.coefNow }}</div>
+                    <div style="font-size: 10px; color: #667085;">teraz</div>
+                  </div>
+                  <div style="flex: 1;">
+                    <div style="position: relative; height: 10px; border-radius: 999px; background: #FFEBD8; overflow: hidden;">
+                      <div style="position: absolute; left: 0; top: 0; bottom: 0; width: {{ nc.progress }}; border-radius: 999px; background: linear-gradient(90deg, #FF7300, #FFB169); transform-origin: left; animation: growRow 1.2s cubic-bezier(.2,.9,.2,1) both;"></div>
+                    </div>
+                    <div style="font-size: 11px; color: #A34400; font-weight: 700; text-align: center; margin-top: 6px;">{{ nc.distanceLabel }}</div>
+                  </div>
+                  <div style="text-align: center; background: #FFF3E8; border: 2px dashed #FF7300; border-radius: 12px; padding: 7px 12px; min-width: 66px;">
+                    <div style="font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; color: #A34400;">{{ nc.coefTarget }}</div>
+                    <div style="font-size: 10px; color: #8F3A04;">próg</div>
+                  </div>
+                </div>
+
+                <div style="font-size: 12px; color: #344054; line-height: 1.55; margin-top: 14px;">{{ nc.body }}</div>
+                <div style="font-size: 11px; font-weight: 700; color: #8F3A04; margin-top: 10px;">Pokaż oś punktacji tego obszaru →</div>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+        </sc-if>
+
+        <div style="margin-top: 14px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; overflow: hidden; box-shadow: 0 1px 3px rgba(16,24,40,0.06);">
+          <div style="display: grid; grid-template-columns: minmax(184px, 1.4fr) 92px 118px 1.5fr 114px 36px; gap: 12px; padding: 12px 20px; background: #F9FAFC; border-bottom: 1px solid #EEF2F7; font-size: 10px; font-weight: 800; letter-spacing: 0.08em; text-transform: uppercase; color: #667085;">
+            <div>Obszar</div><div>Zdarzenia</div><div>Wskaźnik</div><div>Próg punktowy</div><div style="text-align: right;">Punkty</div><div></div>
+          </div>
+          <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="8">
+            <div style="border-bottom: 1px solid #F4F6F9; opacity: {{ cat.rowOpacity }}; background: {{ cat.rowBg }}; transition: background .16s ease;">
+              <div style="display: grid; grid-template-columns: minmax(184px, 1.4fr) 92px 118px 1.5fr 114px 36px; gap: 12px; padding: 14px 20px; align-items: center;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                  <span style="width: 4px; height: 32px; border-radius: 999px; background: {{ cat.railBg }};"></span>
+                  <div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                      <span style="font-size: 13px; font-weight: 700;">{{ cat.label }}</span>
+                      <sc-if value="{{ cat.isNear }}" hint-placeholder-val="{{ false }}">
+                        <span style="background: #FFF3E8; border: 1px solid #FFD8B5; color: #A34400; border-radius: 999px; padding: 2px 8px; font-size: 10px; font-weight: 800;">{{ cat.nearBadge }}</span>
+                      </sc-if>
+                    </div>
+                    <div style="font-size: 11px; color: #667085; margin-top: 2px;">{{ cat.note }}</div>
+                  </div>
+                </div>
+                <div style="font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600;">{{ cat.countDisplay }}</div>
+                <div>
+                  <span style="display: inline-flex; gap: 5px; align-items: center; background: {{ cat.statusBg }}; border: 1px solid {{ cat.statusBorder }}; color: {{ cat.statusFg }}; border-radius: 8px; padding: 4px 8px; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700;">{{ cat.statusGlyph }} {{ cat.coefDisplay }}</span>
+                </div>
+                <div>
+                  <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 3px;">
+                    <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                      <div style="height: 15px; border-radius: 4px; background: {{ band.bg }}; background-image: {{ band.pattern }}; border: {{ band.border }};"></div>
+                    </sc-for>
+                  </div>
+                  <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 3px; margin-top: 3px;">
+                    <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                      <div style="text-align: center; font-variant-numeric: tabular-nums; font-size: 9px; font-weight: 700; color: {{ band.markerColor }};">{{ band.marker }}</div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 700;">{{ cat.pointsDisplay }}</div>
+                  <div style="font-variant-numeric: tabular-nums; font-size: 12px; color: {{ cat.lostColor }}; margin-top: 2px;">{{ cat.lostDisplay }}</div>
+                </div>
+                <div>
+                  <button onClick="{{ cat.toggle }}" style="width: 32px; height: 32px; border-radius: 10px; border: 1px solid #E3E8F0; background: {{ cat.toggleBg }}; color: #344054; cursor: pointer; font-variant-numeric: tabular-nums; font-size: 14px;">{{ cat.toggleGlyph }}</button>
+                </div>
+              </div>
+
+              <sc-if value="{{ cat.open }}" hint-placeholder-val="{{ false }}">
+                <div style="padding: 4px 20px 22px 20px; background: #F9FAFC; border-top: 1px dashed #E9EDF5;">
+                  <div style="display: flex; flex-wrap: wrap; gap: 14px; justify-content: space-between; align-items: baseline; padding: 14px 0 16px 0;">
+                    <div style="font-size: 13px; font-weight: 800;">Oś punktacji — {{ cat.label }}</div>
+                    <div style="font-size: 12px; color: #475467;">{{ cat.axisSummary }}</div>
+                  </div>
+                  <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 4px;">
+                    <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                      <div style="text-align: center;">
+                        <div style="font-variant-numeric: tabular-nums; font-size: 11px; color: #667085; padding-bottom: 4px;">{{ band.label }}</div>
+                        <div style="height: 24px; border-radius: 6px; background: {{ band.bg }}; background-image: {{ band.pattern }}; border: {{ band.border }};"></div>
+                        <div style="font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 700; padding-top: 5px;">{{ band.lostLabel }}</div>
+                        <div style="height: 20px; font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700; color: {{ band.markerColor }};">{{ band.marker }}</div>
+                        <div style="font-size: 10px; color: {{ band.captionColor }}; min-height: 26px; line-height: 1.25;">{{ band.caption }}</div>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 14px;">
+                    <div style="flex: 1; min-width: 235px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 14px; padding: 13px 15px;">
+                      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Stan obecny</div>
+                      <div style="font-size: 13px; margin-top: 5px; line-height: 1.55;">{{ cat.currentExplain }}</div>
+                    </div>
+                    <div style="flex: 1; min-width: 235px; background: {{ cat.opportunityBg }}; border: 1px solid {{ cat.opportunityBorder }}; border-radius: 14px; padding: 13px 15px;">
+                      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Potencjał</div>
+                      <div style="font-size: 13px; margin-top: 5px; line-height: 1.55;">{{ cat.opportunityExplain }}</div>
+                    </div>
+                    <div style="flex: 1; min-width: 200px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 14px; padding: 13px 15px;">
+                      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Zmiana</div>
+                      <div style="font-size: 13px; margin-top: 5px; line-height: 1.55;">{{ cat.trendExplain }}</div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 11px; color: #667085;">
+          <span>✓ pełne punkty w obszarze</span>
+          <span>! punkty utracone, obszar nadal dodaje do wyniku</span>
+          <span>✕ obszar odejmuje od wyniku</span>
+          <span>– brak oceny (za mały dystans lub brak danych)</span>
+        </div>
+      </div>
+    </div>
+    </sc-if>
+
+    <sc-if value="{{ isDetailed }}" hint-placeholder-val="{{ false }}">
+    <div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: flex-end; margin-top: 18px;">
+        <div style="max-width: 640px;">
+          <h2 style="margin: 0; font-size: 17px; font-weight: 800;">Jak powstał ten wynik — dzień po dniu</h2>
+          <p style="margin: 7px 0 0 0; font-size: 13px; color: #475467; line-height: 1.6;">{{ detailedIntro }}</p>
+        </div>
+        <div style="display: flex; gap: 8px;">
+          <button onClick="{{ toggleCompact }}" style="padding: 9px 14px; border-radius: 11px; border: 1px solid #E3E8F0; background: {{ compactBg }}; color: #344054; font-size: 12px; font-weight: 700; cursor: pointer;">{{ compactLabel }}</button>
+          <button onClick="{{ toggleAllGroups }}" style="padding: 9px 14px; border-radius: 11px; border: 1px solid #E3E8F0; background: #FFFFFF; color: #344054; font-size: 12px; font-weight: 700; cursor: pointer;">{{ expandAllLabel }}</button>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-top: 18px;">
+        <sc-for list="{{ detailedKpis }}" as="kpi" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 18px; padding: 15px 17px; box-shadow: 0 1px 3px rgba(16,24,40,0.06);">
+            <div style="font-size: 11px; font-weight: 700; color: #667085;">{{ kpi.label }}</div>
+            <div style="font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 600; margin-top: 6px;">{{ kpi.value }}</div>
+            <div style="font-size: 11px; color: #667085; margin-top: 3px;">{{ kpi.note }}</div>
+          </div>
+        </sc-for>
+      </div>
+
+      <div style="margin-top: 18px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 18px; overflow: hidden; box-shadow: 0 1px 3px rgba(16,24,40,0.06);">
+        <div>
+          <div style="display: grid; grid-template-columns: minmax(88px, 108px) minmax(70px, 88px) repeat(7, minmax(0, 1fr)) 44px; background: #F2F4F7; border-bottom: 2px solid #E3E8F0; font-size: 10px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #475467;">
+            <div style="padding: 10px 12px; border-right: 1px solid #E3E8F0;">Dzień</div>
+            <div style="padding: 10px 12px; border-right: 1px solid #E3E8F0; text-align: right;">Dystans</div>
+            <sc-for list="{{ dayColumns }}" as="col" hint-placeholder-count="7">
+              <div style="padding: 10px 8px; border-right: 1px solid #E3E8F0; text-align: center; line-height: 1.25;">{{ col.short }}</div>
+            </sc-for>
+            <div></div>
+          </div>
+
+          <sc-for list="{{ dayGroups }}" as="grp" hint-placeholder-count="3">
+            <div>
+              <button onClick="{{ grp.toggle }}" aria-expanded="{{ grp.open }}" style="width: 100%; display: grid; grid-template-columns: minmax(88px, 108px) minmax(70px, 88px) repeat(7, minmax(0, 1fr)) 44px; align-items: center; background: {{ grp.headerBg }}; border: 0; border-bottom: 1px solid #E3E8F0; padding: 0; cursor: pointer; text-align: left; font: inherit; color: inherit;">
+                <div style="padding: 9px 12px; border-right: 1px solid #E9EDF5; display: flex; gap: 7px; align-items: center;">
+                  <span style="font-size: 11px; color: #667085;">{{ grp.chevron }}</span>
+                  <span style="font-size: 12px; font-weight: 800; white-space: nowrap;">{{ grp.title }}</span>
+                </div>
+                <div style="padding: 9px 12px; border-right: 1px solid #E9EDF5; text-align: right; font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ grp.km }}</div>
+                <sc-for list="{{ grp.sums }}" as="s" hint-placeholder-count="7">
+                  <div style="padding: 9px 8px; border-right: 1px solid #E9EDF5; text-align: center; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; color: #344054;">{{ s }}</div>
+                </sc-for>
+                <div></div>
+              </button>
+
+              <sc-if value="{{ grp.open }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <sc-for list="{{ grp.days }}" as="day" hint-placeholder-count="7">
+                    <div style="border-bottom: 1px solid #F2F4F7; background: {{ day.rowBg }};" style-hover="background: #F9FAFC;">
+                      <div style="display: grid; grid-template-columns: minmax(88px, 108px) minmax(70px, 88px) repeat(7, minmax(0, 1fr)) 44px; align-items: stretch;">
+                        <div style="padding: 8px 12px; border-right: 1px solid #F2F4F7; display: flex; gap: 7px; align-items: baseline;">
+                          <span style="font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums;">{{ day.date }}</span>
+                          <span style="font-size: 11px; color: #667085;">{{ day.dow }}</span>
+                        </div>
+                        <div style="padding: 8px 12px; border-right: 1px solid #F2F4F7; text-align: right; font-size: 13px; font-variant-numeric: tabular-nums; color: {{ day.kmColor }};">{{ day.km }}</div>
+                        <sc-for list="{{ day.cells }}" as="cell" hint-placeholder-count="7">
+                          <div title="{{ cell.title }}" aria-label="{{ cell.title }}" role="img" style="border-right: 1px solid #F2F4F7; background: {{ cell.bg }}; display: flex; align-items: center; justify-content: center; padding: 9px 4px;">
+                            <span style="font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; color: {{ cell.numFg }};">{{ cell.count }}</span>
+                          </div>
+                        </sc-for>
+                        <div style="padding: 6px 8px; display: flex; align-items: center; justify-content: center;">
+                          <button onClick="{{ day.toggle }}" aria-expanded="{{ day.open }}" aria-label="Wskaźniki dnia {{ day.date }}" style="width: 24px; height: 24px; border-radius: 7px; border: 1px solid #E3E8F0; background: #FFFFFF; color: #344054; cursor: pointer; font-size: 12px; padding: 0; flex: none;">{{ day.toggleGlyph }}</button>
+                        </div>
+                      </div>
+                      <sc-if value="{{ day.open }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding: 2px 14px 14px 14px; background: #F9FAFC; border-top: 1px dashed #E3E8F0;">
+                          <div style="font-size: 12px; color: #475467; line-height: 1.6; padding-top: 10px;">{{ day.explain }}</div>
+                          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(168px, 1fr)); gap: 8px; margin-top: 10px;">
+                            <sc-for list="{{ day.detailRows }}" as="dr" hint-placeholder-count="6">
+                              <div style="display: flex; justify-content: space-between; gap: 8px; background: #FFFFFF; border: 1px solid #EEF2F7; border-left: 3px solid {{ dr.accent }}; border-radius: 10px; padding: 8px 11px;">
+                                <span style="font-size: 11px; color: #475467;">{{ dr.label }}</span>
+                                <span style="font-size: 11px; font-weight: 700; font-variant-numeric: tabular-nums; color: {{ dr.valueColor }}; white-space: nowrap;">{{ dr.value }}</span>
+                              </div>
+                            </sc-for>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+
+          <div style="display: grid; grid-template-columns: minmax(88px, 108px) minmax(70px, 88px) repeat(7, minmax(0, 1fr)) 44px; align-items: center; background: #101828; color: #FFFFFF;">
+            <div style="padding: 11px 12px; border-right: 1px solid #344054; font-size: 12px; font-weight: 800;">Suma okresu</div>
+            <div style="padding: 11px 12px; border-right: 1px solid #344054; text-align: right; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums;">{{ totalsKm }}</div>
+            <sc-for list="{{ totalsSums }}" as="s" hint-placeholder-count="7">
+              <div style="padding: 11px 8px; border-right: 1px solid #344054; text-align: center; font-size: 13px; font-weight: 800; font-variant-numeric: tabular-nums;">{{ s }}</div>
+            </sc-for>
+            <div></div>
+          </div>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 11px; color: #667085;">
+        <span>Kolor komórki = wskaźnik dnia na 100 km w progu punktowym obszaru, nigdy sama liczba zdarzeń.</span>
+        <span style="display: inline-flex; gap: 12px; align-items: center;">
+          <span style="display: inline-flex; gap: 5px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #E6F4EE; border: 1px solid #B4DCC8;"></span>pełne punkty</span>
+          <span style="display: inline-flex; gap: 5px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #FEF3E2; border: 1px solid #F6DCAE;"></span>podwyższony</span>
+          <span style="display: inline-flex; gap: 5px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #FDECEA; border: 1px solid #F3C4BE;"></span>strata punktów</span>
+          <span style="display: inline-flex; gap: 5px; align-items: center;"><span style="width: 12px; height: 12px; border-radius: 3px; background: #F2F4F7; border: 1px solid #E3E8F0;"></span>brak oceny</span>
+        </span>
+        <span>Brak dziennego progu 50/100 km: jeśli cały okres spełnia próg 100 km, dni z dystansem 1–99 km są pokazywane i oceniane na podstawie własnego wskaźnika; 0 km = brak jazdy.</span>
+        <span>Dzienne punkty nie sumują się do wyniku okresu i nie są tu pokazywane.</span>
+      </div>
+    </div>
+    </sc-if>
+
+    </sc-if>
+
+    <div style="margin-top: 40px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #E3E8F0; padding-bottom: 10px;">
+        <h2 style="margin: 0; font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #475467;">Wzorzec mobilny · 390 px</h2>
+        <span style="font-size: 12px; color: #667085;">te same dane, karty zamiast tabeli, oś punktacji pionowa</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 22px; margin-top: 20px;">
+
+        <div style="width: 390px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 26px; overflow: hidden; box-shadow: 0 8px 28px rgba(16,24,40,0.10);">
+          <div style="padding: 14px 16px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #F2F4F7;">
+            <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(140deg, #FF7300, #FF9A3D);"></div>
+            <div style="font-size: 14px; font-weight: 800;">Twoje Eco Driving</div>
+          </div>
+          <div style="padding: 14px 16px; background: #F9FAFC; border-bottom: 1px solid #F2F4F7;">
+            <div style="display: flex; gap: 5px;">
+              <div style="flex: 1; text-align: center; padding: 8px; border-radius: 10px; background: #101828; color: #FFF; font-size: 12px; font-weight: 700;">Podsumowanie</div>
+              <div style="flex: 1; text-align: center; padding: 8px; border-radius: 10px; background: #FFFFFF; border: 1px solid #E3E8F0; color: #667085; font-size: 12px; font-weight: 700;">Szczegóły</div>
+            </div>
+            <div style="font-variant-numeric: tabular-nums; font-size: 15px; font-weight: 600; margin-top: 12px;">{{ rangeDisplay }}</div>
+            <div style="font-size: 11px; color: #A34400; font-weight: 700; margin-top: 4px;">{{ cumulativeChip }}</div>
+          </div>
+          <div style="padding: 16px;">
+            <div style="display: flex; gap: 16px; align-items: center; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 20px; padding: 16px;">
+              <div style="position: relative; width: 104px; height: 104px; flex: none;">
+                <svg width="104" height="104" viewBox="0 0 104 104" style="transform: rotate(-90deg);">
+                  <circle cx="52" cy="52" r="44" fill="none" stroke="#EEF2F7" strokeWidth="11"></circle>
+                  <sc-if value="{{ hasScore }}" hint-placeholder-val="{{ true }}">
+                    <circle cx="52" cy="52" r="44" fill="none" stroke="{{ ringFrom }}" strokeWidth="11" strokeLinecap="round" strokeDasharray="277" strokeDashoffset="{{ mobileRingOffset }}" style="animation: drawRing 1.4s ease both;"></circle>
+                  </sc-if>
+                </svg>
+                <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+                  <div style="font-variant-numeric: tabular-nums; font-size: 28px; font-weight: 600; color: {{ ratingPillFg }};">{{ scoreDisplay }}</div>
+                  <div style="font-size: 9px; color: #667085;">z 100 pkt</div>
+                </div>
+              </div>
+              <div>
+                <div style="font-size: 12px; font-weight: 800; color: {{ ratingPillFg }};">{{ ratingGlyph }} {{ ratingLabel }}</div>
+                <div style="font-variant-numeric: tabular-nums; font-size: 16px; font-weight: 700; color: {{ deltaFg }}; margin-top: 6px;">{{ deltaGlyph }} {{ scoreDeltaDisplay }} {{ deltaUnit }}</div>
+                <div style="font-size: 10px; color: #667085; margin-top: 3px;">vs {{ prevRangeDisplay }}</div>
+                <div style="font-size: 11px; color: #475467; margin-top: 8px;">{{ nextBandNote }}</div>
+              </div>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
+              <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 16px; padding: 13px;">
+                <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Ranking</div>
+                <div style="font-variant-numeric: tabular-nums; font-size: 19px; font-weight: 600; margin-top: 5px;">{{ mobileRankLine }}</div>
+                <div style="font-size: 11px; color: #667085; margin-top: 3px;">{{ rankDeltaLabel }}</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 16px; padding: 13px;">
+                <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Dystans</div>
+                <div style="font-variant-numeric: tabular-nums; font-size: 19px; font-weight: 600; margin-top: 5px;">{{ kmDisplay }}</div>
+                <div style="font-size: 11px; color: #667085; margin-top: 3px;">{{ kmDeltaGlyph }} {{ kmDeltaDisplay }} km</div>
+              </div>
+            </div>
+            <div style="margin-top: 12px; background: linear-gradient(150deg, #101828, #1D2939); color: #F9FAFB; border-radius: 20px; padding: 16px;">
+              <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #FF9A3D;">{{ mobileTip.kindLabel }}</div>
+              <div style="font-size: 15px; font-weight: 800; margin-top: 6px;">{{ mobileTip.category }}</div>
+              <div style="font-variant-numeric: tabular-nums; font-size: 22px; font-weight: 700; color: #FF9A3D; margin-top: 4px;">{{ mobileTip.value }}</div>
+              <div style="font-size: 12px; color: #D0D5DD; line-height: 1.55; margin-top: 7px;">{{ mobileTip.body }}</div>
+            </div>
+            <div style="margin-top: 12px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 20px; padding: 16px;">
+              <div style="font-size: 13px; font-weight: 800;">Punkty według obszarów</div>
+              <div style="display: grid; gap: 12px; margin-top: 12px;">
+                <sc-for list="{{ mobileCategories }}" as="cat" hint-placeholder-count="3">
+                  <div style="border-bottom: 1px solid #F2F4F7; padding-bottom: 12px;">
+                    <div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline;">
+                      <span style="font-size: 13px; font-weight: 700;">{{ cat.label }}</span>
+                      <span style="font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700;">{{ cat.pointsDisplay }}</span>
+                    </div>
+                    <div style="display: flex; gap: 8px; align-items: center; margin-top: 7px;">
+                      <span style="display: inline-flex; gap: 4px; align-items: center; background: {{ cat.statusBg }}; border: 1px solid {{ cat.statusBorder }}; color: {{ cat.statusFg }}; border-radius: 7px; padding: 3px 7px; font-variant-numeric: tabular-nums; font-size: 11px; font-weight: 700;">{{ cat.statusGlyph }} {{ cat.coefDisplay }}</span>
+                      <span style="font-size: 11px; color: #667085;">{{ cat.countDisplay }} zdarzeń</span>
+                    </div>
+                    <div style="display: grid; gap: 4px; margin-top: 9px;">
+                      <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                        <div style="display: grid; grid-template-columns: 5px 1fr auto; gap: 9px; align-items: center; border: {{ band.vBorder }}; border-radius: 9px; padding: 5px 8px;">
+                          <div style="height: 18px; border-radius: 3px; background: {{ band.bg }}; background-image: {{ band.pattern }};"></div>
+                          <div style="font-size: 11px; color: #475467;"><span style="font-variant-numeric: tabular-nums;">{{ band.label }}</span> {{ band.vNote }}</div>
+                          <div style="font-variant-numeric: tabular-nums; font-size: 11px; font-weight: 700;">{{ band.lostLabel }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="text-align: center; margin-top: 12px; font-size: 12px; font-weight: 700; color: #8F3A04;">Pokaż wszystkie 8 obszarów</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width: 390px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 26px; overflow: hidden; box-shadow: 0 8px 28px rgba(16,24,40,0.10);">
+          <div style="padding: 14px 16px; display: flex; gap: 10px; align-items: center; border-bottom: 1px solid #F2F4F7;">
+            <div style="width: 24px; height: 24px; border-radius: 8px; background: linear-gradient(140deg, #FF7300, #FF9A3D);"></div>
+            <div style="font-size: 14px; font-weight: 800;">Szczegóły dzienne</div>
+          </div>
+          <div style="padding: 14px 16px; background: #F9FAFC; border-bottom: 1px solid #F2F4F7;">
+            <div style="font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 600;">{{ rangeDisplay }}</div>
+            <div style="font-size: 11px; color: #667085; margin-top: 4px;">{{ mobileDetailedNote }}</div>
+          </div>
+          <div style="padding: 14px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #F2F4F7; border-radius: 12px; padding: 10px 13px;">
+              <span style="font-size: 12px; font-weight: 800;">{{ mobileGroupTitle }}</span>
+              <span style="font-variant-numeric: tabular-nums; font-size: 11px; color: #667085;">{{ mobileGroupSummary }}</span>
+            </div>
+            <div style="display: grid; gap: 10px; margin-top: 12px;">
+              <sc-for list="{{ mobileDays }}" as="day" hint-placeholder-count="3">
+                <div style="border: 1px solid #E9EDF5; border-radius: 16px; padding: 13px;">
+                  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <div>
+                      <span style="font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 700;">{{ day.date }}</span>
+                      <span style="font-size: 11px; color: #667085; margin-left: 6px;">{{ day.dow }}</span>
+                    </div>
+                    <span style="font-variant-numeric: tabular-nums; font-size: 11px; font-weight: 700; color: #475467; background: #F2F4F7; border-radius: 8px; padding: 3px 8px;">{{ day.dayNote }}</span>
+                  </div>
+                  <div style="font-variant-numeric: tabular-nums; font-size: 12px; color: #667085; margin-top: 6px;">{{ day.km }} · {{ day.tripsLabel }}</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 10px;">
+                    <sc-for list="{{ day.cells }}" as="cell" hint-placeholder-count="4">
+                      <span style="display: inline-flex; gap: 4px; align-items: center; background: {{ cell.bg }}; border: 1px solid {{ cell.border }}; color: {{ cell.fg }}; border-radius: 7px; padding: 3px 7px; font-size: 11px;">
+                        <span style="font-variant-numeric: tabular-nums; font-weight: 700;">{{ cell.glyph }}</span>
+                        <span style="color: #475467;">{{ cell.short }}</span>
+                        <span style="font-variant-numeric: tabular-nums; font-weight: 700;">{{ cell.count }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                  <div style="font-size: 11px; font-weight: 700; color: #8F3A04; margin-top: 10px;">Pokaż wskaźniki dnia</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #E3E8F0; padding-bottom: 10px;">
+        <h2 style="margin: 0; font-size: 14px; font-weight: 800; letter-spacing: 0.04em; text-transform: uppercase; color: #475467;">Stany dostępu i braku danych</h2>
+        <span style="font-size: 12px; color: #667085;">link z e-maila jest jedynym poświadczeniem — brak logowania</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(268px, 1fr)); gap: 16px; margin-top: 20px;">
+        <sc-for list="{{ accessStates }}" as="st" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 20px; overflow: hidden; box-shadow: 0 1px 3px rgba(16,24,40,0.06);">
+            <div style="padding: 8px 14px; background: #101828; color: #C7CEDB; font-variant-numeric: tabular-nums; font-size: 10px; letter-spacing: 0.06em;">{{ st.code }}</div>
+            <div style="padding: 22px 18px; text-align: center;">
+              <div style="width: 40px; height: 40px; margin: 0 auto; border-radius: 13px; background: {{ st.iconBg }}; border: 1px solid {{ st.iconBorder }}; display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums; font-size: 18px; font-weight: 700; color: {{ st.iconFg }};">{{ st.glyph }}</div>
+              <div style="font-size: 15px; font-weight: 800; margin-top: 13px;">{{ st.title }}</div>
+              <div style="font-size: 12px; color: #475467; line-height: 1.6; margin-top: 7px;">{{ st.body }}</div>
+              <div style="font-size: 11px; color: #667085; margin-top: 13px; padding-top: 11px; border-top: 1px dashed #EEF2F7; text-align: left; line-height: 1.5;">{{ st.spec }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; background: linear-gradient(150deg, #101828, #1D2939); color: #D0D5DD; border-radius: 24px; padding: 24px 26px;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #FF9A3D;">Niezmienniki tego wzorca</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 18px; margin-top: 16px; font-size: 12px; line-height: 1.65;">
+        <div><strong style="color: #FFFFFF;">Kolor pochodzi z punktacji.</strong> Zielony / żółty / czerwony wynika ze wskaźnika na 100 km w progu punktowym obszaru — nigdy z surowej liczby zdarzeń. Pomarańcz to kolor programu i potencjału, nigdy statusu.</div>
+        <div><strong style="color: #FFFFFF;">Tydzień jest narastający.</strong> Okres tygodniowy to zamknięty okres liczony od 1. dnia miesiąca. Porównanie zawsze pokazuje pełne daty obu okresów — nigdy słowa „ostatni tydzień”.</div>
+        <div><strong style="color: #FFFFFF;">Brak rankingu jest stanem, nie brakiem danych.</strong> Kierowca poza rankingiem widzi pełny wynik, obszary, trendy i coaching; kafle pozycji i udziału grupy nie istnieją w układzie.</div>
+        <div><strong style="color: #FFFFFF;">Dane są zamknięte.</strong> Brak wskaźników czasu rzeczywistego, brak lokalizacji, brak numerów rejestracyjnych, brak wyników innych kierowców.</div>
+        <div><strong style="color: #FFFFFF;">100 km dotyczy wyłącznie całego okresu.</strong> Jeśli okres ma mniej niż 100 km, nie pokazujemy żadnych danych Eco. Po zakwalifikowaniu okresu dni z 1–99 km są normalnie widoczne; kolory ich kategorii wynikają z dziennego wskaźnika.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    periodType: 'weekly',
+    view: 'summary',
+    profile: 'ranked_acceptable',
+    openCat: 'idle',
+    openDay: null,
+    openGroups: null,
+    compact: false,
+    activeSlice: 0
+  };
+
+  CATS = [
+    { key: 'overrev', label: 'Nadmierne obroty', short: 'Obroty', max: 15, dead: true },
+    { key: 'harsh_braking', label: 'Gwałtowne hamowania', short: 'Hamowania', max: 10 },
+    { key: 'harsh_acceleration', label: 'Gwałtowne przyspieszenia', short: 'Przyspieszenia', max: 10 },
+    { key: 'harsh_turning', label: 'Gwałtowne skręty', short: 'Skręty', max: 10 },
+    { key: 'idle', label: 'Postój na biegu jałowym', short: 'Postój', max: 10 },
+    { key: 'speeding_140_160', label: 'Prędkość 140–160 km/h', short: '140–160', max: 15 },
+    { key: 'speeding_160_170', label: 'Prędkość 160–170 km/h', short: '160–170', max: 15 },
+    { key: 'speeding_170_plus', label: 'Prędkość powyżej 170 km/h', short: '>170', max: 15 }
+  ];
+
+  BANDS = {
+    overrev: [['0', 0], ['1–2', -4], ['3–5', -8], ['6–9', -11], ['10–13', -15], ['14–20', -22], ['>20', -30]],
+    harsh_braking: [['0', 0], ['1', -2], ['2–4', -6], ['5–6', -8], ['7–8', -10], ['9–10', -15], ['>10', -20]],
+    harsh_acceleration: [['0', 0], ['1', -5], ['2', -10], ['3–4', -15], ['>4', -20]],
+    harsh_turning: [['0–4', 0], ['5–7', -3], ['8–12', -6], ['13–16', -10], ['17–23', -14], ['24–30', -18], ['>30', -20]],
+    idle: [['0', 0], ['1–2', -3], ['3–4', -6], ['5', -10], ['6', -15], ['7–8', -17], ['>8', -20]],
+    speeding_140_160: [['0', 0], ['1–2', -5], ['3–4', -10], ['5–6', -15], ['7–8', -20], ['9–10', -25], ['>10', -30]],
+    speeding_160_170: [['0', 0], ['1', -5], ['2', -10], ['3', -15], ['4', -20], ['5', -25], ['>5', -30]],
+    speeding_170_plus: [['0', 0], ['1', -15], ['2', -22], ['>2', -30]]
+  };
+
+  UPPER = {
+    overrev: [0, 2, 5, 9, 13, 20, null],
+    harsh_braking: [0, 1, 4, 6, 8, 10, null],
+    harsh_acceleration: [0, 1, 2, 4, null],
+    harsh_turning: [4, 7, 12, 16, 23, 30, null],
+    idle: [0, 2, 4, 5, 6, 8, null],
+    speeding_140_160: [0, 2, 4, 6, 8, 10, null],
+    speeding_160_170: [0, 1, 2, 3, 4, 5, null],
+    speeding_170_plus: [0, 1, 2, null]
+  };
+
+  SLICE_COLORS = ['#9F1208', '#F0563F', '#E3A008', '#FFDE7A', '#1F8A4C'];
+
+  PROFILES = [
+    { key: 'ranked_acceptable', label: 'Akceptowalny, w rankingu (domyślny)' },
+    { key: 'ranked_safe', label: 'Bezpieczny, w rankingu' },
+    { key: 'ranked_dangerous', label: 'Niebezpieczny, w rankingu' },
+    { key: 'excluded', label: 'Poza rankingiem (EXCLUDED)' },
+    { key: 'newly_ranked', label: 'Nowo w rankingu' },
+    { key: 'left_ranking', label: 'Wypadł z rankingu' },
+    { key: 'first_snapshot', label: 'Pierwszy zamknięty okres miesiąca' },
+    { key: 'low_distance', label: 'Poniżej 100 km w całym okresie — dane Eco ukryte' },
+    { key: 'not_ready', label: 'Raport niegotowy — dashboard nie jest renderowany' }
+  ];
+
+  n(v) { return String(Math.round(Number(v))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202F'); }
+  dec(v, d) { return Number(v).toFixed(d).replace('.', ','); }
+  signed(v) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v); }
+
+  statusOf(points, max) {
+    if (points === null || points === undefined) return 'neutral';
+    if (points === max) return 'green';
+    if (points >= 0) return 'yellow';
+    return 'red';
+  }
+
+  tone(status) {
+    if (status === 'green') return { bg: '#E6F4EE', border: '#B4DCC8', fg: '#0F5C43', glyph: '✓', label: 'w normie' };
+    if (status === 'yellow') return { bg: '#FEF3E2', border: '#F6DCAE', fg: '#8A5B06', glyph: '!', label: 'podwyższony' };
+    if (status === 'red') return { bg: '#FDECEA', border: '#F3C4BE', fg: '#991B1B', glyph: '✕', label: 'strata pkt' };
+    return { bg: '#F2F4F7', border: '#E3E8F0', fg: '#667085', glyph: '–', label: 'brak oceny' };
+  }
+
+  bandFill(status) {
+    if (status === 'green') return { bg: '#C6E7D6', pattern: 'none', border: '1px solid #9FD3BB' };
+    if (status === 'yellow') return { bg: '#FBE3B8', pattern: 'radial-gradient(rgba(180,83,9,0.35) 1px, transparent 1.4px)', border: '1px solid #EFCB93' };
+    return { bg: '#F7C9C3', pattern: 'repeating-linear-gradient(135deg, rgba(193,53,44,0.3) 0 3px, transparent 3px 7px)', border: '1px solid #E9AAA2' };
+  }
+
+  bandsFor(catKey, max, lost, showTarget) {
+    const rows = this.BANDS[catKey];
+    const idx = lost === null || lost === undefined ? -1 : rows.findIndex(r => r[1] === lost);
+    return rows.map((r, i) => {
+      const pts = max + r[1];
+      const f = this.bandFill(this.statusOf(pts, max));
+      const isCurrent = i === idx;
+      const isTarget = showTarget === true && idx > 0 && i === idx - 1;
+      return {
+        label: r[0], lost: r[1], lostLabel: r[1] === 0 ? '0' : '−' + Math.abs(r[1]),
+        bg: f.bg, pattern: f.pattern,
+        border: isCurrent ? '2px solid #101828' : (isTarget ? '2px dashed #FF7300' : f.border),
+        vBorder: isCurrent ? '2px solid #101828' : (isTarget ? '2px dashed #FF7300' : '1px solid #EEF2F7'),
+        marker: isCurrent ? '▲' : (isTarget ? '◇' : ''),
+        markerColor: isCurrent ? '#101828' : '#8F3A04',
+        caption: isCurrent ? 'Twój wskaźnik' : (isTarget ? 'próg docelowy: ' + this.signed(r[1] - lost) + ' pkt' : ''),
+        vNote: isCurrent ? '· Twój wskaźnik' : (isTarget ? '· próg docelowy, ' + this.signed(r[1] - lost) + ' pkt' : ''),
+        captionColor: isCurrent ? '#101828' : '#8F3A04'
+      };
+    });
+  }
+
+  baseData() {
+    return {
+      weekly: {
+        kind: 'Okres tygodniowy — liczony od 1. dnia miesiąca',
+        range: '01.07 – 19.07.2026', prevRange: '01.07 – 12.07.2026',
+        cumulativeChip: 'Narastająco od 01.07 — nie „ostatni tydzień”',
+        sequenceChip: '3. z 5 zamkniętych okresów lipca · zamknięty 20.07.2026',
+        comparisonNote: 'Poprzedni zamknięty okres tego samego miesiąca, też liczony od 1. dnia. Porównujemy 19 dni z 12 dniami — nie dwa osobne tygodnie.',
+        updatedAt: '20.07.2026, 06:40',
+        rank: 18, prevRank: 24, population: 158,
+        shares: { safe: 39.2, acceptable: 52.5, dangerous: 8.3 },
+        km: 3418, prevKm: 2106, trips: 214,
+        cats: {
+          overrev: { count: 0, coef: 0, lost: 0, prevLost: 0 },
+          harsh_braking: { count: 74, coef: 2, lost: -6, prevCoef: 5, prevLost: -8 },
+          harsh_acceleration: { count: 34, coef: 1, lost: -5, prevCoef: 1, prevLost: -5 },
+          harsh_turning: { count: 202, coef: 6, lost: -3, prevCoef: 4, prevLost: 0 },
+          idle: { count: 168, coef: 5, lost: -10, prevCoef: 5, prevLost: -10 },
+          speeding_140_160: { count: 41, coef: 1, lost: -5, prevCoef: 3, prevLost: -10 },
+          speeding_160_170: { count: 8, coef: 0, lost: 0, prevCoef: 0, prevLost: 0 },
+          speeding_170_plus: { count: 0, coef: 0, lost: 0, prevCoef: 0, prevLost: 0 }
+        },
+        series: [{ label: '01.07–05.07' }, { label: '01.07–12.07' }, { label: '01.07–19.07' }],
+        trendTitle: 'Kolejne zamknięte okresy lipca',
+        trendSubtitle: 'każdy słupek = wynik narastający od 01.07',
+        trendFootnote: 'Wynik miesiąca dojrzewa: każdy okres obejmuje wszystkie dni od 1. dnia miesiąca do daty zamknięcia. Okresy nie sumują się i nie są osobnymi tygodniami.',
+        dayFrom: 1, dayTo: 19
+      },
+      monthly: {
+        kind: 'Okres miesięczny — zamknięty miesiąc',
+        range: '01.07 – 31.07.2026', prevRange: '01.06 – 30.06.2026',
+        cumulativeChip: 'Miesiąc zamknięty 01.08.2026',
+        sequenceChip: 'Pełny miesiąc · 31 dni sprawozdawczych',
+        comparisonNote: 'Poprzedni zamknięty miesiąc kalendarzowy. Oba okresy są pełnymi miesiącami, ale mają różny dystans — porównuj wskaźniki, nie liczby zdarzeń.',
+        updatedAt: '12.08.2026, 07:15',
+        rank: 15, prevRank: 21, population: 158,
+        shares: { safe: 41.1, acceptable: 50.6, dangerous: 8.3 },
+        km: 5902, prevKm: 5214, trips: 361,
+        cats: {
+          overrev: { count: 0, coef: 0, lost: 0, prevLost: 0 },
+          harsh_braking: { count: 128, coef: 2, lost: -6, prevCoef: 5, prevLost: -8 },
+          harsh_acceleration: { count: 59, coef: 1, lost: -5, prevCoef: 1, prevLost: -5 },
+          harsh_turning: { count: 295, coef: 5, lost: -3, prevCoef: 9, prevLost: -6 },
+          idle: { count: 236, coef: 4, lost: -6, prevCoef: 3, prevLost: -6 },
+          speeding_140_160: { count: 71, coef: 1, lost: -5, prevCoef: 2, prevLost: -5 },
+          speeding_160_170: { count: 11, coef: 0, lost: 0, prevCoef: 0, prevLost: 0 },
+          speeding_170_plus: { count: 0, coef: 0, lost: 0, prevCoef: 0, prevLost: 0 }
+        },
+        series: [{ label: '01.07–05.07' }, { label: '01.07–12.07' }, { label: '01.07–19.07' }, { label: '01.07–26.07' }, { label: '01.07–31.07' }],
+        trendTitle: 'Przebieg wewnątrz zamkniętego miesiąca',
+        trendSubtitle: 'kolejne okresy lipca',
+        trendFootnote: 'Kształt miesiąca odtworzony z kolejnych zamkniętych okresów.',
+        dayFrom: 1, dayTo: 31
+      }
+    };
+  }
+
+  data() {
+    const base = this.baseData()[this.state.periodType];
+    const d = JSON.parse(JSON.stringify(base));
+    const p = this.state.profile;
+    d.ranked = true; d.rankingState = 'RANKED'; d.qualified = true;
+
+    if (p === 'ranked_safe') {
+      d.rank = 6; d.prevRank = 9;
+      d.cats.harsh_braking = { count: 37, coef: 1, lost: -2, prevCoef: 3, prevLost: -6 };
+      d.cats.harsh_acceleration = { count: 12, coef: 0, lost: 0, prevCoef: 1, prevLost: -5 };
+      d.cats.harsh_turning = { count: 118, coef: 3, lost: 0, prevCoef: 4, prevLost: 0 };
+      d.cats.idle = { count: 98, coef: 3, lost: -6, prevCoef: 4, prevLost: -6 };
+      d.cats.speeding_140_160 = { count: 22, coef: 1, lost: -5, prevCoef: 2, prevLost: -5 };
+      d.cats.speeding_160_170 = { count: 3, coef: 0, lost: 0, prevCoef: 0, prevLost: 0 };
+    } else if (p === 'ranked_dangerous') {
+      d.rank = 147; d.prevRank = 131;
+      d.cats.harsh_braking = { count: 289, coef: 8, lost: -10, prevCoef: 6, prevLost: -8 };
+      d.cats.harsh_acceleration = { count: 143, coef: 4, lost: -15, prevCoef: 2, prevLost: -10 };
+      d.cats.harsh_turning = { count: 621, coef: 18, lost: -14, prevCoef: 14, prevLost: -10 };
+      d.cats.idle = { count: 208, coef: 6, lost: -15, prevCoef: 6, prevLost: -15 };
+      d.cats.speeding_140_160 = { count: 143, coef: 4, lost: -10, prevCoef: 4, prevLost: -10 };
+      d.cats.speeding_160_170 = { count: 39, coef: 1, lost: -5, prevCoef: 1, prevLost: -5 };
+      d.cats.speeding_170_plus = { count: 2, coef: 0, lost: 0, prevCoef: 0, prevLost: 0 };
+    } else if (p === 'excluded') {
+      d.ranked = false; d.rankingState = 'NOT_RANKED_BY_CONFIGURATION';
+    } else if (p === 'newly_ranked') {
+      d.prevRank = null; d.rankingState = 'NEWLY_RANKED';
+    } else if (p === 'left_ranking') {
+      d.ranked = false; d.rankingState = 'LEFT_RANKING'; d.lastKnownRank = 33;
+    } else if (p === 'first_snapshot') {
+      d.range = '01.07 – 05.07.2026'; d.prevRange = null;
+      d.sequenceChip = '1. z 5 zamkniętych okresów lipca · zamknięty 06.07.2026';
+      d.comparisonNote = 'To pierwszy zamknięty okres lipca. Wcześniejszego okresu w tym miesiącu nie ma, więc nie pokazujemy zmiany.';
+      d.rank = 41; d.prevRank = null;
+      d.km = 742; d.prevKm = null; d.trips = 48; d.dayTo = 5;
+      d.series = [{ label: '01.07–05.07' }];
+      d.updatedAt = '06.07.2026, 06:35';
+      d.cats.harsh_braking = { count: 19, coef: 3, lost: -6, prevCoef: null, prevLost: null };
+      d.cats.harsh_acceleration = { count: 7, coef: 1, lost: -5, prevCoef: null, prevLost: null };
+      d.cats.harsh_turning = { count: 52, coef: 7, lost: -3, prevCoef: null, prevLost: null };
+      d.cats.idle = { count: 43, coef: 6, lost: -15, prevCoef: null, prevLost: null };
+      d.cats.speeding_140_160 = { count: 14, coef: 2, lost: -5, prevCoef: null, prevLost: null };
+      d.cats.speeding_160_170 = { count: 2, coef: 0, lost: 0, prevCoef: null, prevLost: null };
+      Object.keys(d.cats).forEach(k => { d.cats[k].prevCoef = null; d.cats[k].prevLost = null; });
+    } else if (p === 'low_distance') {
+      d.qualified = false; d.ranked = false; d.rankingState = 'INSUFFICIENT_DISTANCE';
+      // Synthetic preview internals only. Production INSUFFICIENT_DISTANCE payload is minimal and exposes none of these Eco values.
+      const lowRatio = 68 / d.km;
+      d.km = 68; d.prevKm = 402; d.trips = 9;
+      Object.keys(d.cats).forEach(k => {
+        d.cats[k] = { count: Math.round(d.cats[k].count * lowRatio), coef: null, lost: null, prevCoef: d.cats[k].prevCoef, prevLost: null };
+      });
+    }
+    return this.deriveTotals(d);
+  }
+
+  // Single source of truth: the score IS 100 + the sum of category losses.
+  deriveTotals(d) {
+    const keys = Object.keys(d.cats);
+    const missing = v => v === null || v === undefined;
+    const lost = keys.map(k => d.cats[k].lost);
+    const prev = keys.map(k => d.cats[k].prevLost);
+    d.score = lost.some(missing) ? null : 100 + lost.reduce((a, v) => a + v, 0);
+    d.prevScore = prev.some(missing) ? null : 100 + prev.reduce((a, v) => a + v, 0);
+
+    const n = d.series.length;
+    const isMonthly = d.kind.indexOf('miesięczny') !== -1;
+    if (d.score === null) {
+      d.series.forEach(s => { s.score = null; });
+    } else if (n === 1) {
+      d.series[0].score = d.score;
+    } else if (isMonthly) {
+      const offs = [-17, -8, -4, -2, 0].slice(-n);
+      d.series.forEach((s, i) => { s.score = Math.max(0, Math.min(100, d.score + offs[i])); });
+    } else {
+      d.series[n - 1].score = d.score;
+      d.series[n - 2].score = d.prevScore === null ? Math.max(0, d.score - 4) : d.prevScore;
+      for (let i = n - 3; i >= 0; i--) d.series[i].score = Math.max(0, d.series[i + 1].score - 9);
+    }
+    d.series.forEach((s, i) => { s.current = i === n - 1; });
+    if (isMonthly && d.prevScore !== null) {
+      d.trendSubtitle = 'kolejne okresy lipca · poprzedni miesiąc: ' + d.prevScore + ' pkt';
+      d.trendFootnote = 'Kształt miesiąca odtworzony z kolejnych zamkniętych okresów. Wynik nagłówkowy dotyczy pełnego miesiąca i jest porównywany z poprzednim zamkniętym miesiącem (' + d.prevScore + ' pkt).';
+    }
+    return d;
+  }
+
+  buildDays(d) {
+    const rnd = (() => { let s = 20260701; return () => { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; }; })();
+    const dows = ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'];
+    const cats = this.CATS.filter(c => !c.dead);
+    const out = [];
+    for (let i = d.dayFrom; i <= d.dayTo; i++) {
+      const dowIdx = (3 + i - 1) % 7;
+      const weekend = dowIdx === 0 || dowIdx === 6;
+      let km = weekend ? Math.round(rnd() * 60) : Math.round(110 + rnd() * 180);
+      if (i === 6) km = 0;
+      if (i === 12) km = 12;
+      const counts = {};
+      cats.forEach(c => {
+        const periodCoef = d.cats[c.key].coef === null ? 1 : d.cats[c.key].coef;
+        counts[c.key] = km === 0 ? 0 : Math.round((periodCoef / 100) * km * (0.4 + rnd() * 0.95));
+      });
+      if (i === 15) { counts.idle = Math.round(counts.idle + km * 0.035); counts.harsh_braking = Math.round(counts.harsh_braking + km * 0.03); }
+      out.push({ dayNum: i, date: String(i).padStart(2, '0') + '.07', dow: dows[dowIdx], km, counts, trips: 0 });
+    }
+    return this.reconcileDays(out, d, cats);
+  }
+
+  // The period totals are authoritative: daily distance and daily counts must sum to them.
+  reconcileDays(days, d, cats) {
+    const kmRaw = days.reduce((a, x) => a + x.km, 0);
+    if (kmRaw > 0 && d.km > 0) {
+      const scale = d.km / kmRaw;
+      let assigned = 0;
+      days.forEach((x, i) => {
+        x.km = i === days.length - 1 ? Math.max(0, d.km - assigned) : Math.round(x.km * scale);
+        assigned += x.km;
+      });
+    }
+    days.forEach(x => { x.trips = x.km === 0 ? 0 : Math.max(1, Math.round(x.km / 26)); });
+
+    cats.forEach(c => {
+      const target = d.cats[c.key].count;
+      if (target === null || target === undefined) { days.forEach(x => { x.counts[c.key] = null; }); return; }
+      const weights = days.map(x => x.km);
+      const wSum = weights.reduce((a, v) => a + v, 0);
+      if (wSum <= 0) { days.forEach(x => { x.counts[c.key] = 0; }); return; }
+      // shape by the generated jitter, then largest-remainder so the sum is exact
+      const shaped = days.map((x, i) => weights[i] * (0.6 + (x.counts[c.key] + 1) / (weights[i] / 100 + 1) / 12));
+      const shapedSum = shaped.reduce((a, v) => a + v, 0);
+      const exact = shaped.map(v => (v / shapedSum) * target);
+      const base = exact.map(v => Math.floor(v));
+      let rest = target - base.reduce((a, v) => a + v, 0);
+      const order = exact.map((v, i) => ({ i, frac: v - Math.floor(v) })).sort((a, b) => b.frac - a.frac);
+      for (let k = 0; k < order.length && rest > 0; k++) { base[order[k].i]++; rest--; }
+      days.forEach((x, i) => { x.counts[c.key] = x.km === 0 ? 0 : base[i]; });
+      // days without distance cannot hold events — push them onto the longest day
+      const lost = target - days.reduce((a, x) => a + x.counts[c.key], 0);
+      if (lost > 0) {
+        let best = 0;
+        days.forEach((x, i) => { if (x.km > days[best].km) best = i; });
+        days[best].counts[c.key] += lost;
+      }
+    });
+    return days;
+  }
+
+  dayCell(catKey, count, km, max) {
+    if (count === null || count === undefined) {
+      const t = this.tone('neutral');
+      return { status: 'unknown', bg: t.bg, border: t.border, fg: t.fg, glyph: '–', count: 'brak', coef: null };
+    }
+    if (km <= 0) return null;
+    const coef = Math.round((count / km) * 100);
+    const uppers = this.UPPER[catKey];
+    let idx = uppers.findIndex(u => u !== null && coef <= u);
+    if (idx === -1) idx = uppers.length - 1;
+    const pts = max + this.BANDS[catKey][idx][1];
+    const st = this.statusOf(pts, max);
+    const t = this.tone(st);
+    return { status: st, bg: t.bg, border: t.border, fg: t.fg, glyph: t.glyph, count: this.n(count), coef, band: this.BANDS[catKey][idx][0] };
+  }
+
+  coachingFor(d) {
+    const cats = this.CATS.filter(c => !c.dead && d.cats[c.key].lost !== null);
+    const tips = [];
+    const byLoss = cats.filter(c => d.cats[c.key].lost < 0).sort((a, b) => d.cats[a.key].lost - d.cats[b.key].lost);
+    if (byLoss.length) {
+      const c = byLoss[0], v = d.cats[c.key];
+      tips.push({
+        code: 'LARGEST_LOSS', kindLabel: 'Największa strata punktów', glyph: '1',
+        accent: '#991B1B', accentText: '#991B1B', accentBg: '#FDECEA', kindFg: '#667085',
+        cardBg: '#FFFFFF', cardBorder: '#F3C4BE', trackBg: '#FDECEA', barBg: '#991B1B',
+        barW: Math.round(Math.abs(v.lost) / c.max * 100) + '%',
+        category: c.label, value: this.signed(v.lost) + ' pkt',
+        body: 'Wskaźnik ' + v.coef + ' zdarzeń na 100 km mieści się w progu „' + this.BANDS[c.key][this.BANDS[c.key].findIndex(b => b[1] === v.lost)][0] + '”, który odbiera ' + Math.abs(v.lost) + ' z ' + c.max + ' pkt tego obszaru.',
+        why: 'Najniższa wartość utraconych punktów wśród ośmiu obszarów w tym okresie.'
+      });
+    }
+    // MOST_IMPROVED / MOST_DETERIORATED are driven by the normalised coefficient, so a real
+    // behavioural change is reported even when the scoring bucket did not change.
+    const withCoef = cats.filter(c => d.cats[c.key].prevCoef !== null && d.cats[c.key].prevCoef !== undefined && d.cats[c.key].coef !== null);
+    const improved = withCoef.filter(c => d.cats[c.key].coef < d.cats[c.key].prevCoef)
+      .sort((a, b) => (d.cats[b.key].prevCoef - d.cats[b.key].coef) - (d.cats[a.key].prevCoef - d.cats[a.key].coef));
+    if (improved.length) {
+      const c = improved[0], v = d.cats[c.key], drop = v.prevCoef - v.coef, gain = (v.lost ?? 0) - (v.prevLost ?? 0);
+      tips.push({
+        code: 'MOST_IMPROVED', kindLabel: 'Największa poprawa', glyph: '2',
+        accent: '#0F5C43', accentText: '#0F5C43', accentBg: '#E6F4EE', kindFg: '#667085',
+        cardBg: '#FFFFFF', cardBorder: '#B4DCC8', trackBg: '#E6F4EE', barBg: '#0F5C43',
+        barW: Math.min(100, Math.round(drop / Math.max(1, v.prevCoef) * 100)) + '%',
+        category: c.label, value: '−' + drop + ' na 100 km',
+        body: 'Wskaźnik spadł z ' + v.prevCoef + ' do ' + v.coef + ' na 100 km między okresami ' + d.prevRange + ' i ' + d.range + (gain > 0 ? ', co dało +' + gain + ' pkt w tym obszarze.' : '. Próg punktowy jest ten sam, więc punkty jeszcze się nie zmieniły.'),
+        why: ''
+      });
+    }
+    const worse = withCoef.filter(c => d.cats[c.key].coef > d.cats[c.key].prevCoef)
+      .sort((a, b) => (d.cats[b.key].coef - d.cats[b.key].prevCoef) - (d.cats[a.key].coef - d.cats[a.key].prevCoef));
+    if (worse.length) {
+      const c = worse[0], v = d.cats[c.key], rise = v.coef - v.prevCoef, lostDelta = (v.lost ?? 0) - (v.prevLost ?? 0);
+      tips.push({
+        code: 'MOST_DETERIORATED', kindLabel: 'Największe pogorszenie', glyph: '3',
+        accent: '#8A5B06', accentText: '#8A5B06', accentBg: '#FEF3E2', kindFg: '#667085',
+        cardBg: '#FFFFFF', cardBorder: '#F6DCAE', trackBg: '#FEF3E2', barBg: '#8A5B06',
+        barW: Math.min(100, Math.round(rise / Math.max(1, v.coef) * 100)) + '%',
+        category: c.label, value: '+' + rise + ' na 100 km',
+        body: 'Wskaźnik wzrósł z ' + v.prevCoef + ' do ' + v.coef + ' na 100 km' + (lostDelta < 0 ? ', co kosztowało ' + Math.abs(lostDelta) + ' pkt w tym obszarze.' : '. Próg punktowy jest ten sam, więc punkty jeszcze nie spadły.'),
+        why: ''
+      });
+    }
+    const opp = cats.filter(c => d.cats[c.key].lost < 0).map(c => {
+      const rows = this.BANDS[c.key], idx = rows.findIndex(b => b[1] === d.cats[c.key].lost);
+      if (idx <= 0) return null;
+      return { c, gain: rows[idx - 1][1] - d.cats[c.key].lost, targetUpper: this.UPPER[c.key][idx - 1], coef: d.cats[c.key].coef };
+    }).filter(Boolean).sort((a, b) => (b.gain - a.gain) || (a.coef - a.targetUpper) - (b.coef - b.targetUpper));
+    if (opp.length) {
+      const o = opp[0];
+      tips.push({
+        code: 'BEST_OPPORTUNITY', kindLabel: 'Największy potencjał', glyph: '4',
+        accent: '#FF7300', accentText: '#8F3A04', accentBg: '#FFF3E8', kindFg: '#8F3A04',
+        cardBg: 'linear-gradient(160deg, #FFF7F0, #FFFFFF)', cardBorder: '#FFD8B5', trackBg: '#FFF3E8', barBg: 'linear-gradient(90deg, #FF7300, #FF9A3D)',
+        barW: Math.min(100, Math.round(o.gain / o.c.max * 100 * 2)) + '%',
+        category: o.c.label, value: '+' + o.gain + ' pkt',
+        body: 'Obniżenie wskaźnika z ' + o.coef + ' do ' + o.targetUpper + ' zdarzeń na 100 km przenosi ten obszar do lepszego progu: ' + o.gain + ' pkt więcej.',
+        why: ''
+      });
+    }
+    return tips;
+  }
+
+  renderVals() {
+    const s = this.state;
+    const d = this.data();
+    const isWeekly = s.periodType === 'weekly';
+    const isSummary = s.view === 'summary';
+    const hasScore = d.score !== null;
+    const hasPrev = d.prevScore !== null;
+    const delta = hasScore && hasPrev ? d.score - d.prevScore : null;
+    const rating = !hasScore ? null : (d.score >= 85 ? 'safe' : d.score >= 40 ? 'acceptable' : 'dangerous');
+    const R = {
+      safe: { label: 'bezpieczny', gen: 'kierowców bezpiecznych', color: '#14653B', pillFg: '#14653B', tint: '#E7F7EE', border: '#1F8A4C', glyph: '▬', range: 'próg 85–100 pkt', from: '#1F8A4C', to: '#5FCB92' },
+      acceptable: { label: 'akceptowalny', gen: 'kierowców akceptowalnych', color: '#7C3A05', pillFg: '#7C3A05', tint: '#FEF3C7', border: '#F5B700', glyph: '◦', range: 'próg 40–84 pkt', from: '#F5B700', to: '#FFD666' },
+      dangerous: { label: 'niebezpieczny', gen: 'kierowców niebezpiecznych', color: '#912018', pillFg: '#912018', tint: '#FEE4E2', border: '#DC2626', glyph: '◤', range: 'próg poniżej 40 pkt', from: '#DC2626', to: '#F87171' },
+      none: { label: 'brak klasyfikacji', gen: '—', color: '#667085', pillFg: '#475467', tint: '#F2F4F7', border: '#E3E8F0', glyph: '–', range: 'wynik nie został wyliczony', from: '#667085', to: '#C7CEDB' }
+    }[rating || 'none'];
+
+    const C_OUT = 2 * Math.PI * 80, C_IN = 2 * Math.PI * 63, C_MOB = 2 * Math.PI * 44;
+    const pct = hasScore ? Math.max(0, Math.min(100, d.score)) / 100 : 0;
+    const prevPct = hasPrev ? Math.max(0, Math.min(100, d.prevScore)) / 100 : 0;
+
+    const nextBand = !hasScore ? 'Wynik nie został wyliczony dla tego okresu.'
+      : d.score >= 85 ? 'Jesteś w najwyższym progu — do utrzymania: 85 pkt.'
+      : d.score >= 40 ? 'Do progu 85 pkt (bezpieczny): ' + (85 - d.score) + ' pkt.'
+      : 'Do progu 40 pkt (akceptowalny): ' + (40 - d.score) + ' pkt.';
+
+    // Only the two areas closest to a better threshold are flagged as an opportunity.
+    const nearRanked = this.CATS.filter(c => !c.dead).map(c => {
+      const v = d.cats[c.key];
+      if (v.lost === null || v.lost >= 0 || v.coef === null) return null;
+      const rows = this.BANDS[c.key];
+      const idx = rows.findIndex(b => b[1] === v.lost);
+      if (idx <= 0) return null;
+      const targetUpper = this.UPPER[c.key][idx - 1];
+      const gain = rows[idx - 1][1] - v.lost;
+      const distance = Math.max(0, v.coef - targetUpper);
+      return { c, v, gain, targetUpper, distance, bandLabel: rows[idx - 1][0] };
+    }).filter(Boolean).sort((a, b) => (a.distance - b.distance) || (b.gain - a.gain));
+    // the near-threshold block is the promoted BEST_OPPORTUNITY insight, so it lives and dies
+    // with the coaching contract: no computed score → no recommendations anywhere on the screen
+    const near = hasScore ? nearRanked.slice(0, 2) : [];
+    const nearKeys = near.map(x => x.c.key);
+
+    const catRows = this.CATS.map((c, ci) => {
+      const v = d.cats[c.key];
+      const hasCoef = v.coef !== null;
+      const pts = v.lost === null ? null : c.max + v.lost;
+      const st = this.statusOf(pts, c.max);
+      const t = this.tone(st);
+      const isNear = nearKeys.indexOf(c.key) !== -1;
+      const bands = this.bandsFor(c.key, c.max, v.lost, isNear);
+      const idx = bands.findIndex(b => b.marker === '▲');
+      const gain = idx > 0 ? bands[idx - 1].lost - v.lost : 0;
+      const prevDelta = v.prevLost === null || v.lost === null ? null : v.lost - v.prevLost;
+      return {
+        key: c.key, label: c.label, open: s.openCat === c.key,
+        isNear,
+        nearBadge: isNear ? 'blisko progu · +' + gain + ' pkt' : '',
+        note: c.dead ? 'pełne ' + c.max + ' pkt w obecnym okresie' : 'maksimum ' + c.max + ' pkt',
+        rowOpacity: c.dead ? '0.6' : '1',
+        rowBg: s.openCat === c.key ? '#FCFDFE' : (isNear ? '#FFFDFA' : '#FFFFFF'),
+        railBg: isNear ? '#FF7300' : (st === 'green' ? '#1F8A4C' : st === 'yellow' ? '#F5B700' : st === 'red' ? '#DC2626' : '#E3E8F0'),
+        countDisplay: v.count === null ? 'brak danych' : this.n(v.count),
+        coefDisplay: hasCoef ? v.coef + ' / 100 km' : 'brak',
+        statusBg: t.bg, statusBorder: t.border, statusFg: t.fg, statusGlyph: t.glyph,
+        bands, bandCols: 'repeat(' + bands.length + ', minmax(0, 1fr))',
+        pointsDisplay: pts === null ? '—' : this.signed(pts).replace('+', '') + ' / ' + c.max,
+        lostDisplay: v.lost === null ? 'brak oceny' : (v.lost === 0 ? 'pełne punkty' : this.signed(v.lost) + ' pkt'),
+        lostColor: v.lost === null ? '#667085' : (v.lost === 0 ? '#0F5C43' : '#991B1B'),
+        toggle: () => this.setState({ openCat: s.openCat === c.key ? null : c.key }),
+        toggleGlyph: s.openCat === c.key ? '−' : '+',
+        toggleBg: s.openCat === c.key ? '#F2F4F7' : '#FFFFFF',
+        axisSummary: hasCoef && v.count !== null ? this.n(v.count) + ' zdarzeń · ' + this.n(d.km) + ' km · wskaźnik ' + v.coef + ' na 100 km' : 'Wskaźnik nie został wyliczony dla tego okresu.',
+        currentExplain: !hasCoef
+          ? 'Brak wskaźnika: dystans lub dane źródłowe nie pozwalają ocenić tego obszaru. Punkty i kolor są wstrzymane, nie zgadywane.'
+          : 'Wskaźnik ' + v.coef + ' na 100 km trafia w próg „' + (idx >= 0 ? bands[idx].label : '—') + '”, który daje ' + pts + ' z ' + c.max + ' pkt' + (v.lost === 0 ? '.' : ' (' + this.signed(v.lost) + ' pkt).'),
+        opportunityExplain: idx > 0
+          ? 'Próg lepszy o jeden stopień to „' + bands[idx - 1].label + '”: ' + this.signed(gain) + ' pkt. Wymaga wskaźnika nie wyższego niż ' + this.UPPER[c.key][idx - 1] + ' na 100 km.'
+          : 'Jesteś w najlepszym progu tego obszaru — nie ma punktów do odzyskania.',
+        opportunityBg: idx > 0 ? '#FFF7F0' : '#F9FAFC',
+        opportunityBorder: idx > 0 ? '#FFD8B5' : '#E9EDF5',
+        trendExplain: prevDelta === null
+          ? 'Brak bazy porównania dla tego obszaru w tym okresie.'
+          : (prevDelta === 0 ? 'Bez zmiany wobec ' + d.prevRange + ' (' + this.signed(v.prevLost) + ' pkt).'
+            : this.signed(prevDelta) + ' pkt wobec ' + d.prevRange + ' (było ' + this.signed(v.prevLost) + ' pkt).')
+      };
+    });
+
+    // donut of losses
+    const lossCats = this.CATS.map((c, i) => ({ c, v: d.cats[c.key] }))
+      .filter(x => x.v.lost !== null && x.v.lost < 0)
+      .sort((a, b) => a.v.lost - b.v.lost);
+    const totalLoss = lossCats.reduce((a, x) => a + Math.abs(x.v.lost), 0);
+    const CD = 2 * Math.PI * 70;
+    let acc = 0;
+    const activeIdx = Math.min(this.state.activeSlice, Math.max(0, lossCats.length - 1));
+    // 3 hues × 2 saturations: two worst areas in reds, next two in ambers, the rest green.
+    // Equal point losses share one colour.
+    const distinctLosses = [];
+    lossCats.forEach(x => { if (distinctLosses.indexOf(x.v.lost) === -1) distinctLosses.push(x.v.lost); });
+    const lastRank = distinctLosses.length - 1;
+    const lossColorFor = lost => {
+      const rank = distinctLosses.indexOf(lost);
+      // the smallest loss always reads as the "green" end once there are at least 4 tiers
+      if (distinctLosses.length >= 4 && rank === lastRank) return this.SLICE_COLORS[4];
+      return this.SLICE_COLORS[Math.min(rank, 3)];
+    };
+    const donut = lossCats.map((x, i) => {
+      const len = (Math.abs(x.v.lost) / totalLoss) * CD;
+      const seg = {
+        color: lossColorFor(x.v.lost),
+        dash: Math.max(0, len - 3) + ' ' + (CD - len + 3),
+        offset: -acc,
+        width: activeIdx === i ? 28 : 20,
+        opacity: activeIdx === i ? 1 : 0.8,
+        enter: () => this.setState({ activeSlice: i }),
+        click: () => this.setState({ activeSlice: i, openCat: x.c.key })
+      };
+      acc += len;
+      return seg;
+    });
+    const activeLoss = lossCats[activeIdx];
+
+    // Bars are coloured by their own score band; the line joins the bar tops.
+    // Bar height % == score, so the polyline in a 0–100 viewBox lands exactly on each top.
+    const nPts = d.series.length;
+    const trendSeries = d.series.map((x, i) => {
+      const st = x.score === null ? 'neutral' : x.score >= 85 ? 'green' : x.score >= 40 ? 'yellow' : 'red';
+      const vivid = { green: { bg: '#1F8A4C', border: '1px solid #14653B' }, yellow: { bg: '#F5B700', border: '1px solid #C98A16' }, red: { bg: '#DC2626', border: '1px solid #991B1B' }, neutral: { bg: '#E3E8F0', border: '1px solid #C7CEDB' } };
+      const f = { bg: vivid[st].bg, pattern: 'none', border: vivid[st].border };
+      const dot = st === 'green' ? '#14653B' : st === 'yellow' ? '#C98A16' : st === 'red' ? '#991B1B' : '#98A2B3';
+      const h = Math.max(0, Math.min(100, x.score === null ? 0 : x.score));
+      return {
+        label: x.label, score: x.score === null ? '—' : x.score,
+        barH: h + '%',
+        labelBottom: 'calc(' + h + '% + 10px)',
+        barBg: f.bg, barPattern: f.pattern,
+        barBorder: x.current ? '2px solid #101828' : f.border,
+        dotBg: dot, dotRing: '#FFFFFF',
+        labelColor: x.current ? '#101828' : '#667085',
+        labelWeight: x.current ? '800' : '600',
+        delay: (i * 160) + 'ms'
+      };
+    });
+    // bar columns are flex:1 with no gap, so a column centre is exactly (i + 0.5) / n of the plot box
+    const trendLinePoints = d.series.map((x, i) => {
+      const px = ((i + 0.5) / Math.max(1, nPts)) * 100;
+      const py = 100 - Math.max(0, Math.min(100, x.score === null ? 0 : x.score));
+      return px.toFixed(2) + ',' + py.toFixed(2);
+    }).join(' ');
+    const lineDelay = (nPts * 160 + 120) + 'ms';
+
+    let improvedCount = 0, worseCount = 0, sameCount = 0;
+    const liveCats = this.CATS.filter(c => !c.dead);
+    const lossScale = Math.max(10, ...liveCats.map(c => {
+      const v = d.cats[c.key];
+      return Math.max(v.lost === null ? 0 : Math.abs(v.lost), v.prevLost === null || v.prevLost === undefined ? 0 : Math.abs(v.prevLost));
+    }));
+    const categoryTrends = liveCats.map(c => {
+      const v = d.cats[c.key];
+      const dl = v.prevLost === null || v.lost === null ? null : v.lost - v.prevLost;
+      if (dl === null) { /* no base */ } else if (dl > 0) improvedCount++; else if (dl < 0) worseCount++; else sameCount++;
+      const mk = (h, label, delay) => {
+        const st = h === null ? 'neutral' : h === 0 ? 'green' : (c.max + h >= 0 ? 'yellow' : 'red');
+        const f = st === 'neutral' ? { bg: '#F2F4F7', pattern: 'none', border: '#E3E8F0' } : this.bandFill(st);
+        return {
+          h: h === null ? '6px' : Math.max(7, Math.min(24, Math.round(Math.abs(h) / lossScale * 24))) + 'px',
+          bg: f.bg, pattern: f.pattern, border: f.border,
+          label, labelColor: h === null ? '#667085' : h === 0 ? '#14653B' : (c.max + h >= 0 ? '#92400E' : '#912018'),
+          delay
+        };
+      };
+      const railColor = dl === null ? '#E3E8F0' : dl > 0 ? '#14653B' : dl < 0 ? '#912018' : '#C7CEDB';
+      return {
+        label: c.label,
+        points: [
+          mk(v.prevLost === undefined ? null : v.prevLost, v.prevLost === null || v.prevLost === undefined ? 'brak' : (v.prevLost === 0 ? '0' : this.signed(v.prevLost)), '0ms'),
+          mk(v.lost, v.lost === null ? 'brak' : (v.lost === 0 ? '0' : this.signed(v.lost)), '160ms')
+        ],
+        coefPrev: v.prevCoef === null || v.prevCoef === undefined ? 'brak' : v.prevCoef,
+        coefNow: v.coef === null ? 'brak' : v.coef,
+        pointsNote: v.lost === null ? 'brak oceny'
+          : (v.lost === 0 ? 'pełne ' + c.max + ' pkt' : 'zostaje ' + this.signed(c.max + v.lost).replace('+', '') + ' z ' + c.max + ' pkt'),
+        stateNote: dl === null ? 'brak bazy porównania'
+          : dl > 0 ? 'poprawa — odzyskane punkty'
+          : dl < 0 ? 'pogorszenie — utracone punkty'
+          : (v.lost === 0 ? 'stabilnie, pełne punkty' : 'bez zmian'),
+        railColor,
+        deltaLabel: dl === null ? 'brak bazy' : (dl === 0 ? 'bez zmian' : Math.abs(dl) + ' pkt'),
+        deltaGlyph: dl === null ? '·' : dl > 0 ? '▲' : dl < 0 ? '▼' : '=',
+        deltaColor: dl === null ? '#667085' : dl > 0 ? '#14653B' : dl < 0 ? '#912018' : '#667085',
+        deltaBg: dl === null ? '#F2F4F7' : dl > 0 ? '#E7F7EE' : dl < 0 ? '#FEE4E2' : '#F2F4F7',
+        deltaBorder: dl === null ? '#E3E8F0' : dl > 0 ? '#A7E0C2' : dl < 0 ? '#F5C4C0' : '#E3E8F0'
+      };
+    });
+    const comparable = improvedCount + worseCount + sameCount > 0;
+    const changeSummary = !comparable ? [] : [
+      { label: improvedCount + ' poprawa', glyph: '▲', bg: '#E7F7EE', border: '#A7E0C2', fg: '#14653B' },
+      { label: worseCount + ' pogorszenie', glyph: '▼', bg: '#FEE4E2', border: '#F5C4C0', fg: '#912018' },
+      { label: sameCount + ' bez zmian', glyph: '=', bg: '#F2F4F7', border: '#E3E8F0', fg: '#475467' }
+    ];
+    const changeSubhead = comparable
+      ? 'Porównanie z okresem ' + d.prevRange + ' — po lewej stan wcześniejszy, po prawej obecny.'
+      : 'Brak wcześniejszego okresu — porównanie pojawi się po zamknięciu kolejnego okresu.';
+
+    const days = this.buildDays(d);
+    const segsAll = [{ from: 1, to: 5, title: '01.07 – 05.07' }, { from: 6, to: 12, title: '06.07 – 12.07' }, { from: 13, to: 19, title: '13.07 – 19.07' }, { from: 20, to: 26, title: '20.07 – 26.07' }, { from: 27, to: 31, title: '27.07 – 31.07' }];
+    const segs = segsAll.filter(w => w.from <= d.dayTo);
+    const defaultOpen = segs.length ? segs[segs.length - 1].title : null;
+    const openGroups = s.openGroups === null ? [defaultOpen] : s.openGroups;
+    const catsLive = this.CATS.filter(c => !c.dead);
+
+    const dayGroups = segs.map((w, wi) => {
+      const list = days.filter(x => x.dayNum >= w.from && x.dayNum <= w.to);
+      const km = list.reduce((a, x) => a + x.km, 0);
+      const isOpen = openGroups.indexOf(w.title) !== -1;
+      const rows = list.map(x => {
+        const cells = catsLive.map(c => {
+          const cell = this.dayCell(c.key, x.counts[c.key], x.km, c.max) || {
+            status: 'none', bg: '#FFFFFF', border: '#F2F4F7', fg: '#667085', glyph: '·', count: '0', coef: null
+          };
+          const numFg = cell.status === 'none' ? '#475467'
+            : cell.status === 'unknown' ? '#475467'
+            : (x.counts[c.key] === 0 ? '#475467' : '#101828');
+          const meaning = cell.status === 'unknown' ? 'brak danych'
+            : cell.status === 'none' ? 'brak przejazdów'
+            : cell.coef === null ? 'brak oceny dla tego dnia'
+            : cell.coef + ' na 100 km · próg ' + cell.band;
+          return Object.assign({ short: c.short, label: c.label, numFg, title: c.label + ': ' + cell.count + ' zdarzeń · ' + meaning }, cell);
+        });
+        // No aggregate day colour: no approved rule collapses independent categories into one
+        // daily Eco status. The row summarises data only; colour lives per category.
+        return {
+          date: x.date, dow: x.dow, km: x.km === 0 ? '—' : this.n(x.km) + ' km',
+          kmColor: x.km === 0 ? '#667085' : '#101828',
+          tripsLabel: x.trips + ' przejazdów',
+          cells, isEmpty: x.km === 0, emptyNote: 'Brak przejazdów kwalifikujących w tym dniu',
+          rowBg: '#FFFFFF',
+          noDriving: x.km === 0,
+          dayNote: x.km === 0 ? 'brak jazdy' : this.n(x.km) + ' km · ' + x.trips + ' przejazdów',
+          open: s.openDay === x.date,
+          toggle: () => this.setState({ openDay: s.openDay === x.date ? null : x.date }),
+          toggleGlyph: s.openDay === x.date ? '−' : '+',
+          explain: x.km === 0
+            ? 'Ten dzień nie ma przejazdów kwalifikujących, więc nie wnosi ani zdarzeń, ani dystansu do wskaźników okresu.'
+            : 'Wskaźniki dnia liczone jako zdarzenia ÷ ' + this.n(x.km) + ' km × 100. Progi są te same co w wyniku okresu, ale punkty dzienne nie sumują się do wyniku okresu i dlatego nie są pokazywane.',
+          detailRows: cells.filter(c => c.coef !== null).map(c => ({
+            label: c.label + ' · ' + c.count + ' zdarzeń',
+            value: c.coef + '/100 km · próg ' + c.band,
+            accent: c.border, valueColor: c.fg
+          }))
+        };
+      });
+      const sums = catsLive.map(c => d.cats[c.key].count === null || d.cats[c.key].count === undefined
+        ? 'brak' : this.n(list.reduce((a, x) => a + (x.counts[c.key] || 0), 0)));
+      return {
+        sums,
+        title: w.title, km: this.n(km) + ' km', note: list.length + ' dni sprawozdawczych',
+        summary: '',
+        isLatest: wi === segs.length - 1, open: isOpen,
+        headerBg: isOpen ? '#F2F4F7' : '#F9FAFC',
+        chevron: isOpen ? '▾' : '▸',
+        toggle: () => this.setState({ openGroups: openGroups.indexOf(w.title) !== -1 ? openGroups.filter(t => t !== w.title) : openGroups.concat([w.title]) }),
+        days: rows
+      };
+    });
+    const allOpen = openGroups.length >= segs.length;
+    const totalsSums = catsLive.map(c => d.cats[c.key].count === null || d.cats[c.key].count === undefined
+      ? 'brak' : this.n(days.reduce((a, x) => a + (x.counts[c.key] || 0), 0)));
+    const totalKm = days.reduce((a, x) => a + x.km, 0);
+    const drivenDays = days.filter(x => x.km > 0).length;
+
+    const coaching = hasScore ? this.coachingFor(d) : [];
+    const mobileTip = coaching.length ? coaching[coaching.length - 1]
+      : { kindLabel: 'Coaching wstrzymany', category: '—', value: '—', body: 'Brak zamkniętego wyniku dla tego okresu.' };
+
+    const rankUp = d.prevRank === null ? null : d.prevRank - d.rank;
+    const tiles = [];
+    const noScoreReason = !hasScore
+      ? (d.qualified === false ? 'poniżej 100 km' : 'wynik nie wyliczony')
+      : null;
+    tiles.push({
+      label: 'Wynik Eco', value: hasScore ? String(d.score) : '—', unit: '/ 100', glyph: '◎',
+      valueColor: R.color, tint: R.tint, tintFg: R.pillFg,
+      badge: !hasScore ? noScoreReason : (delta === null ? 'brak bazy' : (delta > 0 ? '▲ ' + delta + ' pkt' : delta < 0 ? '▼ ' + Math.abs(delta) + ' pkt' : '= bez zmian')),
+      badgeBg: !hasScore || delta === null ? '#F2F4F7' : delta > 0 ? '#E6F4EE' : delta < 0 ? '#FDECEA' : '#F2F4F7',
+      badgeBorder: !hasScore || delta === null ? '#E3E8F0' : delta > 0 ? '#B4DCC8' : delta < 0 ? '#F3C4BE' : '#E3E8F0',
+      badgeFg: !hasScore || delta === null ? '#667085' : delta > 0 ? '#0F5C43' : delta < 0 ? '#991B1B' : '#667085',
+      note: !hasScore ? (d.qualified === false ? 'próg kwalifikacji nieosiągnięty' : 'brak wskaźnika w jednym obszarze') : (hasPrev ? 'vs ' + d.prevRange : 'bez porównania')
+    });
+    if (d.ranked && d.qualified) {
+      tiles.push({
+        label: 'Pozycja w rankingu', value: String(d.rank), unit: '/ ' + this.n(d.population), glyph: '▲',
+        valueColor: '#101828', tint: '#EEF2F7', tintFg: '#475467',
+        badge: rankUp === null ? '★ nowo w rankingu' : (rankUp > 0 ? '▲ ' + rankUp + ' miejsc' : rankUp < 0 ? '▼ ' + Math.abs(rankUp) + ' miejsc' : '= bez zmian'),
+        badgeBg: rankUp === null ? '#FFF3E8' : rankUp > 0 ? '#E6F4EE' : rankUp < 0 ? '#FDECEA' : '#F2F4F7',
+        badgeBorder: rankUp === null ? '#FFD8B5' : rankUp > 0 ? '#B4DCC8' : rankUp < 0 ? '#F3C4BE' : '#E3E8F0',
+        badgeFg: rankUp === null ? '#8F3A04' : rankUp > 0 ? '#0F5C43' : rankUp < 0 ? '#991B1B' : '#667085',
+        note: !hasScore
+          ? 'wynik całkowity nie został wyliczony — porównanie punktowe wstrzymane'
+          : (d.prevRank === null ? 'brak poprzedniej pozycji' : 'poprzednio ' + d.prevRank)
+      });
+      if (hasScore && rating) {
+        tiles.push({
+          label: 'Twoja grupa', value: this.dec(d.shares[rating], 1), unit: '%', glyph: R.glyph,
+          valueColor: '#101828', tint: R.tint, tintFg: R.color,
+          badge: R.gen.replace('kierowców ', ''), badgeBg: R.tint, badgeBorder: R.border, badgeFg: R.color,
+          note: 'udział uczestników rankingu'
+        });
+      }
+    } else {
+      tiles.push({
+        label: 'Ranking', value: '—', unit: '', glyph: 'i',
+        valueColor: '#667085', tint: '#F2F4F7', tintFg: '#667085',
+        badge: 'okres bez rankingu',
+        badgeBg: '#F2F4F7', badgeBorder: '#E3E8F0', badgeFg: '#667085',
+        note: d.rankingState === 'LEFT_RANKING' ? 'poprzednio ' + d.lastKnownRank : 'wynik i obszary bez zmian'
+      });
+    }
+    tiles.push({
+      label: 'Dystans kwalifikujący', value: this.n(d.km), unit: 'km', glyph: '≡',
+      valueColor: '#101828', tint: '#FFF3E8', tintFg: '#8F3A04',
+      badge: d.prevKm === null ? 'brak bazy' : (d.km - d.prevKm > 0 ? '▲ ' + this.n(d.km - d.prevKm) + ' km' : '▼ ' + this.n(Math.abs(d.km - d.prevKm)) + ' km'),
+      badgeBg: '#FFF3E8', badgeBorder: '#FFD8B5', badgeFg: '#8F3A04',
+      note: this.n(d.trips) + ' przejazdów'
+    });
+
+    const scoreRows = [
+      { label: 'Zmiana vs baza porównania', value: !hasScore ? 'wstrzymana' : (delta === null ? 'brak bazy' : this.signed(delta) + ' pkt'), color: !hasScore || delta === null ? '#667085' : delta > 0 ? '#0F5C43' : delta < 0 ? '#991B1B' : '#667085' },
+      { label: 'Do progu 85 pkt', value: hasScore ? (d.score < 85 ? (85 - d.score) + ' pkt' : 'jesteś w progu') : '—', color: hasScore ? '#101828' : '#667085' },
+      { label: 'Utracone punkty łącznie', value: hasScore ? this.signed(d.score - 100) + ' pkt' : '—', color: hasScore ? '#991B1B' : '#667085' },
+      { label: 'Klasyfikacja', value: R.label, color: R.color }
+    ];
+    if (!hasScore) {
+      scoreRows.push({
+        label: 'Dlaczego brak wyniku',
+        value: d.qualified === false ? 'poniżej 100 km' : 'brak wskaźnika w obszarze',
+        color: '#667085'
+      });
+    }
+    if (!(d.ranked && d.qualified)) {
+      scoreRows.push({
+        label: 'Ranking',
+        value: 'okres bez rankingu',
+        color: '#667085'
+      });
+    }
+
+    const accessStates = [
+      { code: 'INVALID_LINK', glyph: '✕', iconBg: '#FDECEA', iconBorder: '#F3C4BE', iconFg: '#991B1B', title: 'Ten link nie jest prawidłowy', body: 'Otwórz panel z najnowszej wiadomości Programu Ecodriving. Linki są indywidualne i nie da się ich odtworzyć ręcznie.', spec: 'HTTP 401/404 z Workera. Brak formularza, brak logowania, brak informacji, czy link kiedykolwiek istniał.' },
+      { code: 'LINK_EXPIRED', glyph: '⏱', iconBg: '#FEF3E2', iconBorder: '#F6DCAE', iconFg: '#8A5B06', title: 'Link stracił ważność', body: 'Każde podsumowanie ma własny link. Najnowszy znajdziesz w ostatniej wiadomości e-mail z podsumowaniem okresu.', spec: 'Token wygasł lub został unieważniony. Komunikat nie ujawnia daty wygaśnięcia ani tożsamości kierowcy.' },
+      { code: 'REPORT_NOT_READY', glyph: '–', iconBg: '#F2F4F7', iconBorder: '#E3E8F0', iconFg: '#475467', title: 'Raport tego okresu nie jest jeszcze gotowy', body: 'Wynik powstaje ze wszystkich obszarów punktacji razem. Gdy komplet danych będzie dostępny, zobaczysz pełne podsumowanie tego okresu.', spec: 'Raport okresu, który nie spełnia kompletnego kontraktu punktacji, NIE jest publikowany jako dashboard — Worker serwuje ten stan. Zakaz renderowania częściowego wyniku.' },
+      { code: 'INSUFFICIENT_DISTANCE', glyph: '100', iconBg: '#F2F4F7', iconBorder: '#E3E8F0', iconFg: '#475467', title: 'Za mały dystans do wyliczenia wyniku', body: 'Dla tego zamkniętego okresu łączny dystans kwalifikujący nie osiągnął 100 km. Nie pokazujemy danych ani wyniku Eco Driving dla tego okresu.', spec: '100 km to wyłącznie bramka całego okresu raportowego. Odpowiedź ma być minimalna: bez actual distance, score, rankingu, obszarów, wykroczeń, trendów, coachingu i dni. Nie stosuj 50/100 km jako progu dziennego.' },
+      { code: 'SNAPSHOT_UNAVAILABLE', glyph: '–', iconBg: '#F2F4F7', iconBorder: '#E3E8F0', iconFg: '#667085', title: 'Ten okres nie jest jeszcze dostępny', body: 'Panel pokazuje tylko zamknięte okresy sprawozdawcze. Gdy okres zostanie zamknięty i przeliczony, pojawi się tutaj.', spec: 'Token prawidłowy, dane tego okresu nie istnieją. Nigdy nie renderuj układu z pustymi wartościami.' },
+      { code: 'SERVICE_UNAVAILABLE', glyph: '!', iconBg: '#F2F4F7', iconBorder: '#E3E8F0', iconFg: '#667085', title: 'Panel jest chwilowo niedostępny', body: 'Spróbuj ponownie za kilka minut. Twoje dane nie zostały utracone — nic nie jest liczone w tej przeglądarce.', spec: 'Błąd 5xx po stronie Workera lub magazynu. Przycisk ponowienia; bez automatycznego odpytywania.' }
+    ];
+
+    return {
+      profileKey: s.profile, profileOptions: this.PROFILES,
+      onProfile: e => this.setState({ profile: e.target.value, openCat: 'idle', openDay: null, openGroups: null, activeSlice: 0 }),
+      setWeekly: () => this.setState({ periodType: 'weekly', openDay: null, openGroups: null, activeSlice: 0 }),
+      setMonthly: () => this.setState({ periodType: 'monthly', openDay: null, openGroups: null, activeSlice: 0 }),
+      setSummary: () => this.setState({ view: 'summary' }),
+      setDetailed: () => this.setState({ view: 'detailed' }),
+      weeklyBtnBg: isWeekly ? '#FF7300' : '#1D2939', weeklyBtnFg: isWeekly ? '#101828' : '#C7CEDB',
+      monthlyBtnBg: !isWeekly ? '#FF7300' : '#1D2939', monthlyBtnFg: !isWeekly ? '#101828' : '#C7CEDB',
+      summaryBtnBg: isSummary ? '#FF7300' : '#1D2939', summaryBtnFg: isSummary ? '#101828' : '#C7CEDB',
+      detailedBtnBg: !isSummary ? '#FF7300' : '#1D2939', detailedBtnFg: !isSummary ? '#101828' : '#C7CEDB',
+      pillWeeklyBg: isWeekly ? '#101828' : 'transparent', pillWeeklyFg: isWeekly ? '#FFFFFF' : '#667085',
+      pillMonthlyBg: !isWeekly ? '#101828' : 'transparent', pillMonthlyFg: !isWeekly ? '#FFFFFF' : '#667085',
+      tabSummaryBg: isSummary ? '#FFF3E8' : 'transparent', tabSummaryFg: isSummary ? '#8F3A04' : '#667085',
+      tabDetailedBg: !isSummary ? '#FFF3E8' : 'transparent', tabDetailedFg: !isSummary ? '#8F3A04' : '#667085',
+
+      isNotReady: s.profile === 'not_ready',
+      isInsufficientDistance: s.profile === 'low_distance',
+      isReady: s.profile !== 'not_ready' && s.profile !== 'low_distance',
+      isSummary, isDetailed: !isSummary,
+      updatedAt: d.updatedAt, periodKindLabel: d.kind, rangeDisplay: d.range,
+      cumulativeChip: d.cumulativeChip, sequenceChip: d.sequenceChip,
+      prevRangeDisplay: d.prevRange || 'brak wcześniejszego okresu',
+      comparisonNote: d.comparisonNote,
+
+      hasScore, hasPrevScore: hasPrev,
+      scoreDisplay: hasScore ? String(d.score) : '—',
+      scoreColor: R.color, ratingPillFg: R.pillFg, ratingLabel: R.label, ratingGlyph: R.glyph, ratingTint: R.tint, ratingBorder: R.border, ratingRangeNote: R.range,
+      ringFrom: R.from, ringTo: R.to,
+      ringOffset: String(Math.round(C_OUT * (1 - pct))),
+      prevRingOffset: String(Math.round(C_IN * (1 - prevPct))),
+      mobileRingOffset: String(Math.round(C_MOB * (1 - pct))),
+      safeTickOffset: String(Math.round(C_OUT * (1 - 0.85))),
+      ringInnerNote: hasPrev ? 'poprzedni okres: ' + d.prevScore : 'brak bazy porównania',
+      scoreBarW: Math.round(pct * 100) + '%',
+      scoreRows, nextBandNote: nextBand,
+      scoreDeltaDisplay: delta === null ? 'brak bazy' : String(Math.abs(delta)),
+      deltaUnit: delta === null ? '' : 'pkt',
+      deltaGlyph: delta === null ? '·' : delta > 0 ? '▲' : delta < 0 ? '▼' : '=',
+      deltaFg: delta === null ? '#667085' : delta > 0 ? '#0F5C43' : delta < 0 ? '#991B1B' : '#667085',
+
+      tiles,
+      hasLosses: lossCats.length > 0,
+      noLosses: lossCats.length === 0,
+      noLossesNote: hasScore ? 'W tym okresie żaden obszar nie odebrał punktów — pełny wynik 100 pkt.' : 'Wynik nie został wyliczony dla tego okresu, więc nie ma strat do rozbicia na obszary.',
+      donut,
+      activeValue: activeLoss ? this.signed(activeLoss.v.lost) + ' pkt' : '—',
+      activeLabel: activeLoss ? activeLoss.c.label : '—',
+      activeShareLabel: !activeLoss ? '—'
+        : hasScore
+          ? Math.round(Math.abs(activeLoss.v.lost) / totalLoss * 100) + '% strat okresu'
+          : Math.round(Math.abs(activeLoss.v.lost) / totalLoss * 100) + '% strat w ocenionych obszarach',
+      activeColor: activeLoss ? lossColorFor(activeLoss.v.lost) : '#667085',
+      legend: lossCats.map((x, i) => ({
+        label: x.c.label, value: this.signed(x.v.lost) + ' pkt',
+        color: lossColorFor(x.v.lost),
+        rowBg: activeIdx === i ? '#F9FAFC' : 'transparent',
+        expanded: s.openCat === x.c.key,
+        enter: () => this.setState({ activeSlice: i }),
+        click: () => this.setState({ activeSlice: i, openCat: x.c.key })
+      })),
+
+      coaching, coachingSuppressed: !hasScore,
+      coachingSuppressedNote: 'Brak kompletnego wyniku — normalny dashboard nie jest renderowany.',
+      mobileTip,
+
+      categories: catRows,
+      mobileCategories: catRows.filter(c => c.key === 'idle' || c.key === 'harsh_braking'),
+
+      trendTitle: d.trendTitle, trendSubtitle: d.trendSubtitle, trendSeries, trendFootnote: d.trendFootnote,
+      trendLinePoints, lineDelay,
+      categoryTrends, changeSummary, changeSubhead,
+      hasNear: near.length > 0,
+      nearTotalGain: '+' + near.reduce((a, x) => a + x.gain, 0) + ' pkt',
+      nearCards: near.map((x, i) => ({
+        rankLabel: i === 0 ? 'najbliżej progu' : 'druga najbliższa zmiana',
+        label: x.c.label,
+        gain: '+' + x.gain + ' pkt',
+        coefNow: x.v.coef,
+        coefTarget: '≤ ' + x.targetUpper,
+        progress: (x.distance <= 1 ? 88 : x.distance === 2 ? 62 : x.distance === 3 ? 44 : 26) + '%',
+        distanceLabel: x.distance === 0 ? 'na granicy progu' : (x.distance === 1 ? 'brakuje 1 zdarzenia na 100 km' : 'brakuje ' + x.distance + ' zdarzeń na 100 km'),
+        body: 'Wskaźnik ' + x.v.coef + ' → ' + x.targetUpper + ' na 100 km przenosi ten obszar do progu „' + x.bandLabel + '”, co daje +' + x.gain + ' pkt. Wskaźnik liczy zdarzenia względem dystansu, więc obniża go zarówno mniej zdarzeń, jak i większa ekspozycja.',
+        expanded: s.openCat === x.c.key,
+        open: () => this.setState({ openCat: x.c.key })
+      })),
+      categoryTrendFootnote: 'Dwa słupki na obszar: baza porównania (' + (d.prevRange || 'brak') + ') i okres bieżący. Wysokość = utracone punkty, kolor = próg punktowy.',
+
+      detailedIntro: isWeekly
+        ? 'Okres tygodniowy obejmuje wszystkie dni od 01.07 do ' + d.range.split('– ')[1] + ' Najnowszy odcinek jest rozwinięty, wcześniejsze tygodnie pozostają zwinięte i policzone.'
+        : 'Zamknięty miesiąc to ' + d.dayTo + ' dni. Tygodnie są zwinięte; rozwiń odcinek, aby zobaczyć dni. Kolor każdej komórki pochodzi ze wskaźnika dnia na 100 km, nie z liczby zdarzeń.',
+      detailedKpis: [
+        { label: 'Dystans w okresie', value: this.n(totalKm) + ' km', note: 'suma dni kwalifikujących' },
+        { label: 'Dni z jazdą', value: drivenDays + ' / ' + days.length, note: 'dni sprawozdawcze okresu' },
+        { label: 'Dni z wyliczonym wskaźnikiem', value: String(drivenDays), note: 'dni z dystansem kwalifikującym' },
+        { label: 'Wskaźnik okresu', value: hasScore ? d.score + ' pkt' : '—', note: 'liczone raz dla całego okresu' }
+      ],
+      dayGroups,
+      dayColumns: catsLive.map(c => ({ short: c.short, label: c.label })),
+      totalsSums,
+      totalsKm: this.n(days.reduce((a, x) => a + x.km, 0)) + ' km',
+      totalsNote: 'suma zdarzeń w okresie',
+      compactLabel: s.compact ? 'Pokaż oceny progów' : 'Ukryj oceny progów',
+      compactBg: s.compact ? '#F2F4F7' : '#FFFFFF',
+      toggleCompact: () => this.setState({ compact: !s.compact }),
+      expandAllLabel: allOpen ? 'Zwiń wszystkie tygodnie' : 'Rozwiń wszystkie tygodnie',
+      toggleAllGroups: () => this.setState({ openGroups: allOpen ? [] : segs.map(w => w.title) }),
+
+      mobileRankLine: d.ranked && d.qualified ? d.rank + ' / ' + this.n(d.population) : 'bez rankingu',
+      rankDeltaLabel: !(d.ranked && d.qualified) ? 'okres bez rankingu'
+        : (rankUp === null ? 'Nowo w rankingu' : rankUp === 0 ? 'bez zmian' : Math.abs(rankUp) + (rankUp > 0 ? ' miejsc w górę' : ' miejsc w dół')),
+      kmDisplay: this.n(d.km),
+      kmDeltaGlyph: d.prevKm === null ? '·' : d.km - d.prevKm > 0 ? '▲' : '▼',
+      kmDeltaDisplay: d.prevKm === null ? 'brak bazy' : this.n(Math.abs(d.km - d.prevKm)),
+      mobileDetailedNote: isWeekly ? 'Najnowszy tydzień · pozostałe tygodnie zwinięte' : 'Tygodnie zwinięte · rozwiń, aby zobaczyć dni',
+      mobileGroupTitle: dayGroups.length ? dayGroups[dayGroups.length - 1].title : '—',
+      mobileGroupSummary: dayGroups.length ? dayGroups[dayGroups.length - 1].km : '—',
+      mobileDays: dayGroups.length ? dayGroups[dayGroups.length - 1].days.slice(0, 3) : [],
+
+      accessStates
+    };
+  }
+}
+
+</script>
+</body>
+</html>

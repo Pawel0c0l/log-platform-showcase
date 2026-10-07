@@ -1,0 +1,40 @@
+[Unit]
+Description=suspected_bug alert email outbox worker (one batch per fire)
+# Intentionally NO OnFailure= alert routing: this unit IS the alert path.
+# Asking it to alert about its own failure is a loop. A broken mail channel
+# surfaces as `dead_letter` rows in suspected_bug_email_outbox, as a failed
+# unit in systemctl, and in journald.
+After=network-online.target docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=logplatform
+# The release root, not the development checkout. The launcher cd's to the
+# resolved release itself, so this only has to be a stable directory that exists
+# and is not the mutable tree.
+WorkingDirectory=/opt/log-platform-release
+UMask=0077
+# Deliberately NO Environment=PYTHONPATH=. This unit's Python source root is the
+# active release — a symlink target that changes without this file changing — so
+# it cannot be written here. /usr/local/bin/log-ops-runner.sh resolves it per
+# invocation and exports it in-process, which is also the only place it can win:
+# /etc/log-platform/runtime.env exports a PYTHONPATH naming the development tree
+# and EnvironmentFile= overrides Environment=.
+ExecStart=/usr/local/bin/log-ops-runner.sh ops.suspected_bug_email_worker --once
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+TimeoutStartSec=300
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+
+# Deliberately NO [Install] section. These are timer-driven oneshot jobs: the
+# timer is the only thing that should ever schedule them. With
+# `WantedBy=multi-user.target` the unit runs on every boot as well, which for
+# backup-retention.service means destructive deletion at boot. Omitting [Install]
+# makes `systemctl enable <this>.service` fail loudly instead of silently wiring
+# an unwanted activation. Enable the .timer; run the .service by hand with
+# `systemctl start` only when a one-off execution is explicitly intended.

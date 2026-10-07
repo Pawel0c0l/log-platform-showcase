@@ -1,0 +1,22 @@
+[Unit]
+Description=Enforce backup retention daily, after the nightly backup completes
+# No Requires=backup-retention.service: a timer's [Unit] dependencies are
+# activated when the TIMER starts, so Requires= makes `systemctl start` (and
+# `enable --now`) run the job immediately. Unit= below is the only link a
+# timer needs.
+
+[Timer]
+# log-backup.timer fires at 03:00 and has been measured at ~20 minutes.
+# 04:15 leaves generous separation without competing for disk I/O.
+OnCalendar=*-*-* 04:15:00
+# Persistent=false on purpose. This service DELETES backups. Persistent=true
+# replays a calendar event that was missed while the host was off, so a laptop
+# booted after several days down would run destructive retention immediately at
+# an unattended moment. A skipped retention window costs disk space; an
+# unexpected one costs backups. Missing a fire is the safe failure here.
+Persistent=false
+AccuracySec=1min
+Unit=backup-retention.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,87 @@
+{
+  "$comment": [
+    "Declarative expectations for ops/execution_watchdog.py.",
+    "",
+    "Workflow A schedules are NOT listed here: the watchdog derives them from",
+    "workflow_a_control.client_dataset_schedule so enabling or disabling a dataset",
+    "automatically changes what is expected. Only schedules that have no database",
+    "metadata of their own belong in this file.",
+    "",
+    "Backup and prune are deliberately absent: they persist no public.runs row, so",
+    "there is nothing here for the watchdog to assert against. Their failures are",
+    "covered by systemd OnFailure= routing into ops/systemd_failure_adapter.py.",
+    "",
+    "Grace windows are execution-time budgets, not guesses. Workflow B orchestrator",
+    "runs have taken up to ~109 minutes in production, so 180 minutes leaves real",
+    "headroom before a missing-run incident is raised."
+  ],
+  "defaults": {
+    "completion_grace_minutes": 180,
+    "stale_grace_minutes": 240
+  },
+  "systemd_schedules": [
+    {
+      "subject": "workflow_b_orchestrator",
+      "component": "workflow_b.orchestrator",
+      "run_source": "jobs.reports.workflow_b.orchestrator",
+      "times": ["06:00", "20:00"],
+      "timezone": "Europe/Warsaw",
+      "completion_grace_minutes": 180,
+      "stale_grace_minutes": 240,
+      "enabled": true
+    }
+  ],
+  "heartbeats": [
+    {
+      "subject": "workflow_a_dispatcher",
+      "component": "workflow_a.dispatcher",
+      "heartbeat_component": "workflow_a.dispatcher",
+      "grace_minutes": 30,
+      "enabled": true
+    },
+    {
+      "$comment": [
+        "suspected-bug-email-worker.timer fires every 5 minutes and the worker",
+        "stamps a heartbeat on every completed batch, including empty ones. A",
+        "30-minute grace is six consecutive missed fires — long enough that host",
+        "load or a single slow SMTP batch cannot trip it, short enough that a",
+        "stopped alert channel is found within one scan.",
+        "",
+        "This subject is why a dead alert worker is observable at all: it delivers",
+        "nothing when idle, so public.runs cannot distinguish 'nothing to send'",
+        "from 'not running'. Reported by the watchdog, a different unit and a",
+        "different process, so the worker is never asked to report itself."
+      ],
+      "subject": "alerting_email_worker",
+      "component": "alerting.email_worker",
+      "heartbeat_component": "alerting.email_worker",
+      "grace_minutes": 30,
+      "consequence": "No queued operator alert can be delivered while it is down.",
+      "enabled": true
+    }
+  ],
+  "$alert_delivery_comment": [
+    "Durable half of the dead-letter contract. The worker's non-zero exit makes a",
+    "dead-letter transition visible as a failed unit, but only momentarily: the",
+    "row is never re-claimed, so the next batch succeeds and clears the unit",
+    "state while the alert is still undelivered. This subject keeps asserting",
+    "'there are alerts nobody will ever receive' until an operator clears them.",
+    "",
+    "180 minutes is not a guess: the worker retries with bounded exponential",
+    "backoff up to SUSPECTED_BUG_EMAIL_MAX_RETRY_SECONDS (default 3600), so a",
+    "healthy row can legitimately sit queued for roughly an hour between",
+    "attempts. Anything below ~2h would alert on working backoff."
+  ],
+  "alert_delivery": {
+    "subject": "alert_delivery",
+    "component": "alerting.delivery",
+    "backlog_grace_minutes": 180,
+    "enabled": true
+  },
+  "dataset_overrides": {
+    "trips_sync": {
+      "completion_grace_minutes": 240,
+      "stale_grace_minutes": 240
+    }
+  }
+}

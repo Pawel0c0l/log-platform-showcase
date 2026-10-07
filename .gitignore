@@ -1,0 +1,46 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Docker volumes
+pgdata/
+miniodata/
+backups/
+snapshots/
+
+# Runtime data / temporary
+/data/
+data/reports/
+tmp/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+
+# Secret-bearing env backups — never commit (any directory).
+# Covers the real backup convention: .env.bak.<timestamp>, .env.bak.<label>.<timestamp>,
+# .env.<label>.bak, .env.backup*, editor/tool saves. Committed templates
+# (.env.example, .env.stage1, docs/env.stage1.example, *.env.example) do NOT match.
+**/.env.bak
+**/.env.bak.*
+**/.env.*.bak
+**/.env.*.bak.*
+**/.env.backup
+**/.env.backup.*
+**/.env.orig
+**/.env.save
+**/.env.old
+**/.env~
+
+# Claude local settings and any of their backups are machine-local, never committed.
+# .claude/settings.json (shared project policy) is deliberately NOT ignored.
+.claude/settings.local.json
+.claude/settings.local.json.*

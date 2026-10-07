@@ -1,0 +1,4 @@
+# Install as /etc/sudoers.d/log-platform-runtime-identity-inspector (mode 0440).
+Cmnd_Alias LOG_PLATFORM_RUNTIME_IDENTITY_INSPECT = /usr/local/sbin/log-platform-runtime-identity-inspector inspect-runtime-identity-sources
+Defaults!LOG_PLATFORM_RUNTIME_IDENTITY_INSPECT env_reset, !setenv, secure_path="/usr/sbin:/usr/bin:/sbin:/bin"
+logplatform ALL=(root) NOPASSWD: LOG_PLATFORM_RUNTIME_IDENTITY_INSPECT

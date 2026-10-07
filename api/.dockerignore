@@ -1,0 +1,46 @@
+# Build context for the immutable production API image (build context is ./api).
+# Everything api/main.py imports at runtime must stay included: main.py,
+# client.py, platform_prune.py, suspected_bug.py, timezone_utils.py,
+# __init__.py, requirements.txt, artifacts/ and eco_driving_explorer/.
+#
+# Patterns are matched against the whole context-relative path, so nested
+# directories need the `**/` prefix. `__pycache__` alone would only drop the
+# top-level one and would still bake artifacts/__pycache__ and
+# eco_driving_explorer/__pycache__ into the image.
+
+# Python bytecode and caches. The checkout carries a stale root-owned
+# __pycache__/main.cpython-312.pyc written by the previous container-root
+# runtime; it must never enter the image.
+**/__pycache__
+**/*.py[cod]
+**/*$py.class
+
+# Test, type and lint caches
+**/.pytest_cache
+**/.mypy_cache
+**/.ruff_cache
+**/.coverage
+**/.coverage.*
+**/htmlcov
+
+# Virtualenvs
+**/.venv
+**/venv
+
+# Secrets are supplied through the environment, never baked into the image
+**/.env
+**/.env.*
+
+# VCS, editor, agent and OS noise
+**/.git
+**/.gitignore
+**/.claude
+**/.idea
+**/.vscode
+**/*.swp
+**/*~
+**/.DS_Store
+
+# Logs and scratch
+**/*.log
+**/tmp

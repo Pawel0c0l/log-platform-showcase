@@ -1,0 +1,26 @@
+# The COMPLETE dependency contract for the native host virtualenv (`.venv`).
+#
+# That one virtualenv runs BOTH surfaces: the systemd unit executes
+# `.venv/bin/uvicorn api.main:app` (see `ops/systemd/log-platform-api.service.example`
+# and `ops/systemd/proposed/database-export-worker.service`), and the host jobs
+# and `ops/` tools run from the same interpreter. So it must satisfy the API's
+# imports as well as the host-only ones.
+#
+# The API's own pins live in `api/requirements.txt` — the file the container
+# image installs — and are INCLUDED here rather than restated, so a package such
+# as `cryptography` (imported unconditionally by `api/row_reference.py`, which
+# `api/main.py` imports at module level) can never be pinned twice at two
+# different versions or declared for the image and forgotten for the host.
+#
+#   installing this file alone is the documented native-host procedure
+#   (`docs/11` §2, `docs/07` §1.11) and is sufficient to import and start
+#   `api.main`.
+#
+# Below the include: host-only additions the container image does not need.
+-r api/requirements.txt
+
+# Host-only. The API image never runs these paths.
+uvicorn[standard]==0.30.6
+PyYAML==6.0.2
+minio==7.2.12
+pandas==2.2.3

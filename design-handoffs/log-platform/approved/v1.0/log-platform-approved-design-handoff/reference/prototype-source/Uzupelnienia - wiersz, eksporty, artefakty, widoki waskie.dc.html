@@ -1,0 +1,797 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; background: #0a0b0d; }
+  body { font-family: "IBM Plex Sans", system-ui, sans-serif; color: #e8ebef; -webkit-font-smoothing: antialiased; }
+  a { color: #ff8a33; text-decoration: none; }
+  a:hover { color: #ffb27a; text-decoration: underline; }
+</style>
+</helmet>
+
+<section style="display:flex; flex-direction:column; gap:44px; padding:56px; background:#0a0b0d;">
+
+  <div style="display:flex; flex-direction:column; gap:18px; width:1400px;">
+    <div style="display:flex; align-items:baseline; gap:14px;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#ff8a33;">Iteracja 5 · uzupełnienia do handoffu</span>
+      <span style="font-size:13px; color:#7d8794;">cztery powierzchnie brakujące w zatwierdzonym zestawie</span>
+    </div>
+    <h1 style="font-size:40px; line-height:1.1; margin:0; font-weight:600; letter-spacing:-0.02em; color:#f4f6f8; max-width:28ch;">Szczegóły wiersza · eksporty w tle · Artefakty · widoki wąskie</h1>
+    <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:16px;">
+      <sc-for list="{{ decisions }}" as="d" hint-placeholder-count="4">
+        <div style="border-left:2px solid #ff8a33; padding:2px 0 2px 14px; display:flex; flex-direction:column; gap:6px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#6b7480;">{{ d.k }}</div>
+          <div style="font-size:13px; line-height:1.6; color:#aeb6c1;">{{ d.v }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">DB-006 · szczegóły wiersza w panelu z prawej — 1920 × 1080</div>
+    <div style="width:1920px; height:1080px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c;" data-screen-label="DB-006">
+
+      <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#14171c;">
+        <div style="display:flex; align-items:center; gap:9px;">
+          <div style="width:6px; height:18px; border-radius:1px; background:#ff7a18;"></div>
+          <span style="font-size:14px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:2px; height:56px;">
+          <sc-for list="{{ navDataL }}" as="n" hint-placeholder-count="5">
+            <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+          </sc-for>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+          <span style="font-size:12px; color:#b9c0c9;">Anna Kowalska</span>
+          <div style="width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+        </div>
+      </div>
+
+      <div style="height:64px; flex:0 0 64px; display:flex; align-items:center; gap:16px; padding:0 28px; background:#ffffff; border-bottom:1px solid #e2e5e9;">
+        <span style="width:4px; height:26px; border-radius:1px; background:#ff7a18;"></span>
+        <div style="display:flex; flex-direction:column; gap:1px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:17px; font-weight:600; color:#14171c; letter-spacing:-0.01em;">Acme Logistics</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; background:#f0f2f4; padding:2px 6px; border-radius:2px;">ACME00001</span>
+            <span style="color:#c3c9d0;">·</span>
+            <span style="font-size:15px; font-weight:500; color:#33393f;">Przejazdy klienta</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:10px;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">client_trips_normalized</span>
+            <span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:2px; border:1px solid #d7dbe0; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.06em; color:#5c646f;">TYLKO ODCZYT</span>
+          </div>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+          <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; font-size:13px; font-weight:500; color:#33393f;">Zapisz widok</div>
+          <div style="height:34px; display:flex; align-items:center; padding:0 14px; border-radius:3px; background:#14171c; color:#ffffff; font-size:13px; font-weight:600;">Eksport</div>
+        </div>
+      </div>
+
+      <div style="flex:1; display:flex; min-height:0;">
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column; background:#ffffff;">
+          <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; gap:10px; padding:0 20px; border-bottom:1px solid #e2e5e9; background:#fafbfb;">
+            <div style="width:280px; height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; display:flex; align-items:center; gap:9px; padding:0 10px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Szukaj w 16 kolumnach tekstowych</span></div>
+            <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #14171c; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Filtry <span style="display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; border-radius:2px; background:#ff7a18; color:#1a0c02; font-family:'IBM Plex Mono',monospace; font-size:10px;">3</span></div>
+            <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; color:#33393f; font-size:12px; font-weight:500;">Kolumny <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">12/42</span></div>
+            <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f;">1 274 z 48 213 wierszy</span>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow:hidden; position:relative;">
+            <div style="position:absolute; top:0; right:0; bottom:0; width:30px; pointer-events:none; z-index:4; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.92));"></div>
+            <table style="border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed;">
+              <thead>
+                <tr>
+                  <th style="width:30px; padding:0 0 0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="display:inline-block; width:12px; height:12px; border:1px solid #b9c0c9; border-radius:2px;"></span></th>
+                  <th style="width:186px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; border-right:1px solid #e2e5e9; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">ID przejazdu</span><span style="font-size:9px; color:#5c646f; margin-left:auto;">▾</span></div></th>
+                  <th style="width:104px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">Nr rej.</span><span style="font-size:9px; color:#5c646f; margin-left:auto;">▾</span></div></th>
+                  <th style="width:162px; padding:0 12px; height:36px; background:#fdf3ea; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#8a4409;">Kierowca</span><span style="font-size:9px; color:#a85a0d;">≡</span><span style="font-size:9px; color:#5c646f; margin-left:auto;">▾</span></div></th>
+                  <th style="width:148px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#14171c;">Start (UTC)</span><span style="font-size:10px; color:#a85a0d;">↓</span><span style="font-size:9px; color:#5c646f; margin-left:auto;">▾</span></div></th>
+                  <th style="width:88px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Czas (s)</span></th>
+                  <th style="width:100px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Dystans (m)</span></th>
+                  <th style="width:76px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Vmax</span></th>
+                  <th style="padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#33393f;">Adres startu</span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ rowsL }}" as="r" hint-placeholder-count="22">
+                  <tr>
+                    <td style="padding:0 0 0 12px; height:32px; border-bottom:1px solid #f0f2f4; background:{{ r.bg }};"><span style="display:inline-block; width:12px; height:12px; border:1px solid #cfd4da; border-radius:2px; background:{{ r.check }};"></span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; border-right:1px solid #e2e5e9; background:{{ r.bg }}; box-shadow:{{ r.mark }}; overflow:hidden;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:{{ r.idFg }}; font-weight:{{ r.w }}; white-space:nowrap;">{{ r.id }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; background:{{ r.bg }};"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.reg }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; background:{{ r.bgTint }};"><span style="font-size:12px; color:#14171c; white-space:nowrap;">{{ r.drv }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; background:{{ r.bg }};"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#33393f; white-space:nowrap;">{{ r.start }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right; background:{{ r.bg }};"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dur }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right; background:{{ r.bg }};"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dist }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right; background:{{ r.bg }};"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:{{ r.vmaxFg }};">{{ r.vmax }}</span></td>
+                    <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; background:{{ r.bg }}; overflow:hidden;"><span style="font-size:12px; color:#5c646f; white-space:nowrap;">{{ r.addr }}</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="height:44px; flex:0 0 44px; display:flex; align-items:center; gap:14px; padding:0 20px; border-top:1px solid #e2e5e9; background:#fafbfb;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f;">1–100 z 1 274</span>
+            <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f;">↑ ↓ przechodzi między wierszami bez zamykania panelu</span>
+          </div>
+        </div>
+
+        <div style="width:520px; flex:0 0 520px; background:#ffffff; border-left:1px solid #d7dbe0; display:flex; flex-direction:column;">
+          <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:10px; padding:0 18px; border-bottom:1px solid #e2e5e9; background:#fafbfb;">
+            <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+              <span style="font-size:14px; font-weight:600; color:#14171c;">Szczegóły wiersza</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">95688399-f963-4b3c-8342-d5addd2a66ac</span>
+            </div>
+            <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
+              <span style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; background:#ffffff; color:#33393f; font-size:12px;">↑</span>
+              <span style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; background:#ffffff; color:#33393f; font-size:12px;">↓</span>
+              <span style="width:28px; height:28px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; background:#ffffff; color:#33393f; font-size:13px;">×</span>
+            </div>
+          </div>
+
+          <div style="height:44px; flex:0 0 44px; display:flex; align-items:center; gap:8px; padding:0 18px; border-bottom:1px solid #eef0f3; background:#ffffff;">
+            <div style="flex:1; height:30px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; gap:8px; padding:0 9px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Szukaj pola spośród 42</span></div>
+            <div style="display:flex; align-items:center; gap:2px; height:30px; padding:2px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff;">
+              <span style="height:24px; display:flex; align-items:center; padding:0 9px; border-radius:2px; background:#eef0f3; color:#14171c; font-size:11px; font-weight:600;">Widoczne 12</span>
+              <span style="height:24px; display:flex; align-items:center; padding:0 9px; border-radius:2px; color:#5c646f; font-size:11px;">Wszystkie 42</span>
+            </div>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow:hidden;">
+            <sc-for list="{{ detailGroups }}" as="g" hint-placeholder-count="4">
+              <div style="display:flex; flex-direction:column;">
+                <div style="height:30px; display:flex; align-items:center; gap:8px; padding:0 18px; background:#f7f8f9; border-bottom:1px solid #eef0f3;">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#5c646f;">{{ g.name }}</span>
+                  <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">{{ g.count }}</span>
+                </div>
+                <sc-for list="{{ g.fields }}" as="f" hint-placeholder-count="4">
+                  <div style="display:flex; align-items:flex-start; gap:14px; min-height:34px; padding:7px 18px; border-bottom:1px solid #f4f6f7;">
+                    <div style="width:168px; flex:0 0 168px; display:flex; flex-direction:column; gap:1px;">
+                      <span style="font-size:12px; color:#33393f;">{{ f.label }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:#8b939e;">{{ f.col }}</span>
+                    </div>
+                    <span style="flex:1; min-width:0; font-family:{{ f.ff }}; font-size:12px; color:{{ f.fg }}; font-style:{{ f.fs }}; line-height:1.45; word-break:break-word;">{{ f.value }}</span>
+                    <span style="width:20px; flex:0 0 20px; text-align:right; font-size:11px; color:#b9c0c9;">⧉</span>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-for>
+          </div>
+
+          <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:8px; padding:0 18px; border-top:1px solid #e2e5e9; background:#fafbfb;">
+            <span style="height:32px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Kopiuj wiersz jako JSON</span>
+            <span style="height:32px; display:flex; align-items:center; padding:0 13px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; color:#33393f; font-size:12px; font-weight:500;">Filtruj po tej wartości</span>
+            <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f;">esc zamyka</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">DB-007 · eksporty w tle: w toku · gotowy · wygasły · błąd — 1920 × 760</div>
+    <div style="width:1920px; height:760px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c;" data-screen-label="DB-007">
+
+      <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#14171c;">
+        <div style="display:flex; align-items:center; gap:9px;">
+          <div style="width:6px; height:18px; border-radius:1px; background:#ff7a18;"></div>
+          <span style="font-size:14px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:2px; height:56px;">
+          <sc-for list="{{ navRepL }}" as="n" hint-placeholder-count="5">
+            <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+          </sc-for>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+          <div style="display:flex; align-items:center; gap:8px; height:30px; padding:0 10px; border-radius:3px; background:rgba(255,255,255,0.08);">
+            <span style="width:7px; height:7px; border-radius:999px; background:#ff7a18;"></span>
+            <span style="font-size:12px; color:#f4f6f8;">1 eksport w toku</span>
+          </div>
+          <span style="font-size:12px; color:#b9c0c9;">Anna Kowalska</span>
+          <div style="width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+        </div>
+      </div>
+
+      <div style="height:64px; flex:0 0 64px; display:flex; align-items:center; gap:14px; padding:0 28px; background:#ffffff; border-bottom:1px solid #e2e5e9;">
+        <span style="width:4px; height:26px; border-radius:1px; background:#ff7a18;"></span>
+        <div style="display:flex; flex-direction:column; gap:1px;">
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:17px; font-weight:600; color:#14171c; letter-spacing:-0.01em;">Acme Logistics</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; background:#f0f2f4; padding:2px 6px; border-radius:2px;">ACME00001</span>
+            <span style="color:#c3c9d0;">·</span>
+            <span style="font-size:15px; font-weight:500; color:#33393f;">Eksporty danych</span>
+          </div>
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">typ systemowy w bibliotece raportów · retencja 3 dni od zakończenia</span>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+          <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; font-size:13px; font-weight:500; color:#33393f;">Wróć do zbioru</div>
+        </div>
+      </div>
+
+      <div style="flex:1; min-height:0; padding:22px 28px; overflow:hidden;">
+        <div style="background:#ffffff; border:1px solid #e2e5e9; border-radius:4px; overflow:hidden;">
+          <div style="display:flex; align-items:center; height:40px; background:#fafbfb; border-bottom:1px solid #e2e5e9; padding:0 18px;">
+            <span style="width:290px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Eksport</span>
+            <span style="width:220px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Zakres</span>
+            <span style="width:110px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Wiersze</span>
+            <span style="width:330px; padding-left:28px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Status</span>
+            <span style="flex:1; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Dostępny do</span>
+            <span style="width:210px;"></span>
+          </div>
+          <sc-for list="{{ exportsL }}" as="e" hint-placeholder-count="4">
+            <div style="display:flex; align-items:center; min-height:74px; border-bottom:1px solid #eef0f3; padding:13px 18px; background:{{ e.rowBg }};">
+              <div style="width:290px; display:flex; flex-direction:column; gap:3px; padding-right:16px;">
+                <span style="font-size:14px; font-weight:600; color:#14171c;">{{ e.name }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f;">{{ e.requested }}</span>
+              </div>
+              <div style="width:220px; display:flex; flex-direction:column; gap:3px;">
+                <span style="font-size:12px; color:#33393f;">{{ e.scope }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">{{ e.cols }}</span>
+              </div>
+              <span style="width:110px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#14171c;">{{ e.rows }}</span>
+              <div style="width:330px; padding-left:28px; display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; align-items:center; gap:9px;">
+                  <span style="display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:2px; background:{{ e.stBg }}; color:{{ e.stFg }}; font-size:11px; font-weight:600;">{{ e.status }}</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f;">{{ e.detail }}</span>
+                </div>
+                <sc-if value="{{ e.hasBar }}" hint-placeholder-val="{{ false }}">
+                  <div style="display:flex; align-items:center; gap:9px;">
+                    <span style="flex:1; height:5px; border-radius:1px; background:#eef0f3; overflow:hidden;"><span style="display:block; height:5px; width:{{ e.pct }}; background:#a85a0d;"></span></span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f; width:34px; text-align:right;">{{ e.pct }}</span>
+                  </div>
+                </sc-if>
+              </div>
+              <div style="flex:1; display:flex; flex-direction:column; gap:2px;">
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:{{ e.expFg }};">{{ e.expires }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">{{ e.file }}</span>
+              </div>
+              <div style="width:210px; display:flex; justify-content:flex-end; gap:8px;">
+                <sc-for list="{{ e.actions }}" as="a" hint-placeholder-count="2">
+                  <span style="height:32px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:{{ a.bd }}; background:{{ a.bg }}; color:{{ a.fg }}; font-size:12px; font-weight:{{ a.w }}; white-space:nowrap;">{{ a.label }}</span>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+          <div style="padding:13px 18px; background:#fafbfb;">
+            <span style="font-size:12px; color:#5c646f; line-height:1.55;">Eksport do 20 000 wierszy pobiera się natychmiast i nie trafia na tę listę. Powyżej — przygotowuje się w tle, a użytkownik może opuścić stronę; postęp wraca do wskaźnika w pasku górnym. Eksport zawsze obejmuje wszystkie 42 zatwierdzone kolumny niezależnie od widoku.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">ART-001 · Artifact Explorer, powierzchnia techniczno-administracyjna — 1920 × 860</div>
+    <div style="width:1920px; height:860px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#0f1215; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#eef1f4;" data-screen-label="ART-001">
+
+      <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#0a0c0f; border-bottom:1px solid #262b33;">
+        <div style="display:flex; align-items:center; gap:9px;">
+          <div style="width:6px; height:18px; border-radius:1px; background:#ff8a33;"></div>
+          <span style="font-size:14px; font-weight:600; color:#eef1f4;">Log Platform</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:2px; height:56px;">
+          <sc-for list="{{ navArtD }}" as="n" hint-placeholder-count="5">
+            <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+          </sc-for>
+        </div>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+          <span style="display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:2px; border:1px solid #313841; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.06em; color:#99a1ab;">TRYB OPERATORA</span>
+          <span style="font-size:12px; color:#99a1ab;">Anna Kowalska</span>
+          <div style="width:28px; height:28px; border-radius:3px; background:#262b33; color:#c5ccd4; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+        </div>
+      </div>
+
+      <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:14px; padding:0 28px; background:#16191e; border-bottom:1px solid #262b33;">
+        <span style="width:4px; height:22px; border-radius:1px; background:#3e4650;"></span>
+        <span style="font-size:17px; font-weight:600; color:#eef1f4; letter-spacing:-0.01em;">Artefakty</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">inspekcja artefaktów systemu · nie jest trybem dostępu do danych klienta</span>
+        <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+          <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #313841; border-radius:3px; background:#1b1f25; color:#c5ccd4; font-size:12px; font-weight:500;">Odśwież katalog</div>
+        </div>
+      </div>
+
+      <div style="flex:1; display:flex; min-height:0;">
+        <div style="width:252px; flex:0 0 252px; background:#16191e; border-right:1px solid #262b33; display:flex; flex-direction:column;">
+          <div style="height:38px; flex:0 0 38px; display:flex; align-items:center; padding:0 14px; border-bottom:1px solid #21262d;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.14em; text-transform:uppercase; color:#99a1ab;">Rodzaje artefaktów</span>
+          </div>
+          <div style="flex:1; padding:8px; display:flex; flex-direction:column; gap:2px; overflow:hidden;">
+            <sc-for list="{{ artKinds }}" as="k" hint-placeholder-count="6">
+              <div style="display:flex; align-items:center; gap:9px; height:32px; padding:0 10px; border-radius:3px; background:{{ k.bg }}; box-shadow:{{ k.mark }};">
+                <span style="font-size:12px; font-weight:{{ k.w }}; color:{{ k.fg }};">{{ k.name }}</span>
+                <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">{{ k.count }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="border-top:1px solid #21262d; padding:13px 14px;">
+            <span style="font-size:11px; color:#99a1ab; line-height:1.5;">Widok wymaga uprawnienia operatora. Artefakty są niezmienne i tylko do odczytu.</span>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0; display:flex; flex-direction:column;">
+          <div style="height:44px; flex:0 0 44px; display:flex; align-items:center; gap:9px; padding:0 20px; background:#1b1f25; border-bottom:1px solid #262b33;">
+            <div style="width:280px; height:30px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; gap:8px; padding:0 10px;"><span style="color:#737c87; font-size:12px;">⌕</span><span style="font-size:12px; color:#737c87;">Nazwa, hash lub referencja</span></div>
+            <div style="height:30px; display:flex; align-items:center; gap:7px; padding:0 10px; border:1px solid #313841; border-radius:3px; background:#16191e; color:#c5ccd4; font-size:12px;">Klient <span style="font-size:9px; color:#99a1ab;">▾</span></div>
+            <div style="height:30px; display:flex; align-items:center; gap:7px; padding:0 10px; border:1px solid #313841; border-radius:3px; background:#16191e; color:#c5ccd4; font-size:12px;">Zakres dat <span style="font-size:9px; color:#99a1ab;">▾</span></div>
+            <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">1 842 artefakty · sortowanie: utworzono ↓</span>
+          </div>
+
+          <div style="flex:1; min-height:0; overflow:hidden;">
+            <table style="border-collapse:separate; border-spacing:0; width:100%; table-layout:fixed;">
+              <thead>
+                <tr>
+                  <th style="width:150px; padding:0 20px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Utworzono</span></th>
+                  <th style="width:130px; padding:0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Rodzaj</span></th>
+                  <th style="width:290px; padding:0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Nazwa</span></th>
+                  <th style="width:170px; padding:0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Klient</span></th>
+                  <th style="width:190px; padding:0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Hash</span></th>
+                  <th style="width:100px; padding:0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:right;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Rozmiar</span></th>
+                  <th style="width:130px; padding:0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Stan</span></th>
+                  <th style="padding:0 20px 0 10px; height:34px; background:#1b1f25; border-bottom:1px solid #313841; text-align:right;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;"></span></th>
+                </tr>
+              </thead>
+              <tbody>
+                <sc-for list="{{ artRows }}" as="a" hint-placeholder-count="16">
+                  <tr>
+                    <td style="padding:0 20px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#c5ccd4;">{{ a.when }}</span></td>
+                    <td style="padding:0 10px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">{{ a.kind }}</span></td>
+                    <td style="padding:0 10px; height:32px; border-bottom:1px solid #1f242b; overflow:hidden;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4; white-space:nowrap;">{{ a.name }}</span></td>
+                    <td style="padding:0 10px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-size:12px; color:#c5ccd4;">{{ a.client }}</span></td>
+                    <td style="padding:0 10px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">{{ a.hash }}</span></td>
+                    <td style="padding:0 10px; height:32px; border-bottom:1px solid #1f242b; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">{{ a.size }}</span></td>
+                    <td style="padding:0 10px; height:32px; border-bottom:1px solid #1f242b;"><span style="display:inline-flex; align-items:center; height:19px; padding:0 6px; border-radius:2px; background:{{ a.stBg }}; color:{{ a.stFg }}; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.04em;">{{ a.state }}</span></td>
+                    <td style="padding:0 20px 0 10px; height:32px; border-bottom:1px solid #1f242b; text-align:right;"><span style="font-size:12px; color:#ffab63; font-weight:500;">Inspekcja</span></td>
+                  </tr>
+                </sc-for>
+              </tbody>
+            </table>
+          </div>
+
+          <div style="height:38px; flex:0 0 38px; display:flex; align-items:center; gap:14px; padding:0 20px; border-top:1px solid #262b33; background:#1b1f25;">
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">1–16 z 1 842</span>
+            <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab;">Artefakty nie kształtują nawigacji produktu — modernizacja wizualna, bez zmiany modelu.</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:20px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">RSP-001 tablet poziomo 1024 · RSP-002 tablet pionowo 768 z szufladą filtrów · RSP-003 poniżej 768</div>
+    <div style="display:flex; gap:18px; align-items:flex-start;">
+
+      <div style="width:1024px; height:820px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c;" data-screen-label="RSP-001">
+        <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:12px; padding:0 16px; background:#14171c;">
+          <span style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:rgba(255,255,255,0.09); color:#f4f6f8; font-size:14px;">☰</span>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <div style="width:5px; height:16px; border-radius:1px; background:#ff7a18;"></div>
+            <span style="font-size:13px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+          </div>
+          <span style="font-size:12px; color:#b9c0c9;">Dane</span>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:10px;">
+            <span style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:rgba(255,255,255,0.09); color:#b9c0c9; font-size:13px;">⌕</span>
+            <div style="width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+          </div>
+        </div>
+        <div style="height:58px; flex:0 0 58px; display:flex; align-items:center; gap:10px; padding:0 16px; background:#ffffff; border-bottom:1px solid #e2e5e9;">
+          <span style="width:3px; height:24px; border-radius:1px; background:#ff7a18;"></span>
+          <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+            <div style="display:flex; align-items:center; gap:7px;">
+              <span style="font-size:15px; font-weight:600; color:#14171c;">Acme Logistics</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f; background:#f0f2f4; padding:2px 5px; border-radius:2px;">ACME00001</span>
+            </div>
+            <span style="font-size:13px; color:#33393f;">Przejazdy klienta</span>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:7px;">
+            <span style="height:44px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Filtry <span style="display:inline-flex; align-items:center; justify-content:center; min-width:15px; height:15px; border-radius:2px; background:#ff7a18; color:#1a0c02; font-family:'IBM Plex Mono',monospace; font-size:10px; margin-left:6px;">3</span></span>
+            <span style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; color:#33393f; font-size:14px;">⋯</span>
+          </div>
+        </div>
+        <div style="height:44px; flex:0 0 44px; display:flex; align-items:center; gap:8px; padding:0 16px; background:#fafbfb; border-bottom:1px solid #e2e5e9; overflow:hidden;">
+          <div style="width:200px; flex:0 0 200px; height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; display:flex; align-items:center; gap:8px; padding:0 9px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Szukaj w tekście</span></div>
+          <sc-for list="{{ narrowChips }}" as="c" hint-placeholder-count="3">
+            <div style="flex:0 0 auto; display:flex; align-items:center; gap:7px; height:28px; padding:0 8px; border-radius:2px; background:#f7f8f9; border-left:2px solid #ff7a18;">
+              <span style="font-size:11px; font-weight:600; color:#14171c; white-space:nowrap;">{{ c.col }}</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f; white-space:nowrap;">{{ c.op }}</span>
+              <span style="width:16px; height:16px; border-radius:2px; background:#eef0f3; color:#5c646f; font-size:10px; display:flex; align-items:center; justify-content:center;">×</span>
+            </div>
+          </sc-for>
+          <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; white-space:nowrap;">1 274 wiersze</span>
+        </div>
+        <div style="flex:1; min-height:0; overflow:hidden; background:#ffffff; position:relative;">
+          <div style="position:absolute; top:0; right:0; bottom:0; width:26px; pointer-events:none; z-index:4; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.94));"></div>
+          <table style="border-collapse:separate; border-spacing:0; width:1180px; table-layout:fixed;">
+            <thead>
+              <tr>
+                <th style="width:180px; padding:0 14px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; border-right:1px solid #e2e5e9; text-align:left; position:sticky; left:0; z-index:3;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">ID przejazdu</span><span style="font-size:9px; color:#5c646f; margin-left:auto;">▾</span></div></th>
+                <th style="width:104px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#33393f;">Nr rej.</span></th>
+                <th style="width:160px; padding:0 12px; height:34px; background:#fdf3ea; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#8a4409;">Kierowca</span></th>
+                <th style="width:148px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#14171c;">Start (UTC)</span></th>
+                <th style="width:96px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Czas (s)</span></th>
+                <th style="width:104px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Dystans</span></th>
+                <th style="width:84px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Vmax</span></th>
+                <th style="padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#33393f;">Adres startu</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ narrowRows }}" as="r" hint-placeholder-count="16">
+                <tr>
+                  <td style="padding:0 14px; height:34px; border-bottom:1px solid #f0f2f4; border-right:1px solid #e2e5e9; position:sticky; left:0; z-index:2; background:#ffffff; overflow:hidden;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f; white-space:nowrap;">{{ r.id }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.reg }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; background:#fefaf6;"><span style="font-size:12px; color:#14171c; white-space:nowrap;">{{ r.drv }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#33393f; white-space:nowrap;">{{ r.start }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dur }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dist }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:{{ r.vmaxFg }};">{{ r.vmax }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; overflow:hidden;"><span style="font-size:12px; color:#5c646f; white-space:nowrap;">{{ r.addr }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+        </div>
+        <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:10px; padding:0 16px; border-top:1px solid #e2e5e9; background:#fafbfb;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f;">1–100 z 1 274</span>
+          <div style="display:flex; align-items:center; gap:4px;">
+            <span style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#b9c0c9; font-size:12px;">‹</span>
+            <span style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border-radius:2px; background:#14171c; color:#ffffff; font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600;">1</span>
+            <span style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#33393f; font-family:'IBM Plex Mono',monospace; font-size:12px;">2</span>
+            <span style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#33393f; font-size:12px;">›</span>
+          </div>
+          <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f;">1024 px · cele dotykowe 44 px</span>
+        </div>
+      </div>
+
+      <div style="width:768px; height:820px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c; position:relative;" data-screen-label="RSP-002">
+        <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:10px; padding:0 14px; background:#14171c;">
+          <span style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:rgba(255,255,255,0.09); color:#f4f6f8; font-size:14px;">☰</span>
+          <div style="width:5px; height:16px; border-radius:1px; background:#ff7a18;"></div>
+          <span style="font-size:13px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+            <span style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:rgba(255,255,255,0.09); color:#b9c0c9; font-size:13px;">⌕</span>
+            <div style="width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+          </div>
+        </div>
+        <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:9px; padding:0 14px; background:#ffffff; border-bottom:1px solid #e2e5e9;">
+          <span style="width:3px; height:22px; border-radius:1px; background:#ff7a18;"></span>
+          <div style="display:flex; flex-direction:column; gap:0; min-width:0;">
+            <span style="font-size:14px; font-weight:600; color:#14171c; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">Acme · Przejazdy klienta</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f;">ACME00001 · tylko odczyt</span>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:6px;">
+            <span style="height:44px; display:flex; align-items:center; padding:0 12px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600; white-space:nowrap;">Filtry 3</span>
+            <span style="width:44px; height:44px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; color:#33393f; font-size:14px;">⋯</span>
+          </div>
+        </div>
+        <div style="flex:1; min-height:0; overflow:hidden; background:#ffffff; position:relative;">
+          <table style="border-collapse:separate; border-spacing:0; width:900px; table-layout:fixed;">
+            <thead>
+              <tr>
+                <th style="width:170px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; border-right:1px solid #e2e5e9; text-align:left; position:sticky; left:0; z-index:3;"><span style="font-size:12px; font-weight:600; color:#33393f;">ID przejazdu</span></th>
+                <th style="width:100px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#33393f;">Nr rej.</span></th>
+                <th style="width:150px; padding:0 12px; height:34px; background:#fdf3ea; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#8a4409;">Kierowca</span></th>
+                <th style="width:144px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><span style="font-size:12px; font-weight:600; color:#14171c;">Start (UTC)</span></th>
+                <th style="width:96px; padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Czas (s)</span></th>
+                <th style="padding:0 12px; height:34px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><span style="font-size:12px; font-weight:600; color:#33393f;">Dystans</span></th>
+              </tr>
+            </thead>
+            <tbody>
+              <sc-for list="{{ narrowRows }}" as="r" hint-placeholder-count="16">
+                <tr>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; border-right:1px solid #e2e5e9; position:sticky; left:0; z-index:2; background:#ffffff; overflow:hidden;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f; white-space:nowrap;">{{ r.id }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.reg }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; background:#fefaf6;"><span style="font-size:12px; color:#14171c; white-space:nowrap;">{{ r.drv }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#33393f; white-space:nowrap;">{{ r.start }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dur }}</span></td>
+                  <td style="padding:0 12px; height:34px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dist }}</span></td>
+                </tr>
+              </sc-for>
+            </tbody>
+          </table>
+          <div style="position:absolute; inset:0; background:rgba(20,23,28,0.42);"></div>
+          <div style="position:absolute; top:0; right:0; bottom:0; width:400px; background:#ffffff; border-left:1px solid #d7dbe0; display:flex; flex-direction:column;">
+            <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; justify-content:space-between; padding:0 16px; border-bottom:1px solid #e2e5e9; background:#fafbfb;">
+              <span style="font-size:13px; font-weight:600; color:#14171c;">Filtry</span>
+              <span style="width:32px; height:32px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#33393f; font-size:14px;">×</span>
+            </div>
+            <div style="padding:14px 16px; border-bottom:1px solid #eef0f3; display:flex; flex-direction:column; gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">Aktywne — 3</span>
+              <sc-for list="{{ narrowChips }}" as="c" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; gap:8px; min-height:44px; padding:6px 8px 6px 10px; border-radius:3px; background:#f7f8f9; border-left:2px solid #ff7a18;">
+                  <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+                    <span style="font-size:12px; font-weight:600; color:#14171c;">{{ c.col }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f;">{{ c.op }}</span>
+                  </div>
+                  <span style="margin-left:auto; width:32px; height:32px; border-radius:2px; background:#eef0f3; color:#5c646f; font-size:12px; display:flex; align-items:center; justify-content:center;">×</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="padding:14px 16px; display:flex; flex-direction:column; gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">Dodaj filtr</span>
+              <div style="height:44px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Znajdź kolumnę spośród 42</span></div>
+            </div>
+            <div style="margin-top:auto; padding:14px 16px; border-top:1px solid #e2e5e9; background:#fafbfb; display:flex; gap:8px;">
+              <span style="flex:1; height:44px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:#14171c; color:#ffffff; font-size:13px; font-weight:600;">Zastosuj</span>
+              <span style="height:44px; display:flex; align-items:center; padding:0 14px; border-radius:3px; border:1px solid #d7dbe0; background:#ffffff; color:#33393f; font-size:13px;">Wyczyść</span>
+            </div>
+          </div>
+        </div>
+        <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:10px; padding:0 14px; border-top:1px solid #e2e5e9; background:#fafbfb;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f;">1–100 z 1 274</span>
+          <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f;">768 px · panel filtrów jako szuflada nad tabelą</span>
+        </div>
+      </div>
+
+      <div style="width:390px; height:820px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c;" data-screen-label="RSP-003">
+        <div style="height:52px; flex:0 0 52px; display:flex; align-items:center; gap:10px; padding:0 14px; background:#14171c;">
+          <div style="width:5px; height:16px; border-radius:1px; background:#ff7a18;"></div>
+          <span style="font-size:13px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+          <div style="margin-left:auto; width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:10px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+        </div>
+        <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px; padding:0 32px; text-align:center;">
+          <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">Poniżej 768 px</span>
+          <span style="font-size:17px; font-weight:600; color:#14171c; line-height:1.35;">Przeglądarka danych wymaga szerszego ekranu</span>
+          <span style="font-size:13px; color:#5c646f; line-height:1.6;">Tabela z 42 kolumnami nie da się rzetelnie obsłużyć na tej szerokości. Nie zamieniamy jej na karty, bo porównywanie wierszy jest tu całym sensem pracy.</span>
+          <div style="display:flex; flex-direction:column; gap:9px; width:100%; margin-top:6px;">
+            <span style="height:44px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:#14171c; color:#ffffff; font-size:13px; font-weight:600;">Przejdź do Raportów</span>
+            <span style="height:44px; display:flex; align-items:center; justify-content:center; border-radius:3px; border:1px solid #d7dbe0; background:#ffffff; color:#33393f; font-size:13px; font-weight:500;">Otwórz mimo to</span>
+          </div>
+          <span style="font-size:11px; color:#8b939e; line-height:1.5; margin-top:2px;">Raporty i Eco Driving działają na tej szerokości w pełni.</span>
+        </div>
+        <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; padding:0 14px; border-top:1px solid #e2e5e9; background:#fafbfb;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5c646f;">390 px · komunikat z wyjściem awaryjnym</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:18px; border-top:1px solid #1e242d; padding-top:36px; width:1400px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#6b7480;">Reguły responsywne i decyzje</div>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:26px;">
+      <sc-for list="{{ notes }}" as="n" hint-placeholder-count="6">
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="font-size:14px; font-weight:600; color:#f4f6f8;">{{ n.t }}</div>
+          <div style="font-size:13px; line-height:1.6; color:#8d96a2;">{{ n.b }}</div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:2050,&quot;height&quot;:1200}}">
+class Component extends DCLogic {
+  renderVals() {
+    const S = "'IBM Plex Sans',sans-serif";
+    const M = "'IBM Plex Mono',monospace";
+
+    const decisions = [
+      { k: "Szczegóły wiersza", v: "Panel z prawej, szerokość 520 px. Tabela zostaje widoczna i zachowuje pozycję przewinięcia; ↑ ↓ przechodzi między wierszami bez zamykania panelu, esc zamyka. Adres URL zawiera identyfikator wiersza, więc panel jest linkowalny." },
+      { k: "Eksporty w tle", v: "Cztery stany na jednej liście: w toku z paskiem postępu, gotowy z datą wygaśnięcia, wygasły bez akcji pobrania, błąd z referencją. Lista jest typem systemowym w bibliotece raportów, nie osobną stroną plików." },
+      { k: "Artefakty", v: "Modernizacja wizualna na tych samych tokenach, bez zmiany modelu. Powierzchnia techniczna oznaczona plakietką trybu operatora, poza trzema trybami dostępu do danych klienta." },
+      { k: "Responsywność", v: "Pełna obsługa do 768 px. Tabela nigdy nie zamienia się w karty — zostaje tabelą z przewijaniem poziomym i przypiętą pierwszą kolumną. Poniżej 768 px komunikat z wyjściem awaryjnym. Cele dotykowe 44 px od 1024 px w dół." }
+    ];
+
+    const mkNav = (active, fgActive, fgIdle, fgQuiet, line) => ([
+      { label: "Raporty", key: "rep" },
+      { label: "Dane", key: "data" },
+      { label: "Analizy", key: "ana" },
+      { label: "Artefakty", key: "art", quiet: true },
+      { label: "Administracja", key: "adm", quiet: true }
+    ]).map((n) => n.key === active
+      ? { label: n.label, w: "600", fg: fgActive, line: line }
+      : { label: n.label, w: "400", fg: n.quiet ? fgQuiet : fgIdle, line: "none" });
+
+    const navDataL = mkNav("data", "#ffffff", "#b9c0c9", "#8b939e", "inset 0 -2px 0 #ff7a18");
+    const navRepL = mkNav("rep", "#ffffff", "#b9c0c9", "#8b939e", "inset 0 -2px 0 #ff7a18");
+    const navArtD = mkNav("art", "#eef1f4", "#99a1ab", "#99a1ab", "inset 0 -2px 0 #ff8a33");
+
+    const surnames = ["Kowalska Anna", "Kowalski Marek", "Kowalczyk Ewa", "Kowal Piotr", "Kowalska Zofia", "Kowalski Tomasz"];
+    const streets = ["Grójecka 128, Warszawa", "Puławska 42, Warszawa", "Wołoska 9, Warszawa", "Modlińska 310, Warszawa", "Marywilska 44, Warszawa", "Połczyńska 121, Warszawa"];
+    const letters = "ABCDEFGHJKLMNPRSTUWXY".split("");
+    const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+
+    const mkRows = (count, selectedIndex) => {
+      const out = [];
+      for (let i = 0; i < count; i++) {
+        const day = String(3 + (i % 26)).padStart(2, "0");
+        const hh = String(6 + (i % 12)).padStart(2, "0");
+        const mm = String((i * 7) % 60).padStart(2, "0");
+        const vmax = 62 + ((i * 13) % 76);
+        const sel = i === selectedIndex;
+        out.push({
+          id: "7f" + String(i).padStart(2, "0") + "c4e1…" + String(1000 + i * 7),
+          reg: "WX " + String(1000 + i * 7) + " " + letters[i % letters.length],
+          drv: i % 9 === 4 ? "—" : surnames[i % surnames.length],
+          start: "2026-07-" + day + " " + hh + ":" + mm,
+          dur: fmt(3120 + i * 137),
+          dist: fmt(4820 + i * 913),
+          vmax: String(vmax),
+          vmaxFg: vmax >= 110 ? "#9e2c26" : "#14171c",
+          addr: streets[i % streets.length],
+          bg: sel ? "#fdf3ea" : "#ffffff",
+          bgTint: sel ? "#fdf3ea" : "#fefaf6",
+          check: sel ? "#14171c" : "transparent",
+          mark: sel ? "inset 2px 0 0 #ff7a18" : "none",
+          idFg: sel ? "#14171c" : "#5c646f",
+          w: sel ? "600" : "400"
+        });
+      }
+      return out;
+    };
+    const rowsL = mkRows(22, 3);
+    const narrowRows = mkRows(16, -1);
+
+    const detailGroups = [
+      {
+        name: "Tożsamość", count: "4 pola", fields: [
+          { label: "ID przejazdu", col: "trip_id", value: "95688399-f963-4b3c-8342-d5addd2a66ac", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Nr rejestracyjny", col: "vehicle_registration", value: "WX 1021 D", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "ID kierowcy", col: "driver_assigned_id", value: "DRV-4203", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Kierowca", col: "driver_name", value: "Kowal Piotr", ff: S, fg: "#14171c", fs: "normal" }
+        ]
+      },
+      {
+        name: "Czas i trasa", count: "6 pól", fields: [
+          { label: "Start (UTC)", col: "trip_start_utc", value: "2026-07-06 09:21:00+00:00", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Koniec (UTC)", col: "trip_end_utc", value: "2026-07-06 10:34:00+00:00", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Start (lokalny)", col: "trip_start_local", value: "2026-07-06 11:21:00+02:00", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Czas trwania (s)", col: "duration_s", value: "4 380", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Dystans (m)", col: "distance_m", value: "7 559", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Adres startu", col: "start_address", value: "Modlińska 310, 03-152 Warszawa, Polska", ff: S, fg: "#14171c", fs: "normal" }
+        ]
+      },
+      {
+        name: "Metryki jazdy", count: "5 pól", fields: [
+          { label: "Vmax (km/h)", col: "max_speed_kph", value: "101", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Vśr (km/h)", col: "avg_speed_kph", value: "41", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Ostre hamowania", col: "harsh_braking", value: "2", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Zużycie (l/100km)", col: "fuel_eff_l_100km", value: "28,40", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Bieg jałowy (s)", col: "idle_s", value: "0", ff: M, fg: "#14171c", fs: "normal" }
+        ]
+      },
+      {
+        name: "Klasyfikacja i pochodzenie", count: "7 pól", fields: [
+          { label: "Prywatny", col: "private_trip", value: "nie", ff: S, fg: "#14171c", fs: "normal" },
+          { label: "Kompletny", col: "complete", value: "tak", ff: S, fg: "#14171c", fs: "normal" },
+          { label: "Centrum kosztów", col: "cost_centre", value: "brak wartości", ff: S, fg: "#8b939e", fs: "italic" },
+          { label: "Depot", col: "depot_code", value: "WAW-01", ff: M, fg: "#14171c", fs: "normal" },
+          { label: "Uwagi", col: "notes", value: "pusty tekst", ff: S, fg: "#8b939e", fs: "italic" },
+          { label: "Hash źródła", col: "source_payload_hash", value: "9f2c41ab8e7d5306c1fa48b2e93d7a15", ff: M, fg: "#5c646f", fs: "normal" },
+          { label: "Wersja rekordu", col: "record_version", value: "3", ff: M, fg: "#14171c", fs: "normal" }
+        ]
+      }
+    ];
+
+    const primary = { bd: "none", bg: "#14171c", fg: "#ffffff", w: "600" };
+    const secondary = { bd: "1px solid #d7dbe0", bg: "#ffffff", fg: "#33393f", w: "500" };
+
+    const exportsL = [
+      {
+        name: "Przejazdy klienta · lipiec 2026",
+        requested: "zlecono 18.08 09:02 · Anna Kowalska",
+        scope: "Bieżący widok z filtrami",
+        cols: "42 zatwierdzone kolumny · XLSX",
+        rows: "184 902",
+        status: "W toku", stBg: "#fdf6e6", stFg: "#8a5b09",
+        detail: "przygotowano 118 tys. wierszy",
+        hasBar: true, pct: "64%",
+        expires: "—", expFg: "#8b939e",
+        file: "plik pojawi się po zakończeniu",
+        rowBg: "#fefaf6",
+        actions: [{ label: "Anuluj", ...secondary }]
+      },
+      {
+        name: "Przejazdy klienta · cały zbiór",
+        requested: "zlecono 17.08 16:40 · Anna Kowalska",
+        scope: "Cały zbiór danych",
+        cols: "42 zatwierdzone kolumny · XLSX",
+        rows: "48 213",
+        status: "Gotowy", stBg: "#f0f8f3", stFg: "#1f6b45",
+        detail: "ukończono 17.08 16:48",
+        hasBar: false, pct: "100%",
+        expires: "20.08.2026 16:48", expFg: "#14171c",
+        file: "przejazdy-acme-2026-08-17.xlsx · 41 MB",
+        rowBg: "#ffffff",
+        actions: [{ label: "Pobierz", ...primary }]
+      },
+      {
+        name: "Raport 207 · tydzień 30",
+        requested: "zlecono 12.08 11:15 · Anna Kowalska",
+        scope: "Bieżący widok z filtrami",
+        cols: "15 zatwierdzonych kolumn · CSV",
+        rows: "4 118",
+        status: "Pliki wygasły", stBg: "#f7f8f9", stFg: "#5c646f",
+        detail: "ukończono 12.08 11:16",
+        hasBar: false, pct: "100%",
+        expires: "wygasł 15.08.2026", expFg: "#5c646f",
+        file: "plik usunięty po 3 dniach",
+        rowBg: "#ffffff",
+        actions: [{ label: "Zleć ponownie", ...secondary }]
+      },
+      {
+        name: "Przejazdy klienta · czerwiec 2026",
+        requested: "zlecono 11.08 08:20 · Anna Kowalska",
+        scope: "Bieżący widok z filtrami",
+        cols: "42 zatwierdzone kolumny · XLSX",
+        rows: "162 440",
+        status: "Błąd", stBg: "#fdeceb", stFg: "#9e2c26",
+        detail: "przerwano po 15 min · ref 8c14…f902",
+        hasBar: false, pct: "0%",
+        expires: "—", expFg: "#8b939e",
+        file: "brak pliku",
+        rowBg: "#ffffff",
+        actions: [{ label: "Zleć ponownie", ...primary }, { label: "Kopiuj ref", ...secondary }]
+      }
+    ];
+
+    const artKindDefs = [
+      { name: "Zrzuty zapytań", count: "612", on: true },
+      { name: "Pliki eksportów", count: "438" },
+      { name: "Pakiety raportów", count: "356" },
+      { name: "Wsady normalizacji", count: "241" },
+      { name: "Logi audytu", count: "148" },
+      { name: "Migawki konfiguracji", count: "47" }
+    ];
+    const artKinds = artKindDefs.map((k) => ({
+      name: k.name, count: k.count,
+      bg: k.on ? "#1b1f25" : "transparent",
+      mark: k.on ? "inset 2px 0 0 #ff8a33" : "none",
+      w: k.on ? "600" : "400",
+      fg: k.on ? "#eef1f4" : "#c5ccd4"
+    }));
+
+    const artStates = {
+      ok: { label: "ZWERYFIKOWANY", bg: "#14241c", fg: "#6fd3a0" },
+      pending: { label: "W TRAKCIE", bg: "#2a2211", fg: "#e8c37a" },
+      gone: { label: "USUNIĘTY", bg: "#1b1f25", fg: "#99a1ab" }
+    };
+    const artClients = ["Acme Logistics", "Nordic Freight", "Acme Logistics", "Baltic Transport"];
+    const artNames = ["query_snapshot_trips_2026w28", "export_acme_full_20260817", "report_pack_207_2026w28", "normalize_batch_20260818_0412"];
+    const artRows = [];
+    for (let i = 0; i < 16; i++) {
+      const st = i === 2 ? artStates.pending : i === 9 || i === 13 ? artStates.gone : artStates.ok;
+      const day = String(18 - Math.floor(i / 3)).padStart(2, "0");
+      artRows.push({
+        when: "2026-08-" + day + " " + String(4 + (i % 16)).padStart(2, "0") + ":" + String((i * 11) % 60).padStart(2, "0"),
+        kind: ["query_snapshot", "export_file", "report_pack", "normalize_batch"][i % 4],
+        name: artNames[i % 4] + "_" + String(i + 1).padStart(3, "0"),
+        client: artClients[i % 4],
+        hash: "9f2c41ab8e7d" + String(5300 + i * 7),
+        size: [ "1,4 MB", "41 MB", "3,6 MB", "812 kB" ][i % 4],
+        state: st.label, stBg: st.bg, stFg: st.fg
+      });
+    }
+
+    const narrowChips = [
+      { col: "Kierowca", op: "zawiera Kowal" },
+      { col: "Start (UTC)", op: "01.07 – 31.07.2026" },
+      { col: "Kompletny", op: "= nie" }
+    ];
+
+    const notes = [
+      { t: "Panel wiersza, nie strona", b: "Wybrano panel z prawej, bo praca polega na porównywaniu: tabela zostaje na ekranie, zaznaczony wiersz jest podświetlony i oznaczony pomarańczową krawędzią, a ↑ ↓ przenosi zaznaczenie razem z zawartością panelu. Dedykowana strona zerwałaby ten rytm." },
+      { t: "42 pola pogrupowane, nie wysypane", b: "Panel grupuje pola w cztery sekcje z licznikami i domyślnie pokazuje 12 widocznych kolumn, z przełącznikiem na wszystkie 42. Wyszukiwanie pola jest w panelu, bo przy 42 polach przewijanie jest gorsze niż filtrowanie." },
+      { t: "NULL kontra pusty tekst", b: "„brak wartości” i „pusty tekst” to dwa różne komunikaty, oba kursywą w kolorze wyciszonym. Dziś oba przechodzą jedną ścieżką str() i wyglądają identycznie, co przy weryfikacji danych jest realnym problemem." },
+      { t: "Eksport ma cztery stany, nie dwa", b: "W toku pokazuje postęp liczbą wierszy i paskiem. Gotowy pokazuje datę wygaśnięcia i nazwę pliku. Wygasły traci akcję pobrania i zyskuje „Zleć ponownie”. Błąd nosi kopiowalną referencję. Każdy stan ma inny zestaw akcji, nie wyszarzone przyciski." },
+      { t: "Granica responsywna: 768 px", b: "Do 768 px układ trzyma się: nawigacja zwija się do przycisku menu, pasek kontekstu skraca się do nazwy klienta i zbioru, panel filtrów staje się szufladą nad tabelą, cele dotykowe rosną do 44 px. Tabela zawsze zostaje tabelą z przypiętą pierwszą kolumną." },
+      { t: "Poniżej 768 px: komunikat z wyjściem", b: "Zamiast udawać, że 42-kolumnowa siatka działa na telefonie, pokazujemy komunikat z dwiema drogami: przejście do Raportów, które działają w pełni, albo świadome wejście mimo ostrzeżenia. Decyzja należy do użytkownika, nie do blokady." }
+    ];
+
+    return { decisions, navDataL, navRepL, navArtD, rowsL, narrowRows, detailGroups, exportsL, artKinds, artRows, narrowChips, notes };
+  }
+}
+
+</script>
+</body>
+</html>

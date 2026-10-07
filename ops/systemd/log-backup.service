@@ -1,0 +1,19 @@
+[Unit]
+Description=Nightly log-platform backup job
+After=network-online.target docker.service
+Wants=network-online.target
+Requires=docker.service
+
+[Service]
+Type=oneshot
+User=logplatform
+WorkingDirectory=/opt/log-platform
+UMask=0077
+TimeoutStartSec=4h
+ExecStart=/opt/log-platform/ops/backup.sh create
+EnvironmentFile=/etc/log-platform/backup.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+
+
+[Install]
+WantedBy=multi-user.target

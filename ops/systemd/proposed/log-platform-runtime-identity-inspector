@@ -1,0 +1,286 @@
+#!/usr/bin/python3 -I
+"""Root-only, read-only inspection of fixed legacy runtime identity sources."""
+from __future__ import annotations
+
+import datetime
+import grp
+import hashlib
+import json
+import os
+import pwd
+import re
+import resource
+import signal
+import stat
+import sys
+
+SCHEMA_VERSION = 1
+HELPER_VERSION = "1"
+OPERATION = "inspect-runtime-identity-sources"
+HELPER_SOURCE = "log-platform-runtime-identity-inspector"
+IDENTITY_KEY = "LOG_PLATFORM_TARGET_ENVIRONMENT"
+EXPECTED_ENVIRONMENT = "local_dev"
+SUPPORTED_ENVIRONMENTS = ("local_dev", "staging", "production")
+MAX_FILE_SIZE = 1024 * 1024
+ALLOW_LIST = (
+    ("host_environment", "/etc/log-platform-host.env"),
+    ("runtime_environment", "/etc/log-platform/runtime.env"),
+    ("backup_environment", "/etc/log-platform/backup.env"),
+)
+INSTALL_PATH = "/usr/local/sbin/log-platform-runtime-identity-inspector"
+
+_TARGET_PREFIX = re.compile(r"^\s*(?:export\s+)?LOG_PLATFORM_TARGET_ENVIRONMENT(?:\s|=|$)")
+_ASSIGNMENT = re.compile(
+    r"^\s*(?:export\s+)?LOG_PLATFORM_TARGET_ENVIRONMENT\s*=\s*(.*?)\s*$"
+)
+_SIMPLE_VALUE = re.compile(r"^[A-Za-z0-9_]+$")
+
+
+def _safe_process() -> None:
+    for name in tuple(os.environ):
+        if name in {
+            "PYTHONPATH", "PYTHONHOME", "PYTHONUSERBASE", "LD_PRELOAD",
+            "LD_LIBRARY_PATH", "BASH_ENV", "ENV", "IFS",
+        } or name.startswith("DYLD_"):
+            os.environ.pop(name, None)
+    os.environ["PATH"] = "/usr/sbin:/usr/bin:/sbin:/bin"
+    os.environ["LC_ALL"] = "C"
+    os.environ["LANG"] = "C"
+    os.environ["PYTHONNOUSERSITE"] = "1"
+    resource.setrlimit(resource.RLIMIT_CPU, (5, 5))
+    memory_limit = 256 * 1024 * 1024
+    current_as = resource.getrlimit(resource.RLIMIT_AS)
+    hard_as = current_as[1]
+    soft_as = memory_limit if hard_as == resource.RLIM_INFINITY else min(memory_limit, hard_as)
+    resource.setrlimit(resource.RLIMIT_AS, (soft_as, hard_as))
+    signal.alarm(8)
+
+
+def _name(resolver, numeric_id: int) -> str | None:
+    try:
+        return resolver(numeric_id)[0]
+    except KeyError:
+        return None
+
+
+def _timestamp(st_mtime_ns: int) -> str:
+    seconds, nanoseconds = divmod(st_mtime_ns, 1_000_000_000)
+    base = datetime.datetime.fromtimestamp(seconds, datetime.timezone.utc)
+    return f"{base:%Y-%m-%dT%H:%M:%S}.{nanoseconds:09d}Z"
+
+
+def _parse(raw: bytes) -> dict[str, object]:
+    malformed = False
+    assignments: list[str | None] = []
+    try:
+        text = raw.decode("utf-8")
+    except UnicodeDecodeError:
+        return {
+            "has_active_assignment": False,
+            "active_assignment_count": 0,
+            "canonical_value": None,
+            "supported": False,
+            "duplicate_definitions": False,
+            "malformed_identity_assignments": True,
+            "conflicts_expected_environment": False,
+        }
+    for line in text.splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#"):
+            continue
+        if not _TARGET_PREFIX.match(line):
+            continue
+        match = _ASSIGNMENT.fullmatch(line)
+        if not match:
+            malformed = True
+            continue
+        value = match.group(1).strip()
+        if len(value) >= 2 and value[0] == value[-1] and value[0] in ("'", '"'):
+            value = value[1:-1]
+        if not _SIMPLE_VALUE.fullmatch(value):
+            assignments.append(None)
+            malformed = True
+        else:
+            assignments.append(value)
+    count = len(assignments)
+    canonical = assignments[0] if count == 1 and assignments[0] is not None and not malformed else None
+    supported = canonical in SUPPORTED_ENVIRONMENTS if canonical is not None else False
+    return {
+        "has_active_assignment": count > 0,
+        "active_assignment_count": count,
+        "canonical_value": canonical,
+        "supported": supported,
+        "duplicate_definitions": count > 1,
+        "malformed_identity_assignments": malformed,
+        "conflicts_expected_environment": canonical is not None and canonical != EXPECTED_ENVIRONMENT,
+    }
+
+
+def _empty(logical_source: str, path: str) -> dict[str, object]:
+    return {
+        "logical_source": logical_source,
+        "path": path,
+        "exists": False,
+        "regular_file": False,
+        "symlink": False,
+        "owner_uid": None,
+        "owner_name": None,
+        "group_gid": None,
+        "group_name": None,
+        "mode": None,
+        "size": None,
+        "modification_timestamp": None,
+        "sha256": None,
+        "has_active_assignment": False,
+        "active_assignment_count": 0,
+        "canonical_value": None,
+        "supported": False,
+        "duplicate_definitions": False,
+        "malformed_identity_assignments": False,
+        "conflicts_expected_environment": False,
+        "error_code": None,
+    }
+
+
+def inspect_one(logical_source: str, path: str) -> dict[str, object]:
+    result = _empty(logical_source, path)
+    try:
+        before = os.lstat(path)
+    except FileNotFoundError:
+        return result
+    except PermissionError:
+        result["exists"] = True
+        result["error_code"] = "PERMISSION_DENIED"
+        return result
+    except OSError:
+        result["error_code"] = "METADATA_ERROR"
+        return result
+    result.update({
+        "exists": True,
+        "regular_file": stat.S_ISREG(before.st_mode),
+        "symlink": stat.S_ISLNK(before.st_mode),
+        "owner_uid": before.st_uid,
+        "owner_name": _name(pwd.getpwuid, before.st_uid),
+        "group_gid": before.st_gid,
+        "group_name": _name(grp.getgrgid, before.st_gid),
+        "mode": stat.S_IMODE(before.st_mode),
+        "size": before.st_size,
+        "modification_timestamp": _timestamp(before.st_mtime_ns),
+    })
+    if result["symlink"]:
+        result["error_code"] = "SYMLINK_REJECTED"
+        return result
+    if not result["regular_file"]:
+        result["error_code"] = "NON_REGULAR_FILE"
+        return result
+    if before.st_size > MAX_FILE_SIZE:
+        result["error_code"] = "OVERSIZED_FILE"
+        return result
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    try:
+        fd = os.open(path, flags)
+    except PermissionError:
+        result["error_code"] = "PERMISSION_DENIED"
+        return result
+    except OSError:
+        result["error_code"] = "OPEN_FAILED"
+        return result
+    try:
+        opened = os.fstat(fd)
+        if (before.st_dev, before.st_ino) != (opened.st_dev, opened.st_ino):
+            result["error_code"] = "FILE_CHANGED"
+            return result
+        if not stat.S_ISREG(opened.st_mode):
+            result["error_code"] = "NON_REGULAR_FILE"
+            return result
+        chunks: list[bytes] = []
+        total = 0
+        while True:
+            chunk = os.read(fd, min(65536, MAX_FILE_SIZE + 1 - total))
+            if not chunk:
+                break
+            chunks.append(chunk)
+            total += len(chunk)
+            if total > MAX_FILE_SIZE:
+                result["error_code"] = "OVERSIZED_FILE"
+                return result
+        after = os.fstat(fd)
+        if (
+            (opened.st_dev, opened.st_ino, opened.st_size, opened.st_mtime_ns)
+            != (after.st_dev, after.st_ino, after.st_size, after.st_mtime_ns)
+            or total != after.st_size
+        ):
+            result["error_code"] = "FILE_CHANGED"
+            return result
+        raw = b"".join(chunks)
+    finally:
+        os.close(fd)
+    result["sha256"] = hashlib.sha256(raw).hexdigest()
+    result.update(_parse(raw))
+    if result["malformed_identity_assignments"]:
+        result["error_code"] = "MALFORMED_IDENTITY_ASSIGNMENT"
+    elif result["duplicate_definitions"]:
+        result["error_code"] = "DUPLICATE_IDENTITY_ASSIGNMENT"
+    elif result["has_active_assignment"] and not result["supported"]:
+        result["error_code"] = "UNSUPPORTED_ENVIRONMENT"
+    elif result["conflicts_expected_environment"]:
+        result["error_code"] = "ENVIRONMENT_CONFLICT"
+    return result
+
+
+def inspect_sources(allow_list=ALLOW_LIST) -> dict[str, object]:
+    flags = os.O_RDONLY | getattr(os, "O_CLOEXEC", 0) | getattr(os, "O_NOFOLLOW", 0)
+    fd = os.open(__file__, flags)
+    try:
+        metadata = os.fstat(fd)
+        digest = hashlib.sha256()
+        while True:
+            chunk = os.read(fd, 65536)
+            if not chunk:
+                break
+            digest.update(chunk)
+        source_hash = digest.hexdigest()
+    finally:
+        os.close(fd)
+    return {
+        "schema_version": SCHEMA_VERSION,
+        "helper_version": HELPER_VERSION,
+        "operation": OPERATION,
+        "helper_source": HELPER_SOURCE,
+        "helper_sha256": source_hash,
+        "expected_environment": EXPECTED_ENVIRONMENT,
+        "sources": [inspect_one(name, path) for name, path in allow_list],
+    }
+
+
+def main(argv: list[str] | None = None) -> int:
+    _safe_process()
+    args = sys.argv[1:] if argv is None else argv
+    if args != [OPERATION]:
+        print(json.dumps({"error_code": "UNKNOWN_COMMAND"}, sort_keys=True))
+        return 2
+    if os.geteuid() != 0:
+        print(json.dumps({"error_code": "ROOT_REQUIRED"}, sort_keys=True))
+        return 2
+    try:
+        helper_metadata = os.lstat(__file__)
+    except OSError:
+        print(json.dumps({"error_code": "INSPECTOR_INSTALLATION_INVALID"}, sort_keys=True))
+        return 2
+    if (
+        os.path.abspath(__file__) != INSTALL_PATH
+        or stat.S_ISLNK(helper_metadata.st_mode)
+        or not stat.S_ISREG(helper_metadata.st_mode)
+        or helper_metadata.st_uid != 0
+        or helper_metadata.st_gid != 0
+        or stat.S_IMODE(helper_metadata.st_mode) != 0o755
+    ):
+        print(json.dumps({"error_code": "INSPECTOR_INSTALLATION_INVALID"}, sort_keys=True))
+        return 2
+    payload = inspect_sources()
+    print(json.dumps(payload, sort_keys=True, separators=(",", ":")))
+    return 2 if any(row["error_code"] for row in payload["sources"]) else 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

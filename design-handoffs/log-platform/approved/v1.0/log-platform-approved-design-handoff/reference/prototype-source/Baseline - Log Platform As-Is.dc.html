@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<style>
+  html { background: #080b10; }
+  body { margin: 0; background: #080b10; color: #f7f8fb; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-size: 14px; line-height: 1.5; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: #ff7300; }
+</style>
+</helmet>
+
+<div style="display:flex; flex-direction:column; gap:40px; padding:40px; background:#05070a; font-family:Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;">
+
+  <div style="display:flex; flex-direction:column; gap:6px; max-width:900px;">
+    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:#ff7300;">Baseline · as-is recreation</div>
+    <div style="font-size:24px; font-weight:780; color:#f7f8fb;">Log Platform today — rebuilt from <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:19px;">01-portal-shell.css</span> + <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:19px;">03-database-browser.css</span></div>
+    <div style="font-size:13px; color:#9aa4b2;">Every colour, radius, padding and label below is lifted from the extracted source at snapshot <span style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;">b0afb2a</span>. Labels are left in English because that is what the production templates emit today; the redesign directions are in Polish. Viewport 1440×900, matching the supplied captures.</div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#707b8d;">Screen 04 — /user/database · dataset selection</div>
+    <div style="width:1440px; border:1px solid #273244; overflow:hidden;">
+      <div style="min-height:1163px; display:flex; background:radial-gradient(circle at top left, rgba(255,115,0,0.12), transparent 32rem), linear-gradient(135deg, #080b10 0%, #090a0c 100%);">
+
+        <div style="width:268px; flex:0 0 268px; background:linear-gradient(180deg, rgba(16,23,34,0.98), rgba(9,13,19,0.98)); border-right:1px solid #273244; padding:22px 16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px;">
+            <div style="width:10px; height:28px; border-radius:999px; background:#ff7300; box-shadow:0 0 22px rgba(255,115,0,0.55);"></div>
+            <div style="display:flex; flex-direction:column; gap:2px; line-height:1.15;">
+              <div style="font-size:15px; font-weight:800; color:#f7f8fb;">Log Platform</div>
+              <div style="font-size:11px; font-weight:650; letter-spacing:0.08em; text-transform:uppercase; color:#9aa4b2;">User Portal</div>
+            </div>
+          </div>
+          <div style="margin:16px 0 4px; padding:0 11px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9aa4b2; opacity:0.85;">Workspace</div>
+          <div style="display:grid; gap:6px;">
+            <div style="display:flex; align-items:center; min-height:40px; padding:9px 11px; border-radius:10px; color:#9aa4b2; font-weight:680; border:1px solid transparent;">Reports</div>
+            <div style="display:flex; align-items:center; min-height:40px; padding:9px 11px; border-radius:10px; color:#f7f8fb; font-weight:680; background:rgba(255,115,0,0.15); border:1px solid rgba(255,115,0,0.46); box-shadow:inset 3px 0 0 #ff7300;">Data</div>
+          </div>
+          <div style="margin:16px 0 4px; padding:0 11px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9aa4b2; opacity:0.85;">Admin</div>
+          <div style="display:grid; gap:6px;">
+            <sc-for list="{{ adminNav }}" as="item" hint-placeholder-count="8">
+              <div style="display:flex; align-items:center; min-height:40px; padding:9px 11px; border-radius:10px; color:#9aa4b2; font-weight:680; border:1px solid transparent;">{{ item }}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0;">
+          <div style="min-height:64px; display:flex; justify-content:flex-end; align-items:center; gap:14px; padding:0 32px; background:rgba(8,11,16,0.78); border-bottom:1px solid #273244;">
+            <div style="color:#9aa4b2; font-size:13px;">Signed in as <strong style="color:#f7f8fb;">Anna Kowalska</strong></div>
+            <div style="color:#ff7300; font-weight:720;">Log out</div>
+          </div>
+          <div style="max-width:1280px; padding:30px 32px 48px;">
+            <div style="display:flex; flex-wrap:wrap; gap:7px; align-items:center; font-size:12px; color:#9aa4b2; margin:0 0 12px;">
+              <span>Log Platform</span><span style="opacity:0.5;">/</span><span>User Portal</span><span style="opacity:0.5;">/</span><span style="color:#f7f8fb; font-weight:680;">Client Database Explorer</span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-bottom:20px; padding:22px; border:1px solid #273244; border-radius:18px; background:linear-gradient(135deg, rgba(20,29,42,0.94), rgba(17,19,24,0.94)); box-shadow:0 20px 60px rgba(0,0,0,0.35); position:relative; overflow:hidden;">
+              <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#ff7300;"></div>
+              <div>
+                <h1 style="font-size:31px; line-height:1.14; margin:0 0 8px; font-weight:780;">Client Database Explorer</h1>
+                <p style="margin:0; color:#9aa4b2; max-width:860px;">Your assigned datasets are listed below. Row browsing and exports use only approved tables, approved columns, and permission flags.</p>
+              </div>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <h2 style="font-size:18px; margin:0 0 8px;">Acme Logistics</h2>
+              <p style="margin:0; color:#9aa4b2;">ACME00001</p>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-top:12px;">
+                <div style="padding:18px; min-height:132px; position:relative; overflow:hidden; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+                  <div style="position:absolute; inset:0 0 auto; height:2px; background:linear-gradient(90deg, #ff7300, transparent); opacity:0.8;"></div>
+                  <h3 style="font-size:15px; margin:0 0 6px;">Client Trips</h3>
+                  <p style="margin:0; color:#9aa4b2;"><strong style="color:#f7f8fb;">Acme Logistics</strong></p>
+                  <p style="margin:0; color:#9aa4b2;">Normalized per-trip records delivered from the telematics provider.</p>
+                  <p style="margin:0; color:#9aa4b2;">Visible columns: 42</p>
+                  <p style="margin:0; color:#9aa4b2;">Default date column: <code style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;">trip_start_utc</code></p>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+                    <span style="display:inline-flex; align-items:center; min-height:24px; padding:3px 9px; border-radius:999px; border:1px solid rgba(51,209,122,0.38); background:rgba(51,209,122,0.14); color:#a7f3c7; font-size:12px; font-weight:760;">Filter enabled</span>
+                    <span style="display:inline-flex; align-items:center; min-height:24px; padding:3px 9px; border-radius:999px; border:1px solid rgba(51,209,122,0.38); background:rgba(51,209,122,0.14); color:#a7f3c7; font-size:12px; font-weight:760;">Export enabled</span>
+                  </div>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #ff7300; border-radius:10px; color:#160a00; background:#ff7300; font-weight:780; font-size:13px; box-shadow:0 6px 18px rgba(255,115,0,0.22);">Browse rows</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <h2 style="font-size:18px; margin:0 0 8px;">Nordic Freight</h2>
+              <p style="margin:0; color:#9aa4b2;">NORDC00016</p>
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(240px, 1fr)); gap:14px; margin-top:12px;">
+                <div style="padding:18px; min-height:132px; position:relative; overflow:hidden; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+                  <div style="position:absolute; inset:0 0 auto; height:2px; background:linear-gradient(90deg, #ff7300, transparent); opacity:0.8;"></div>
+                  <h3 style="font-size:15px; margin:0 0 6px;">Client Trips</h3>
+                  <p style="margin:0; color:#9aa4b2;"><strong style="color:#f7f8fb;">Nordic Freight</strong></p>
+                  <p style="margin:0; color:#9aa4b2;">This dataset has been approved by an administrator. Row browsing is available through approved columns only.</p>
+                  <p style="margin:0; color:#9aa4b2;">Visible columns: 36</p>
+                  <p style="margin:0; color:#9aa4b2;">Default date column: <code style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;">trip_start_utc</code></p>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+                    <span style="display:inline-flex; align-items:center; min-height:24px; padding:3px 9px; border-radius:999px; border:1px solid rgba(51,209,122,0.38); background:rgba(51,209,122,0.14); color:#a7f3c7; font-size:12px; font-weight:760;">Filter enabled</span>
+                    <span style="display:inline-flex; align-items:center; min-height:24px; padding:3px 9px; border-radius:999px; border:1px solid #273244; background:rgba(255,255,255,0.04); color:#c3cad6; font-size:12px; font-weight:760;">View only</span>
+                  </div>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #ff7300; border-radius:10px; color:#160a00; background:#ff7300; font-weight:780; font-size:13px; box-shadow:0 6px 18px rgba(255,115,0,0.22);">Browse rows</span>
+                  </div>
+                </div>
+                <div style="padding:18px; min-height:132px; position:relative; overflow:hidden; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+                  <div style="position:absolute; inset:0 0 auto; height:2px; background:linear-gradient(90deg, #ff7300, transparent); opacity:0.8;"></div>
+                  <h3 style="font-size:15px; margin:0 0 6px;">Report 207</h3>
+                  <p style="margin:0; color:#9aa4b2;"><strong style="color:#f7f8fb;">Nordic Freight</strong></p>
+                  <p style="margin:0; color:#9aa4b2;">Speed violation detail rows behind the weekly Report 207 pack.</p>
+                  <p style="margin:0; color:#9aa4b2;">Visible columns: 15</p>
+                  <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+                    <span style="display:inline-flex; align-items:center; min-height:24px; padding:3px 9px; border-radius:999px; border:1px solid #273244; background:rgba(255,255,255,0.03); color:#9aa4b2; font-size:12px; font-weight:760;">Filter disabled</span>
+                    <span style="display:inline-flex; align-items:center; min-height:24px; padding:3px 9px; border-radius:999px; border:1px solid rgba(51,209,122,0.38); background:rgba(51,209,122,0.14); color:#a7f3c7; font-size:12px; font-weight:760;">Export enabled</span>
+                  </div>
+                  <div style="display:flex; gap:10px; flex-wrap:wrap; margin-top:12px;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #ff7300; border-radius:10px; color:#160a00; background:#ff7300; font-weight:780; font-size:13px; box-shadow:0 6px 18px rgba(255,115,0,0.22);">Browse rows</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <h2 style="font-size:18px; margin:0 0 8px;">Access rules</h2>
+              <p style="margin:0; color:#9aa4b2;">Row browsing and exports use only approved tables, approved columns, and the permission flags assigned to your account.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:10px;">
+    <div style="font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace; font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:#707b8d;">Screen 05 — /user/database/datasets/{id} · the main screen. Table is the 5th block; it opens below the fold.</div>
+    <div style="width:1440px; border:1px solid #273244; overflow:hidden;">
+      <div style="display:flex; background:radial-gradient(circle at top left, rgba(255,115,0,0.12), transparent 32rem), linear-gradient(135deg, #080b10 0%, #090a0c 100%);">
+
+        <div style="width:268px; flex:0 0 268px; background:linear-gradient(180deg, rgba(16,23,34,0.98), rgba(9,13,19,0.98)); border-right:1px solid #273244; padding:22px 16px;">
+          <div style="display:flex; align-items:center; gap:10px; margin-bottom:24px;">
+            <div style="width:10px; height:28px; border-radius:999px; background:#ff7300; box-shadow:0 0 22px rgba(255,115,0,0.55);"></div>
+            <div style="display:flex; flex-direction:column; gap:2px; line-height:1.15;">
+              <div style="font-size:15px; font-weight:800; color:#f7f8fb;">Log Platform</div>
+              <div style="font-size:11px; font-weight:650; letter-spacing:0.08em; text-transform:uppercase; color:#9aa4b2;">User Portal</div>
+            </div>
+          </div>
+          <div style="margin:16px 0 4px; padding:0 11px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9aa4b2; opacity:0.85;">Workspace</div>
+          <div style="display:grid; gap:6px;">
+            <div style="display:flex; align-items:center; min-height:40px; padding:9px 11px; border-radius:10px; color:#9aa4b2; font-weight:680; border:1px solid transparent;">Reports</div>
+            <div style="display:flex; align-items:center; min-height:40px; padding:9px 11px; border-radius:10px; color:#f7f8fb; font-weight:680; background:rgba(255,115,0,0.15); border:1px solid rgba(255,115,0,0.46); box-shadow:inset 3px 0 0 #ff7300;">Data</div>
+          </div>
+          <div style="margin:16px 0 4px; padding:0 11px; font-size:11px; font-weight:700; letter-spacing:0.08em; text-transform:uppercase; color:#9aa4b2; opacity:0.85;">Admin</div>
+          <div style="display:grid; gap:6px;">
+            <sc-for list="{{ adminNav }}" as="item" hint-placeholder-count="8">
+              <div style="display:flex; align-items:center; min-height:40px; padding:9px 11px; border-radius:10px; color:#9aa4b2; font-weight:680; border:1px solid transparent;">{{ item }}</div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="flex:1; min-width:0;">
+          <div style="min-height:64px; display:flex; justify-content:flex-end; align-items:center; gap:14px; padding:0 32px; background:rgba(8,11,16,0.78); border-bottom:1px solid #273244;">
+            <div style="color:#9aa4b2; font-size:13px;">Signed in as <strong style="color:#f7f8fb;">Anna Kowalska</strong></div>
+            <div style="color:#ff7300; font-weight:720;">Log out</div>
+          </div>
+          <div style="max-width:1280px; padding:30px 32px 48px;">
+            <div style="display:flex; flex-wrap:wrap; gap:7px; align-items:center; font-size:12px; color:#9aa4b2; margin:0 0 12px;">
+              <span>Log Platform</span><span style="opacity:0.5;">/</span><span>User Portal</span><span style="opacity:0.5;">/</span><span style="color:#f7f8fb; font-weight:680;">Client Trips</span>
+            </div>
+
+            <div style="display:flex; justify-content:space-between; gap:18px; align-items:flex-start; margin-bottom:20px; padding:22px; border:1px solid #273244; border-radius:18px; background:linear-gradient(135deg, rgba(20,29,42,0.94), rgba(17,19,24,0.94)); box-shadow:0 20px 60px rgba(0,0,0,0.35); position:relative; overflow:hidden;">
+              <div style="position:absolute; left:0; top:0; bottom:0; width:4px; background:#ff7300;"></div>
+              <div>
+                <h1 style="font-size:31px; line-height:1.14; margin:0 0 8px; font-weight:780;">Client Trips</h1>
+                <p style="margin:0; color:#9aa4b2; max-width:860px;">Browse approved rows for this dataset. Only administrator-approved columns are visible. Filters and sorting are restricted to approved fields.</p>
+              </div>
+              <div style="display:flex; flex-direction:column; gap:10px; align-items:flex-end;">
+                <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #30343d; border-radius:10px; color:#f7f8fb; background:rgba(255,255,255,0.04); font-weight:780; font-size:13px; white-space:nowrap;">My background exports</span>
+                <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #30343d; border-radius:10px; color:#f7f8fb; background:rgba(255,255,255,0.04); font-weight:780; font-size:13px; white-space:nowrap;">Back to datasets</span>
+              </div>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <h2 style="font-size:18px; margin:0 0 8px;">Background exports</h2>
+              <p style="margin:0; color:#9aa4b2;">Direct export is available for up to 20,000 rows. Larger exports up to 1,000,000 rows are prepared in the background and remain available for 3 days.</p>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <h2 style="font-size:18px; margin:0 0 8px;">Dataset</h2>
+              <p style="font-size:15px; font-weight:680; margin:0 0 6px;">Acme Logistics <span style="color:#9aa4b2;">(ACME00001)</span></p>
+              <p style="margin:0; color:#9aa4b2;">Normalized per-trip records delivered from the telematics provider.</p>
+              <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+                <span style="display:inline-flex; align-items:center; min-height:30px; padding:5px 10px; border:1px solid #273244; border-radius:999px; background:rgba(255,255,255,0.04); color:#9aa4b2; font-weight:680; font-size:12px;">48,213 total rows</span>
+                <span style="display:inline-flex; align-items:center; min-height:30px; padding:5px 10px; border:1px solid #273244; border-radius:999px; background:rgba(255,255,255,0.04); color:#9aa4b2; font-weight:680; font-size:12px;">Showing 42 of 42 columns</span>
+                <span style="display:inline-flex; align-items:center; min-height:30px; padding:5px 10px; border:1px solid #273244; border-radius:999px; background:rgba(255,255,255,0.04); color:#9aa4b2; font-weight:680; font-size:12px;">Date column: trip_start_utc</span>
+                <span style="display:inline-flex; align-items:center; min-height:30px; padding:5px 10px; border:1px solid rgba(51,209,122,0.38); border-radius:999px; background:rgba(51,209,122,0.14); color:#a7f3c7; font-weight:680; font-size:12px;">Filtering enabled</span>
+                <span style="display:inline-flex; align-items:center; min-height:30px; padding:5px 10px; border:1px solid rgba(51,209,122,0.38); border-radius:999px; background:rgba(51,209,122,0.14); color:#a7f3c7; font-weight:680; font-size:12px;">Export enabled</span>
+                <span style="display:inline-flex; align-items:center; min-height:30px; padding:5px 10px; border:1px solid #273244; border-radius:999px; background:rgba(255,255,255,0.04); color:#9aa4b2; font-weight:680; font-size:12px;">Row detail: Trip ID</span>
+              </div>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <h2 style="font-size:18px; margin:0 0 8px;">Filters</h2>
+              <div style="display:grid; gap:14px; max-width:720px;">
+
+                <div>
+                  <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#9aa4b2;">Quick search</h3>
+                  <div>
+                    <label style="display:block; margin-bottom:5px; color:#c3cad6; font-weight:720; font-size:12px;">Search text columns</label>
+                    <input type="text" placeholder="Search across Trip ID, Vehicle registration, Driver assigned ID, Driver name, Start address, End address, Private trip…" style="width:100%; min-height:38px; border:1px solid #30343d; border-radius:10px; background:#0b1119; color:#f7f8fb; padding:8px 10px; font:inherit;">
+                    <p style="margin:6px 0 0; font-size:12px; color:#707b8d;">Matches any of: Trip ID, Vehicle registration, Driver assigned ID, Driver name, Start address, End address, Private trip, Complete, Has scoring events, Classification, Cost centre, Depot code, Route reference, Provider trip ID, Source payload hash, Notes.</p>
+                  </div>
+                </div>
+
+                <div style="border-top:1px solid #273244; padding-top:14px; margin-top:14px;">
+                  <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#9aa4b2;">Quick date ranges</h3>
+                  <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center; margin-bottom:12px;">
+                    <span style="font-size:12px; color:#9aa4b2; margin-right:4px;">Quick ranges</span>
+                    <sc-for list="{{ presets }}" as="p" hint-placeholder-count="6">
+                      <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:12px; font-weight:640;">{{ p }}</span>
+                    </sc-for>
+                  </div>
+                  <p style="margin:6px 0 0; font-size:12px; color:#707b8d;">Preset links filter on <strong style="color:#c3cad6;">Trip start (UTC)</strong>. Use the date column filter below for older/newer/open-ended ranges.</p>
+                </div>
+
+                <div style="border-top:1px solid #273244; padding-top:14px; margin-top:14px;">
+                  <h3 style="margin:0 0 10px; font-size:13px; text-transform:uppercase; letter-spacing:0.04em; color:#9aa4b2;">Column filters</h3>
+                  <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(180px, 1fr)); gap:12px;">
+                    <sc-for list="{{ filterFields }}" as="f" hint-placeholder-count="42">
+                      <div>
+                        <label style="display:block; margin-bottom:5px; color:#c3cad6; font-weight:720; font-size:12px;">{{ f.label }}</label>
+                        <div style="display:flex; gap:6px;">
+                          <select style="flex:0 0 auto; width:auto; min-width:72px; min-height:38px; border:1px solid #30343d; border-radius:10px; background:#0b1119; color:#f7f8fb; padding:8px 10px; font:inherit;">
+                            <option>{{ f.op }}</option>
+                          </select>
+                          <sc-if value="{{ f.isValue }}" hint-placeholder-val="{{ true }}">
+                            <input type="text" placeholder="{{ f.ph }}" style="flex:1 1 auto; min-height:38px; border:1px solid #30343d; border-radius:10px; background:#0b1119; color:#f7f8fb; padding:8px 10px; font:inherit; min-width:0;">
+                          </sc-if>
+                        </div>
+                        <sc-if value="{{ f.isDate }}" hint-placeholder-val="{{ false }}">
+                          <div style="margin-top:8px;">
+                            <label style="display:block; margin-bottom:5px; color:#c3cad6; font-weight:720; font-size:12px;">From</label>
+                            <input type="datetime-local" style="width:100%; min-height:38px; border:1px solid #30343d; border-radius:10px; background:#0b1119; color:#f7f8fb; padding:8px 10px; font:inherit;">
+                            <label style="display:block; margin:8px 0 5px; color:#c3cad6; font-weight:720; font-size:12px;">To</label>
+                            <input type="datetime-local" style="width:100%; min-height:38px; border:1px solid #30343d; border-radius:10px; background:#0b1119; color:#f7f8fb; padding:8px 10px; font:inherit;">
+                          </div>
+                        </sc-if>
+                      </div>
+                    </sc-for>
+                  </div>
+                  <p style="margin:6px 0 0; font-size:12px; color:#707b8d;">Each filter applies to a single approved column. Text columns support partial matches with contains. Date ranges allow a blank From or To as an open-ended inclusive range.</p>
+                </div>
+
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:16px;">
+                  <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #ff7300; border-radius:10px; color:#160a00; background:#ff7300; font-weight:780; font-size:13px; box-shadow:0 6px 18px rgba(255,115,0,0.22);">Apply filters</span>
+                  <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #30343d; border-radius:10px; color:#f7f8fb; background:rgba(255,255,255,0.04); font-weight:780; font-size:13px;">Reset filters</span>
+                </div>
+              </div>
+            </div>
+
+            <div style="padding:20px; margin-top:16px; background:linear-gradient(180deg, #101722, #0f141d); border:1px solid #273244; border-radius:16px; box-shadow:0 10px 28px rgba(0,0,0,0.22);">
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+                <h2 style="font-size:18px; margin:0;">Rows</h2>
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:10px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:13px; font-weight:640;">Columns (42 of 42)</span>
+                  <span style="display:inline-flex; align-items:center; gap:6px; padding:7px 14px; border-radius:10px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:13px; font-weight:640;">Compact rows</span>
+                </div>
+              </div>
+              <p style="margin:4px 0 12px; color:#9aa4b2;">Showing 1–25 of 48213 rows · 42 of 42 columns · Page 1 of 1929 · Sorted by Trip start (UTC) (desc)</p>
+
+              <div style="overflow:auto; border:1px solid #273244; border-radius:14px; background:#191c22; margin-top:12px; max-height:520px;">
+                <table style="width:100%; border-collapse:separate; border-spacing:0; min-width:1600px;">
+                  <thead>
+                    <tr>
+                      <sc-for list="{{ tableCols }}" as="c" hint-placeholder-count="9">
+                        <th style="padding:11px 12px; border-bottom:1px solid #273244; text-align:left; vertical-align:top; background:#141d2a; color:#c3cad6; font-size:12px; font-weight:760; position:sticky; top:0; z-index:2; white-space:nowrap;">{{ c }}</th>
+                      </sc-for>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <sc-for list="{{ tableRows }}" as="r" hint-placeholder-count="15">
+                      <tr>
+                        <sc-for list="{{ r }}" as="cell" hint-placeholder-count="9">
+                          <td style="padding:11px 12px; border-bottom:1px solid #273244; text-align:left; vertical-align:top; color:#dbe1ea;"><span style="display:inline-block; max-width:360px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; vertical-align:bottom; cursor:copy;">{{ cell }}</span></td>
+                        </sc-for>
+                      </tr>
+                    </sc-for>
+                  </tbody>
+                </table>
+              </div>
+
+              <div style="display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:14px;">
+                <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                  <span style="font-size:13px; color:#9aa4b2; padding:0 4px;">Page 1 of 1929</span>
+                  <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #30343d; border-radius:10px; color:#f7f8fb; background:rgba(255,255,255,0.04); font-weight:780; font-size:13px;">Next</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                  <span style="font-size:12px; color:#9aa4b2; margin-right:4px;">Rows per page</span>
+                  <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; border:1px solid #ff7300; background:#ff7300; color:#160a00; font-size:12px; font-weight:640;">25</span>
+                  <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:12px; font-weight:640;">50</span>
+                  <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:12px; font-weight:640;">100</span>
+                  <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:12px; font-weight:640;">200</span>
+                  <span style="display:inline-flex; align-items:center; padding:4px 10px; border-radius:999px; border:1px solid #30343d; background:rgba(255,255,255,0.03); color:#c3cad6; font-size:12px; font-weight:640;">500</span>
+                </div>
+              </div>
+
+              <p style="margin:14px 0 6px; font-size:12px; color:#9aa4b2;">Export report uses the <strong style="color:#c3cad6;">full dataset</strong> and automatically downloads up to 20,000 rows or queues larger reports up to 1,000,000 rows. Exports from 20,001 to 1,000,000 rows are prepared in the background and remain available for 3 days. Exports always include <strong style="color:#c3cad6;">all 42 approved columns</strong> — the column selector and rows-per-page only affect the on-screen table.</p>
+              <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-top:4px;">
+                <span style="font-size:12px; color:#c3cad6; font-weight:720;">Format</span>
+                <select style="min-height:38px; border:1px solid #30343d; border-radius:10px; background:#0b1119; color:#f7f8fb; padding:8px 10px; font:inherit;"><option>Excel (.xlsx)</option></select>
+                <span style="display:inline-flex; align-items:center; justify-content:center; min-height:36px; padding:7px 13px; border:1px solid #ff7300; border-radius:10px; color:#160a00; background:#ff7300; font-weight:780; font-size:13px; box-shadow:0 6px 18px rgba(255,115,0,0.22);">Export report</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const adminNav = ["Overview", "Users", "Groups", "Client Access", "Datasets", "Report Folders", "Audit", "Artifacts"];
+    const presets = ["Today", "Yesterday", "Last 7 days", "Last 30 days", "This month", "Previous month"];
+
+    const T = (label) => ({ label, op: "contains", ph: "Text", isValue: true, isDate: false });
+    const N = (label) => ({ label, op: "=", ph: "Number", isValue: true, isDate: false });
+    const D = (label) => ({ label, op: "From / to", ph: "", isValue: false, isDate: true });
+
+    const filterFields = [
+      T("Trip ID"), T("Vehicle registration"), T("Driver assigned ID"),
+      T("Driver name"), D("Trip start (UTC)"), D("Trip end (UTC)"),
+      D("Trip start (local)"), D("Trip end (local)"), N("Duration (s)"),
+      N("Distance (m)"), N("Start latitude"), N("Start longitude"),
+      N("End latitude"), N("End longitude"), T("Start address"),
+      T("End address"), N("Max speed (kph)"), N("Avg speed (kph)"),
+      N("Idle (s)"), N("Harsh braking"), N("Harsh acceleration"),
+      N("Harsh cornering"), N("Overspeed events"), N("Fuel used (l)"),
+      N("Fuel eff. (l/100km)"), N("Engine hours"), N("Odometer start (km)"),
+      N("Odometer end (km)"), T("Private trip"), T("Complete"),
+      T("Has scoring events"), T("Classification"), T("Cost centre"),
+      T("Depot code"), T("Route reference"), T("Provider trip ID"),
+      T("Source payload hash"), D("Ingested at (UTC)"), D("Normalized at (UTC)"),
+      N("Delivery lag (s)"), T("Notes"), N("Record version")
+    ];
+
+    const tableCols = ["Trip ID", "Vehicle registration", "Driver assigned ID", "Driver name", "Trip start (UTC) \u2193", "Trip end (UTC)", "Trip start (local)", "Trip end (local)", "Duration (s)", "Distance (m)"];
+    const names = ["\u2014", "Katarzyna Wisniewska", "Marek Zielinski", "Agnieszka Lewandowska", "Tomasz Kaminski", "Ewa Szymanska", "Piotr Nowak"];
+    const regLetters = "ABCDEFGHIJKLMNO".split("");
+    const tableRows = [];
+    for (let i = 0; i < 15; i++) {
+      const day = 3 + i;
+      const d = String(day).padStart(2, "0");
+      tableRows.push([
+        "7f" + String(i).padStart(2, "0") + "c4e1-9a3b-4d2e-8c1f-0000000000" + String(i).padStart(2, "0"),
+        "WX 1" + String(i * 7).padStart(3, "0") + " " + regLetters[i],
+        "DRV-42" + String(i).padStart(2, "0"),
+        i === 0 || i === 9 ? "\u2014" : names[i % names.length],
+        "2026-07-" + d + " 06:00:00+00:00",
+        "2026-07-" + d + " 07:00:00+00:00",
+        "2026-07-" + d + " 08:00:00+02:00",
+        "2026-07-" + d + " 09:00:00+02:00",
+        String(3600 + i * 137),
+        String(48213 + i * 913)
+      ]);
+    }
+
+    return { adminNav, presets, filterFields, tableCols, tableRows };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,60 @@
+[Unit]
+Description=Log Platform API and Portal
+After=network-online.target docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=logplatform
+Group=logplatform
+# The release root, not the development checkout. The launcher cd's to the
+# resolved release itself, so this only has to be a stable directory that exists
+# and is not the mutable tree. Naming a release directory here would be wrong in
+# a different way: it changes without this file changing.
+WorkingDirectory=/opt/log-platform-release
+UMask=0077
+
+# Deliberately NO Environment=PYTHONPATH=. This unit's Python source root is the
+# active release — a symlink target that changes without this file changing — so
+# it cannot be written here. /usr/local/bin/log-ops-runner.sh resolves it per
+# invocation and exports it in-process, which is also the only place it can win:
+# /etc/log-platform/runtime.env exports a PYTHONPATH naming the development tree
+# and EnvironmentFile= overrides Environment=.
+#
+# What the release must contain before this unit is allowed to start. `api/main.py`
+# is the ASGI entrypoint; `.env` is the release's runtime-resource symlink, which
+# api/platform_prune.py::load_runtime_identity reads in-process to resolve the
+# environment identity — load_dotenv() on an absent path is a silent no-op, so a
+# release missing it would start and resolve the wrong identity rather than fail.
+Environment=OPS_RUNNER_REQUIRE_RELEASE_FILE=api/main.py:.env
+
+# `python -m uvicorn` rather than the console script: the console script lives in
+# the shared virtualenv and would be resolved before any release is, so it cannot
+# carry the boundary. The launcher resolves `current`, exports PYTHONPATH and cd's
+# to the release, and only then execs the release's own `.venv/bin/python` — which
+# is the same shared interpreter, reached through the release's runtime symlink.
+# `api.main:app` therefore resolves out of the active release, never out of the
+# development checkout.
+ExecStart=/usr/local/bin/log-ops-runner.sh uvicorn api.main:app --host 127.0.0.1 --port 8001
+
+# Configuration and secrets stay host-managed and are NOT release content: they
+# must survive a code rollback unchanged. environment-identity.env stays last so
+# it wins, as it does on every other unit.
+EnvironmentFile=/etc/log-platform-host.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=30
+TimeoutStopSec=30
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+# The release trees are sealed read-only by file mode; the only path under this
+# root the process writes is state/pycache, which the launcher creates.
+ReadWritePaths=/opt/log-platform-release
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,156 @@
+#!/usr/bin/python3 -I
+"""Narrow privileged editor for the canonical environment identity file."""
+from __future__ import annotations
+
+import argparse
+import grp
+import json
+import os
+import pwd
+import stat
+import sys
+from pathlib import Path
+
+LIBRARY_DIR = Path("/usr/local/lib/log-platform")
+REPO_ROOT = Path("/opt/log-platform")
+if (LIBRARY_DIR / "environment_identity_file.py").is_file():
+    sys.path.insert(0, str(LIBRARY_DIR))
+elif os.geteuid() != 0:
+    # Source-tree execution is permitted only for the non-root isolated test fixture.
+    sys.path.insert(0, str(REPO_ROOT / "ops"))
+else:
+    raise SystemExit("installed root-owned identity parser is missing")
+
+from environment_identity_file import (  # noqa: E402
+    CANONICAL_GROUP,
+    CANONICAL_IDENTITY_FILE,
+    CANONICAL_MODE,
+    CANONICAL_OWNER,
+    HELPER_VERSION,
+    IdentityFileError,
+    atomic_replace_identity_file,
+    inspect_identity_file,
+    intended_checksum,
+    public_state,
+    sha256_bytes,
+    validate_environment,
+)
+
+
+def _parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description=__doc__)
+    modes = parser.add_mutually_exclusive_group(required=True)
+    modes.add_argument("--inspect", action="store_true")
+    modes.add_argument("--set-environment")
+    modes.add_argument("--restore-backup", type=Path)
+    parser.add_argument("--path", type=Path, default=CANONICAL_IDENTITY_FILE)
+    parser.add_argument("--expected-old-value")
+    parser.add_argument("--expected-current-sha256")
+    parser.add_argument("--expected-backup-sha256")
+    parser.add_argument("--attestation")
+    parser.add_argument("--test-root", type=Path, help=argparse.SUPPRESS)
+    return parser
+
+
+def _effective_path(args: argparse.Namespace) -> Path:
+    if args.test_root is not None:
+        if os.geteuid() == 0:
+            raise IdentityFileError("TEST_ROOT_FORBIDDEN", "root execution cannot use the test-only path override")
+        expected = args.test_root.absolute() / CANONICAL_IDENTITY_FILE.relative_to("/")
+        if args.path != CANONICAL_IDENTITY_FILE:
+            raise IdentityFileError("IDENTITY_PATH_REJECTED", "test mode still requires the canonical logical path")
+        return expected
+    if args.path != CANONICAL_IDENTITY_FILE:
+        raise IdentityFileError("IDENTITY_PATH_REJECTED", "helper accepts only the canonical identity path")
+    if os.geteuid() != 0:
+        raise IdentityFileError("ROOT_REQUIRED", "production helper operation requires root")
+    return CANONICAL_IDENTITY_FILE
+
+
+def _identity_ids(args: argparse.Namespace) -> tuple[int, int]:
+    if args.test_root is not None:
+        return os.geteuid(), os.getegid()
+    return pwd.getpwnam(CANONICAL_OWNER).pw_uid, grp.getgrnam(CANONICAL_GROUP).gr_gid
+
+
+def _set_attestation(state, target: str) -> str:
+    return (
+        "SET_LOG_PLATFORM_ENVIRONMENT_IDENTITY "
+        f"source={state.environment} target={target} before_sha256={state.checksum} "
+        f"after_sha256={intended_checksum(target)} helper_version={HELPER_VERSION}"
+    )
+
+
+def _restore_attestation(state, backup_sha256: str) -> str:
+    return (
+        "RESTORE_LOG_PLATFORM_ENVIRONMENT_IDENTITY "
+        f"current={state.environment} current_sha256={state.checksum} "
+        f"backup_sha256={backup_sha256} helper_version={HELPER_VERSION}"
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = _parser().parse_args(argv)
+    path = _effective_path(args)
+    uid, gid = _identity_ids(args)
+    state = inspect_identity_file(path, expected_uid=uid, expected_gid=gid, expected_mode=CANONICAL_MODE)
+    if args.inspect:
+        print(json.dumps({"helper_version": HELPER_VERSION, **public_state(state)}, sort_keys=True))
+        return 0
+    if args.expected_old_value != state.environment:
+        raise IdentityFileError("EXPECTED_OLD_VALUE_MISMATCH", "canonical identity is not the expected old value")
+    if args.expected_current_sha256 != state.checksum:
+        raise IdentityFileError("EXPECTED_CHECKSUM_MISMATCH", "canonical identity checksum changed")
+    if args.set_environment:
+        target = validate_environment(args.set_environment)
+        required = _set_attestation(state, target)
+        if args.attestation != required:
+            print(json.dumps({"required_attestation": required, "writes_performed": False}, sort_keys=True))
+            raise IdentityFileError("ATTESTATION_MISMATCH", "exact helper attestation is required")
+        if target == state.environment:
+            print(json.dumps({"status": "already_current", **public_state(state)}, sort_keys=True))
+            return 0
+        backup = path.with_name(f"{path.name}.backup-{state.checksum}.bak")
+        result = atomic_replace_identity_file(
+            state,
+            target_environment=target,
+            backup_path=backup,
+            target_uid=uid,
+            target_gid=gid,
+        )
+        print(json.dumps({"status": "updated", "helper_version": HELPER_VERSION, **result}, sort_keys=True))
+        return 0
+    backup = args.restore_backup.absolute()
+    if backup.parent != path.parent or backup.is_symlink() or not backup.is_file():
+        raise IdentityFileError("RESTORE_BACKUP_REJECTED", "restore backup must be a regular sibling of the canonical file")
+    backup_metadata = backup.stat()
+    if stat.S_IMODE(backup_metadata.st_mode) != 0o600 or backup_metadata.st_uid != uid or backup_metadata.st_gid != gid:
+        raise IdentityFileError("RESTORE_BACKUP_METADATA", "restore backup owner/group/mode is invalid")
+    backup_raw = backup.read_bytes()
+    backup_sha256 = sha256_bytes(backup_raw)
+    if args.expected_backup_sha256 != backup_sha256:
+        raise IdentityFileError("RESTORE_BACKUP_CHECKSUM", "restore backup checksum does not match")
+    required = _restore_attestation(state, backup_sha256)
+    if args.attestation != required:
+        print(json.dumps({"required_attestation": required, "writes_performed": False}, sort_keys=True))
+        raise IdentityFileError("ATTESTATION_MISMATCH", "exact restore attestation is required")
+    from environment_identity_file import parse_identity_bytes
+    target = parse_identity_bytes(backup_raw)
+    temporary_backup = path.with_name(f"{path.name}.pre-restore-{state.checksum}.bak")
+    result = atomic_replace_identity_file(
+        state,
+        target_environment=target,
+        backup_path=temporary_backup,
+        target_uid=uid,
+        target_gid=gid,
+    )
+    print(json.dumps({"status": "restored", "source_backup": str(backup), **result}, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    try:
+        raise SystemExit(main())
+    except IdentityFileError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        raise SystemExit(2)

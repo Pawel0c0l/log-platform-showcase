@@ -1,0 +1,11 @@
+[Unit]
+Description=Run jobs.mail.fetch_reports at 09:00 and 18:00
+
+[Timer]
+OnCalendar=*-*-* 09:00:00
+OnCalendar=*-*-* 18:00:00
+Persistent=true
+Unit=log-job@jobs.mail.fetch_reports.service
+
+[Install]
+WantedBy=timers.target

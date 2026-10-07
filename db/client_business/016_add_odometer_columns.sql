@@ -1,0 +1,41 @@
+-- 016_add_odometer_columns.sql
+-- Workflow A — additive client-business DDL.
+--
+-- Adds two odometer columns to public.client_trips:
+--
+--   * start_odometer_value BIGINT NULL
+--   * end_odometer_value   BIGINT NULL
+--
+-- Why BIGINT, not INTEGER:
+--   * Provider odometer readings are vehicle-cumulative and can exceed
+--     2_147_483_647 (INT4 max) for older or high-mileage fleets when
+--     reported in meters or hundredths of a kilometer. BIGINT is the
+--     defensive choice and matches the no-coercion stance we already
+--     take elsewhere (`trip_distance_meters` is INTEGER but it is a
+--     per-trip delta, not cumulative — different semantics).
+--
+-- Why nullable:
+--   * `sync_trips_and_speeding` reads these from the `/trips` payload
+--     using best-effort field extraction. If the provider does not
+--     return them for a given trip (older firmware, missing GPS lock,
+--     redacted vehicle, etc.), the job leaves the value as NULL and
+--     does NOT crash. Pre-existing trip rows from before this migration
+--     also stay NULL until the next sync overwrites them — this matches
+--     how 011_extend_client_trips.sql, 014_add_record_id_and_synced_at.sql
+--     and 015_add_rpm_columns.sql were rolled out (additive, no backfill).
+--
+-- Why additive only:
+--   * No existing column is touched.
+--   * The PK on client_trips (client_id, provider_trip_id) is unchanged.
+--   * `record_id` rollout is unaffected — odometer is just enrichment,
+--     it is not part of the business key.
+--
+-- Apply via:
+--   * for new clients   — automatically by scripts/onboard_workflow_a_client.py
+--                         (file is also listed in CLIENT_BUSINESS_DDL_FILES);
+--   * for existing ones — by `python scripts/apply_client_business_migrations.py --apply`
+--                         (the file is auto-discovered in lexical order).
+
+ALTER TABLE IF EXISTS public.client_trips
+  ADD COLUMN IF NOT EXISTS start_odometer_value BIGINT NULL,
+  ADD COLUMN IF NOT EXISTS end_odometer_value   BIGINT NULL;

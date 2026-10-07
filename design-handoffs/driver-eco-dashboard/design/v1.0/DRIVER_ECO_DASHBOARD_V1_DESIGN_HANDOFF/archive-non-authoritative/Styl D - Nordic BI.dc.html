@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kierunek D — Nordic BI</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #F4F7FA; }
+  * { box-sizing: border-box; }
+  a { color: #4F46E5; text-decoration: none; }
+  a:hover { color: #3730A3; }
+  @keyframes drawRing { from { stroke-dashoffset: 1400; } }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes drawLine { from { stroke-dashoffset: 900; } }
+  @keyframes growCol { from { transform: scaleY(0); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, Helvetica, sans-serif; color: #101828; background: linear-gradient(180deg, #EEF3F9, #F7F9FC 320px); min-height: 100vh; padding: 30px 28px 72px 28px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; animation: fadeUp .5s ease both;">
+      <div style="display: flex; gap: 13px; align-items: center;">
+        <div style="width: 40px; height: 40px; border-radius: 13px; background: linear-gradient(140deg, #4F46E5, #16BFA6);"></div>
+        <div>
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #667085;">Program Ecodriving</div>
+          <div style="font-size: 22px; font-weight: 800; letter-spacing: -0.02em;">Twoje Eco Driving</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+        <div style="background: #FFFFFF; border: 1px solid #E3E8F0; border-radius: 14px; padding: 9px 15px; font-size: 12px; font-weight: 600; color: #475467; box-shadow: 0 1px 2px rgba(16,24,40,0.05);">{{ range }} · migawka zamknięta</div>
+        <div style="display: flex; background: #FFFFFF; border: 1px solid #E3E8F0; border-radius: 14px; padding: 4px; box-shadow: 0 1px 2px rgba(16,24,40,0.05);">
+          <span style="padding: 7px 15px; border-radius: 10px; background: #101828; color: #FFFFFF; font-size: 12px; font-weight: 700;">Tygodniowy</span>
+          <span style="padding: 7px 15px; border-radius: 10px; color: #667085; font-size: 12px; font-weight: 700;">Miesięczny</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; margin-top: 24px;">
+      <sc-for list="{{ tiles }}" as="t" hint-placeholder-count="4">
+        <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 20px; padding: 18px 20px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); transition: transform .18s ease, box-shadow .18s ease; animation: fadeUp .6s ease both;" style-hover="transform: translateY(-3px); box-shadow: 0 10px 24px rgba(16,24,40,0.10);">
+          <div style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
+            <div style="font-size: 12px; font-weight: 700; color: #667085;">{{ t.label }}</div>
+            <div style="width: 30px; height: 30px; border-radius: 10px; background: {{ t.tint }}; color: {{ t.tintFg }}; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600;">{{ t.glyph }}</div>
+          </div>
+          <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 10px;">
+            <span style="font-family: 'IBM Plex Mono', monospace; font-size: 28px; font-weight: 600; letter-spacing: -0.02em;">{{ t.value }}</span>
+            <span style="font-size: 13px; font-weight: 600; color: #667085;">{{ t.unit }}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px;">
+            <span style="display: inline-flex; gap: 4px; align-items: center; background: {{ t.badgeBg }}; color: {{ t.badgeFg }}; border-radius: 8px; padding: 3px 7px; font-size: 11px; font-weight: 700;">{{ t.badge }}</span>
+            <span style="font-size: 11px; color: #98A2B3;">{{ t.note }}</span>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; margin-top: 16px;">
+
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .7s ease both;">
+        <div style="font-size: 15px; font-weight: 800;">Wynik okresu</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: center; margin-top: 18px;">
+          <div style="position: relative; width: 190px; height: 190px;">
+            <svg width="190" height="190" viewBox="0 0 190 190" style="transform: rotate(-90deg);">
+              <defs>
+                <linearGradient id="nordicScore" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#4F46E5"></stop>
+                  <stop offset="100%" stopColor="#16BFA6"></stop>
+                </linearGradient>
+              </defs>
+              <circle cx="95" cy="95" r="74" fill="none" stroke="#EEF2F7" strokeWidth="14"></circle>
+              <circle cx="95" cy="95" r="60" fill="none" stroke="#F5F7FA" strokeWidth="8"></circle>
+              <circle cx="95" cy="95" r="74" fill="none" stroke="url(#nordicScore)" strokeWidth="14" strokeLinecap="round" strokeDasharray="465" strokeDashoffset="135" style="animation: drawRing 1.4s cubic-bezier(.2,.9,.2,1) both;"></circle>
+              <circle cx="95" cy="95" r="60" fill="none" stroke="#C7CEDB" strokeWidth="8" strokeLinecap="round" strokeDasharray="377" strokeDashoffset="124" style="animation: drawRing 1.7s cubic-bezier(.2,.9,.2,1) both;"></circle>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 50px; font-weight: 600; line-height: 1; letter-spacing: -0.03em;">71</div>
+              <div style="font-size: 11px; font-weight: 700; color: #667085; margin-top: 3px;">z 100 pkt</div>
+              <div style="font-size: 10px; color: #98A2B3; margin-top: 8px;">wewn. pierścień: poprz. 67</div>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 180px;">
+            <div style="display: inline-flex; gap: 7px; align-items: center; background: #FEF6E7; border: 1px solid #F5DFAE; color: #93650B; border-radius: 10px; padding: 6px 12px; font-size: 12px; font-weight: 700;">◦ Akceptowalny · 40–84 pkt</div>
+            <div style="display: grid; gap: 10px; margin-top: 16px;">
+              <sc-for list="{{ scoreRows }}" as="r" hint-placeholder-count="3">
+                <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; border-bottom: 1px solid #F2F4F7; padding-bottom: 8px;">
+                  <span style="font-size: 12px; color: #667085;">{{ r.label }}</span>
+                  <span style="font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 600; color: {{ r.color }};">{{ r.value }}</span>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .8s ease both;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+          <div style="font-size: 15px; font-weight: 800;">Udział strat według obszarów</div>
+          <div style="font-size: 11px; color: #98A2B3;">interaktywne</div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 20px; align-items: center; margin-top: 18px;">
+          <div style="position: relative; width: 176px; height: 176px;">
+            <svg width="176" height="176" viewBox="0 0 176 176" style="transform: rotate(-90deg);">
+              <sc-for list="{{ donut }}" as="seg" hint-placeholder-count="5">
+                <circle cx="88" cy="88" r="66" fill="none" stroke="{{ seg.color }}" strokeWidth="{{ seg.width }}" strokeDasharray="{{ seg.dash }}" strokeDashoffset="{{ seg.offset }}" onMouseEnter="{{ seg.enter }}" style="cursor: pointer; transition: stroke-width .18s ease, opacity .18s ease; opacity: {{ seg.opacity }}; animation: drawRing 1.5s cubic-bezier(.2,.9,.2,1) both;"></circle>
+              </sc-for>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 0 30px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 26px; font-weight: 600; color: {{ activeColor }};">{{ activeShare }}</div>
+              <div style="font-size: 10px; font-weight: 700; color: #475467; line-height: 1.3; margin-top: 3px;">{{ activeLabel }}</div>
+            </div>
+          </div>
+          <div style="flex: 1; min-width: 190px; display: grid; gap: 6px;">
+            <sc-for list="{{ legend }}" as="l" hint-placeholder-count="5">
+              <div onMouseEnter="{{ l.enter }}" style="display: grid; grid-template-columns: 10px 1fr auto; gap: 10px; align-items: center; padding: 8px 10px; border-radius: 10px; background: {{ l.rowBg }}; cursor: pointer; transition: background .16s ease;">
+                <span style="width: 10px; height: 10px; border-radius: 3px; background: {{ l.color }};"></span>
+                <span style="font-size: 12px; font-weight: 600; color: #344054;">{{ l.label }}</span>
+                <span style="font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600; color: #667085;">{{ l.value }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(330px, 1fr)); gap: 16px; margin-top: 16px;">
+
+      <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 24px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .9s ease both;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px;">
+          <div style="font-size: 15px; font-weight: 800;">Kolejne zamknięte migawki lipca</div>
+          <div style="font-size: 11px; color: #98A2B3;">narastająco od 01.07</div>
+        </div>
+        <div style="position: relative; height: 168px; margin-top: 20px;">
+          <svg viewBox="0 0 420 150" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%;">
+            <polyline points="30,96 175,66 320,52" fill="none" stroke="#4F46E5" strokeWidth="3" strokeLinecap="round" strokeDasharray="900" style="animation: drawLine 1.6s ease both;"></polyline>
+            <circle cx="30" cy="96" r="6" fill="#FFFFFF" stroke="#4F46E5" strokeWidth="3"></circle>
+            <circle cx="175" cy="66" r="6" fill="#FFFFFF" stroke="#4F46E5" strokeWidth="3"></circle>
+            <circle cx="320" cy="52" r="8" fill="#4F46E5"></circle>
+          </svg>
+          <div style="position: absolute; inset: 0; display: flex; align-items: flex-end;">
+            <sc-for list="{{ series }}" as="s" hint-placeholder-count="3">
+              <div style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px;">
+                <div style="font-family: 'IBM Plex Mono', monospace; font-size: 13px; font-weight: 600; color: {{ s.fg }};">{{ s.score }}</div>
+                <div style="width: 62%; height: {{ s.h }}; border-radius: 8px 8px 0 0; background: {{ s.bg }}; transform-origin: bottom; animation: growCol 1.2s cubic-bezier(.2,.9,.2,1) both;"></div>
+                <div style="font-size: 10px; color: #98A2B3;">{{ s.label }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="background: linear-gradient(150deg, #101828, #1D2939); color: #F9FAFB; border-radius: 24px; padding: 24px; animation: fadeUp 1s ease both;">
+        <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #16BFA6;">Największy potencjał</div>
+        <div style="display: flex; flex-wrap: wrap; gap: 18px; align-items: center; margin-top: 14px;">
+          <div style="position: relative; width: 92px; height: 92px;">
+            <svg width="92" height="92" viewBox="0 0 92 92" style="transform: rotate(-90deg);">
+              <circle cx="46" cy="46" r="38" fill="none" stroke="rgba(255,255,255,0.12)" strokeWidth="9"></circle>
+              <circle cx="46" cy="46" r="38" fill="none" stroke="#16BFA6" strokeWidth="9" strokeLinecap="round" strokeDasharray="239" strokeDashoffset="96" style="animation: drawRing 1.6s ease both;"></circle>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 22px; font-weight: 600; color: #16BFA6;">+5</div>
+          </div>
+          <div style="flex: 1; min-width: 190px;">
+            <div style="font-size: 17px; font-weight: 800;">Gwałtowne przyspieszenia</div>
+            <div style="font-size: 13px; color: #D0D5DD; line-height: 1.6; margin-top: 6px;">Wskaźnik 1 → 0 zdarzeń na 100 km. Przy 3 418 km to maksymalnie 17 zdarzeń w okresie.</div>
+          </div>
+        </div>
+        <div style="display: flex; gap: 5px; margin-top: 20px;">
+          <sc-for list="{{ ladder }}" as="l" hint-placeholder-count="5">
+            <div style="flex: 1; text-align: center;">
+              <div style="height: 32px; border-radius: 9px; background: {{ l.bg }}; border: {{ l.border }}; color: {{ l.fg }}; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 12px; font-weight: 600;">{{ l.lost }}</div>
+              <div style="font-size: 10px; color: #98A2B3; margin-top: 5px;">{{ l.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:880}}">
+class Component extends DCLogic {
+  state = { active: 0 };
+
+  DATA = [
+    { label: 'Postój na biegu jałowym', value: 10, color: '#4F46E5' },
+    { label: 'Gwałtowne hamowania', value: 6, color: '#16BFA6' },
+    { label: 'Gwałtowne przyspieszenia', value: 5, color: '#F79009' },
+    { label: 'Prędkość 140–160 km/h', value: 5, color: '#7A5AF8' },
+    { label: 'Gwałtowne skręty', value: 3, color: '#2E90FA' }
+  ];
+
+  renderVals() {
+    const total = this.DATA.reduce((a, d) => a + d.value, 0);
+    const C = 2 * Math.PI * 66;
+    let acc = 0;
+    const donut = this.DATA.map((d, i) => {
+      const len = (d.value / total) * C;
+      const seg = {
+        color: d.color,
+        dash: (len - 3) + ' ' + (C - len + 3),
+        offset: -acc,
+        width: this.state.active === i ? 26 : 18,
+        opacity: this.state.active === i ? 1 : 0.78,
+        enter: () => this.setState({ active: i })
+      };
+      acc += len;
+      return seg;
+    });
+    const a = this.DATA[this.state.active];
+    return {
+      range: '01.07 – 19.07.2026',
+      donut,
+      activeShare: Math.round((a.value / total) * 100) + '%',
+      activeLabel: a.label + ' · −' + a.value + ' pkt',
+      activeColor: a.color,
+      legend: this.DATA.map((d, i) => ({
+        label: d.label, value: '−' + d.value + ' pkt', color: d.color,
+        rowBg: this.state.active === i ? '#F4F7FA' : 'transparent',
+        enter: () => this.setState({ active: i })
+      })),
+      tiles: [
+        { label: 'Wynik Eco', value: '71', unit: '/ 100', glyph: '◎', tint: '#EEF0FF', tintFg: '#4F46E5', badge: '▲ 4 pkt', badgeBg: '#E7F8F4', badgeFg: '#0E8F7C', note: 'vs 01.07 – 12.07' },
+        { label: 'Pozycja w rankingu', value: '18', unit: '/ 158', glyph: '▲', tint: '#E7F8F4', tintFg: '#0E8F7C', badge: '▲ 6 miejsc', badgeBg: '#E7F8F4', badgeFg: '#0E8F7C', note: 'populacja rankingu' },
+        { label: 'Twoja grupa', value: '52,5', unit: '%', glyph: '◦', tint: '#FEF6E7', tintFg: '#93650B', badge: 'akceptowalni', badgeBg: '#FEF6E7', badgeFg: '#93650B', note: 'udział uczestników' },
+        { label: 'Dystans kwalifikujący', value: '3 418', unit: 'km', glyph: '≡', tint: '#EFF8FF', tintFg: '#175CD3', badge: '▲ 1 312 km', badgeBg: '#EFF8FF', badgeFg: '#175CD3', note: '214 przejazdów' }
+      ],
+      scoreRows: [
+        { label: 'Zmiana vs 01.07 – 12.07', value: '▲ 4 pkt', color: '#0E8F7C' },
+        { label: 'Do progu 85 pkt', value: '14 pkt', color: '#101828' },
+        { label: 'Utracone punkty łącznie', value: '−29 pkt', color: '#B42318' }
+      ],
+      series: [
+        { label: '01.07–05.07', score: '58', h: '52%', bg: '#E4E7EC', fg: '#98A2B3' },
+        { label: '01.07–12.07', score: '67', h: '68%', bg: '#C7CEDB', fg: '#667085' },
+        { label: '01.07–19.07', score: '71', h: '78%', bg: '#4F46E5', fg: '#101828' }
+      ],
+      ladder: [
+        { label: '0', lost: '0', bg: 'rgba(22,191,166,0.18)', border: '1px solid rgba(22,191,166,0.45)', fg: '#7BE3D3' },
+        { label: '1', lost: '−5', bg: 'rgba(255,255,255,0.10)', border: '2px solid #FFFFFF', fg: '#FFFFFF' },
+        { label: '2', lost: '−10', bg: 'rgba(247,144,9,0.16)', border: '1px solid rgba(247,144,9,0.4)', fg: '#FDB022' },
+        { label: '3–4', lost: '−15', bg: 'rgba(240,68,56,0.14)', border: '1px solid rgba(240,68,56,0.35)', fg: '#FDA29B' },
+        { label: '>4', lost: '−20', bg: 'rgba(240,68,56,0.22)', border: '1px solid rgba(240,68,56,0.4)', fg: '#FDA29B' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

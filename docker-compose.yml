@@ -1,0 +1,99 @@
+# Base definition. This file alone is the production-safe configuration: the API
+# runs application code from the immutable image, as a non-root user, with no
+# capabilities and no privilege escalation.
+#
+#   production:   docker compose -f docker-compose.yml up -d --no-deps --force-recreate api
+#   development:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# The development live-source bind lives in docker-compose.dev.yml and is opt-in
+# only. Compose auto-loads docker-compose.override.yml / compose.override.yaml,
+# so this repository deliberately does not use those names and no such file may
+# exist here; ops/tests_manual/test_docker_api_execution_boundary.py enforces it.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
+
+  minio:
+    image: minio/minio:latest
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+    volumes:
+      - miniodata:/data
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./api
+    # Named explicitly so a privileged recreation starts an identifiable image
+    # rather than an implicit project-derived default. Same value Compose
+    # derived before, so this pins the identity without changing it.
+    image: log-platform-api:latest
+    working_dir: /app
+    # Application code comes from the image only. No host source is mounted, so
+    # the image digest identifies the code this container executes.
+    user: "1000:1000"
+    cap_drop:
+      - ALL
+    security_opt:
+      - no-new-privileges:true
+    depends_on:
+      - postgres
+      - minio
+    # Optional only for pre-provision backup/config inspection. Promotion
+    # readiness requires this canonical identity-only file and a converged
+    # container before execute.
+    env_file:
+      - path: /etc/log-platform/environment-identity.env
+        required: false
+    environment:
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+      MINIO_ENDPOINT: ${MINIO_ENDPOINT}
+      MINIO_BUCKET: ${MINIO_BUCKET}
+      MINIO_SECURE: ${MINIO_SECURE}
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD}
+
+      API_WRITE_TOKEN: ${API_WRITE_TOKEN}
+      API_READ_TOKEN: ${API_READ_TOKEN}
+      BUSINESS_TIMEZONE: ${BUSINESS_TIMEZONE:-Europe/Warsaw}
+
+      # Session cookies AND Database Explorer opaque row references (`docs/29`)
+      # both derive from this one secret. Without it the application falls back
+      # to a per-process value, so recreating the API silently invalidates every
+      # session and every copied `row=` URL. Required here rather than defaulted:
+      # the operator must supply it from the deployment environment, and Compose
+      # refuses to start the service if it is absent.
+      ARTIFACT_EXPLORER_SESSION_SECRET: ${ARTIFACT_EXPLORER_SESSION_SECRET:?required}
+
+      LOG_PLATFORM_EXPECTED_PLATFORM_IDENTITY_ID: ${LOG_PLATFORM_EXPECTED_PLATFORM_IDENTITY_ID:?required}
+      LOG_PLATFORM_EXPECTED_POSTGRES_HOST: ${LOG_PLATFORM_COMPOSE_EXPECTED_POSTGRES_HOST:-postgres}
+      LOG_PLATFORM_EXPECTED_POSTGRES_PORT: ${LOG_PLATFORM_EXPECTED_POSTGRES_PORT:?required}
+      LOG_PLATFORM_EXPECTED_POSTGRES_DB: ${LOG_PLATFORM_EXPECTED_POSTGRES_DB:?required}
+      LOG_PLATFORM_EXPECTED_POSTGRES_USER: ${LOG_PLATFORM_EXPECTED_POSTGRES_USER:?required}
+
+    ports:
+      - "127.0.0.1:8000:8000"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+  miniodata:

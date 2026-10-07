@@ -1,0 +1,1372 @@
+{
+  "version": "log-platform-schema-requirements/1",
+  "_comment": [
+    "Physical schema a release REQUIRES before its code may become current.",
+    "",
+    "WHY THIS FILE EXISTS. Release activation used to verify release bytes only.",
+    "A release whose code references a column that no client database has yet",
+    "would therefore activate cleanly and then fail every ingest — which is",
+    "exactly what M4 introduced, because the trip INSERT names",
+    "client_trips.first_seen_request_id unconditionally. Independent review",
+    "classified that as blocking.",
+    "",
+    "WHY IT IS A DATA FILE IN THE REPOSITORY. It lives in the tree, so it is",
+    "part of the release manifest and is read FROM THE RELEASE BEING ACTIVATED,",
+    "not from the working copy. A release therefore declares its own",
+    "prerequisites, and an older release that predates a migration simply does",
+    "not carry the requirement — so activating or rolling back to it is never",
+    "incorrectly blocked. Adding a future prerequisite is a data edit, not a",
+    "code change.",
+    "",
+    "WHY BOTH A LEDGER AND A PHYSICAL CHECK. A migration ledger records intent.",
+    "It can disagree with reality — a hand-edited row, a restored dump, a",
+    "partially applied file — and the ledger is exactly what a broken rollout",
+    "would leave looking correct. Both are required, and disagreement between",
+    "them is itself a refusal.",
+    "",
+    "SCOPES. 'platform' is the platform database (logdb). 'client_business' is",
+    "EVERY authoritative enabled client business database; the gate never",
+    "accepts a filter and never treats an empty fleet as a pass.",
+    "",
+    "CAPABILITIES ARE THE OTHER DIRECTION. A requirement says 'I need this to",
+    "exist' and is checked only because the release asked for it. A capability",
+    "is demanded BY THE DATABASE: ops/release_schema_preflight.py reads every",
+    "enabled client for the narrowing states in SCHEMA_STATE_GUARDS and refuses",
+    "any release that does not declare the matching capability here. Absence is",
+    "a refusal, never a pass - which is exactly what makes it bind releases",
+    "built before the key existed, such as the M4-era request-only writer."
+  ],
+  "capabilities": [
+    "client_trips_first_seen_pair_contract"
+  ],
+  "requirements": [
+    {
+      "migration": "061_workflow_a_provider_request_log.sql",
+      "scope": "platform",
+      "milestone": "M4",
+      "reason": "The dispatcher promotes durable request facts to coverage evidence in this relation inside the coverage transaction; without it every compatibility trips_sync fire refuses coverage advancement.",
+      "relations": [
+        {
+          "schema": "workflow_a_control",
+          "table": "provider_request_log",
+          "columns": [
+            {
+              "name": "request_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "status",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "platform_run_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "run_history_id",
+              "type": "uuid",
+              "nullable": true
+            },
+            {
+              "name": "sub_window_index",
+              "type": "integer",
+              "nullable": false
+            },
+            {
+              "name": "page",
+              "type": "integer",
+              "nullable": false
+            },
+            {
+              "name": "subwindow_complete",
+              "type": "boolean",
+              "nullable": true
+            },
+            {
+              "name": "recorded_at",
+              "type": "timestamp with time zone",
+              "nullable": false
+            }
+          ],
+          "constraints": [
+            "uq_provider_request_log_identity",
+            "ck_provider_request_log_pending_claims_nothing",
+            "ck_provider_request_log_finalized_is_attributed"
+          ]
+        }
+      ]
+    },
+    {
+      "migration": "062_workflow_a_multi_cadence_schedule_identity.sql",
+      "scope": "platform",
+      "milestone": "M5",
+      "reason": "M5 runtime projects client_dataset_schedule.run_type unconditionally and addresses coverage by (client_id, dataset_name), so a platform database without 062 cannot enumerate a single schedule. Every definition below is verified physically, not by name: a same-named constraint over the wrong columns, a CHECK with the wrong expression, or a partial index with the wrong predicate would let activation pass against a schema that cannot safely run M5.",
+      "relations": [
+        {
+          "schema": "workflow_a_control",
+          "table": "client_dataset_schedule",
+          "columns": [
+            {
+              "name": "run_type",
+              "type": "text",
+              "nullable": false
+            }
+          ],
+          "constraints": [
+            {
+              "name": "uq_client_dataset_schedule",
+              "definition": "UNIQUE (client_id, dataset_name, run_type)"
+            },
+            {
+              "name": "uq_client_dataset_schedule_owner_identity",
+              "definition": "UNIQUE (schedule_id, client_id, dataset_name)"
+            },
+            {
+              "name": "ck_client_dataset_schedule_run_type",
+              "definition": "CHECK ((run_type = ANY (ARRAY['DAILY'::text, 'WEEKLY_RECONCILIATION'::text, 'MONTHLY_RECONCILIATION'::text])))"
+            },
+            {
+              "name": "ck_client_dataset_schedule_run_type_cadence",
+              "definition": "CHECK (((run_type = 'DAILY'::text) OR ((run_type = 'WEEKLY_RECONCILIATION'::text) AND (frequency = 'weekly'::text)) OR ((run_type = 'MONTHLY_RECONCILIATION'::text) AND (frequency = 'monthly'::text))))"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "uq_client_dataset_schedule_base",
+              "definition": "CREATE UNIQUE INDEX uq_client_dataset_schedule_base ON workflow_a_control.client_dataset_schedule USING btree (client_id, dataset_name) WHERE (run_type = 'DAILY'::text)"
+            }
+          ]
+        },
+        {
+          "schema": "workflow_a_control",
+          "table": "client_dataset_coverage",
+          "columns": [
+            {
+              "name": "schedule_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "client_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "dataset_name",
+              "type": "text",
+              "nullable": false
+            }
+          ],
+          "constraints": [
+            {
+              "name": "uq_client_dataset_coverage_dataset",
+              "definition": "UNIQUE (client_id, dataset_name)"
+            },
+            {
+              "name": "pk_client_dataset_coverage",
+              "definition": "PRIMARY KEY (schedule_id)"
+            },
+            {
+              "name": "fk_client_dataset_coverage_schedule",
+              "definition": "FOREIGN KEY (schedule_id, client_id, dataset_name) REFERENCES workflow_a_control.client_dataset_schedule(schedule_id, client_id, dataset_name) ON UPDATE RESTRICT ON DELETE RESTRICT"
+            }
+          ],
+          "indexes": []
+        },
+        {
+          "schema": "workflow_a_control",
+          "table": "client_dataset_recovery_run",
+          "columns": [],
+          "constraints": [
+            {
+              "name": "fk_client_dataset_recovery_run_schedule",
+              "definition": "FOREIGN KEY (schedule_id, client_id, dataset_name) REFERENCES workflow_a_control.client_dataset_schedule(schedule_id, client_id, dataset_name) ON UPDATE RESTRICT ON DELETE RESTRICT"
+            }
+          ],
+          "indexes": [
+            {
+              "name": "uq_client_dataset_recovery_run_active",
+              "definition": "CREATE UNIQUE INDEX uq_client_dataset_recovery_run_active ON workflow_a_control.client_dataset_recovery_run USING btree (client_id, dataset_name) WHERE (status = ANY (ARRAY['PLANNED'::text, 'RUNNING'::text]))"
+            },
+            {
+              "name": "uq_client_dataset_recovery_run_approved_window",
+              "definition": "CREATE UNIQUE INDEX uq_client_dataset_recovery_run_approved_window ON workflow_a_control.client_dataset_recovery_run USING btree (client_id, dataset_name, window_start_ts, window_end_ts, approval_ref)"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "migration": "047_client_trips_first_seen_request_id.sql",
+      "scope": "client_business",
+      "milestone": "M4",
+      "reason": "The trip upsert names this column unconditionally in its INSERT list, so a client business database without it cannot ingest at all.",
+      "relations": [
+        {
+          "schema": "public",
+          "table": "client_trips",
+          "columns": [
+            {
+              "name": "first_seen_request_id",
+              "type": "uuid",
+              "nullable": true
+            }
+          ],
+          "constraints": []
+        }
+      ]
+    },
+    {
+      "migration": "063_workflow_a_trip_delivery_lag_daily.sql",
+      "scope": "platform",
+      "milestone": "M-LAG",
+      "reason": "ops/aggregate_telematics_delivery_lag.py writes this relation. It is not on the ingestion or coverage path, so a release without it still ingests correctly - the requirement exists so a release carrying the aggregation tool cannot activate against a database that has nowhere to put a slice.",
+      "relations": [
+        {
+          "schema": "workflow_a_control",
+          "table": "trip_delivery_lag_daily",
+          "columns": [
+            {
+              "name": "client_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "trip_end_date",
+              "type": "date",
+              "nullable": false
+            },
+            {
+              "name": "trips_total",
+              "type": "bigint",
+              "nullable": false
+            },
+            {
+              "name": "trips_with_provenance",
+              "type": "bigint",
+              "nullable": false
+            },
+            {
+              "name": "weekly_guarantee_seconds",
+              "type": "bigint",
+              "nullable": false
+            },
+            {
+              "name": "recompute_horizon_days",
+              "type": "integer",
+              "nullable": false
+            }
+          ],
+          "constraints": [
+            "pk_trip_delivery_lag_daily",
+            "ck_trip_delivery_lag_buckets_partition",
+            "ck_trip_delivery_lag_attribution_partition",
+            "ck_trip_delivery_lag_percentiles_present"
+          ]
+        }
+      ]
+    },
+    {
+      "migration": "048_client_trips_first_seen_response_received_at.sql",
+      "scope": "client_business",
+      "milestone": "M-LAG",
+      "reason": "The trip upsert names this column unconditionally in its INSERT list, so a client business database without it cannot ingest at all - the same failure mode 047 introduced. The pairing constraint is required too, in one of exactly two acceptable states: this release is a BRIDGE release and its writer is strict-compatible, so it is correct against the EXPAND constraint and against the closed CONTRACT constraint alike. Declaring only one of them would deadlock the transition - a release pinned to EXPAND stops being activatable the moment the CONTRACT closure drops it, and a release pinned to CONTRACT cannot be activated before the closure creates it. Neither state is a relaxation: both pin the exact canonical definition and the exact validation status, and the CONTRACT state is accepted only when the strict constraint is VALIDATED.",
+      "relations": [
+        {
+          "schema": "public",
+          "table": "client_trips",
+          "columns": [
+            {
+              "name": "first_seen_response_received_at_utc",
+              "type": "timestamp with time zone",
+              "nullable": true
+            }
+          ],
+          "constraint_alternatives": [
+            {
+              "state": "EXPAND",
+              "_comment": "Pre-closure. One-directional: an observation instant may not exist without the request identity it belongs to, while the transitional request-without-instant rows the deployed M4 writer produces stay legal. NOT VALID by design - migration 048 leaves the verification scan to the CONTRACT step (docs/21 SS14).",
+              "constraints": [
+                {
+                  "name": "ck_client_trips_first_seen_instant_needs_request",
+                  "definition": "CHECK (((first_seen_response_received_at_utc IS NULL) OR (first_seen_request_id IS NOT NULL))) NOT VALID",
+                  "validated": false
+                }
+              ]
+            },
+            {
+              "state": "CONTRACT",
+              "_comment": "Post-closure. Strict symmetric pairing, and VALIDATED: a strict constraint that exists but is still NOT VALID is an INTERRUPTED closure, not a closed one, and must not satisfy this alternative. ops/close_telematics_first_seen_pair_contract.py resumes that state to completion.",
+              "constraints": [
+                {
+                  "name": "ck_client_trips_first_seen_pairing",
+                  "definition": "CHECK (((first_seen_request_id IS NULL) = (first_seen_response_received_at_utc IS NULL)))",
+                  "validated": true
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "migration": "051_eco_dashboard_capability_retirement.sql",
+      "scope": "client_business",
+      "milestone": "ECO-DASH-V1",
+      "reason": "THE LEDGER ANCHOR IS 051, NOT 049 OR 050. Migration 049 is applied shared history: every enabled client business database recorded it on 2026-08-19 ~19:55 CEST in its pre-review physical form, and an applied migration is immutable, so the reviewed external-mailer ownership contract arrived as 050_eco_dashboard_external_mailer_ownership.sql and the expired-capability retirement contract arrives as 051_eco_dashboard_capability_retirement.sql. The requirement below describes the FINAL post-051 contract and is keyed on 051 because that is the migration whose presence makes the contract true: a client carrying 049 or 050 alone is refused on the ledger check, before any physical inspection, and a client carrying the whole chain is checked physically against every object any of the three migrations installs. WHAT 051 ADDS AND WHY IT IS LOAD-BEARING. Capability lifetime is period-scoped - a weekly grant lives 10 days, a monthly grant 60 - so expiry is the ordinary end of every dashboard link rather than a rare event, and CAPABILITY_RETIRED is the state that says 'mailing ownership completed, the capability expired, no operator action is required, the audit metadata is retained'. chk_..._bearer_absent is what makes a retired row physically unable to hold the raw bearer, so the destruction of expired secret material is a database guarantee rather than an application convention; chk_..._retired_audit is what stops that minimisation from also erasing which grant the delivery held. The Driver Eco Dashboard host publisher names this relation unconditionally in execute mode: it persists the logical delivery before any remote effect and binds the immutable provider submission identity (backend/account scope, idempotency key and message fingerprint) before any provider is contacted. THE LEDGER ENTRY IS NOT THE EVIDENCE. A database can record a migration applied while the physical schema it installed has been removed or weakened - the reviewed case dropped provider_name and replaced every named CHECK with a same-named CHECK (true), which a relation/column/constraint-name gate passed and DeliveryLedger.load() then failed on with UndefinedColumn: provider_name. So every load-bearing object is declared PHYSICALLY here: the complete runtime projection with its types, nullability and the defaults the narrow lifecycle INSERT depends on; every CHECK, UNIQUE and PRIMARY KEY by canonical pg_get_constraintdef definition rather than by name; the guard trigger by its complete binding; and the guard function by the digest of its body, because a no-op replacement changes nothing structural and removes both invariants no CHECK constraint can express.",
+      "relations": [
+        {
+          "schema": "public",
+          "table": "eco_dashboard_delivery_operation",
+          "columns": [
+            {
+              "name": "delivery_id",
+              "type": "uuid",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "gen_random_uuid()"
+              }
+            },
+            {
+              "name": "operation_id",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "client_id",
+              "type": "uuid",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "identity_key",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "period_type",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "period_start_date",
+              "type": "date",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "period_end_date",
+              "type": "date",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "send_scope",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "'normal'::text"
+              }
+            },
+            {
+              "name": "subject_ref",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "payload_digest",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "recipient_identity",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "recipient_email",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "state",
+              "type": "text",
+              "nullable": false,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "external_mailer",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "capability_id",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "capability_secret",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "capability_digest",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "capability_expires_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "bearer_generation",
+              "type": "integer",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "0"
+              }
+            },
+            {
+              "name": "bearer_persisted_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "bearer_cleared_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_name",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_idempotency_key",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_backend_id",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_message_fingerprint",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_bound_capability_id",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_bound_bearer_generation",
+              "type": "integer",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_message_id",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_attempts",
+              "type": "integer",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "0"
+              }
+            },
+            {
+              "name": "provider_submitted_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "provider_accepted_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "remote_delivered_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "finalized_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "failure_phase",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "failure_code",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "failure_detail",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "operator_action_required",
+              "type": "boolean",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "false"
+              }
+            },
+            {
+              "name": "lease_owner",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "lease_expires_at",
+              "type": "timestamp with time zone",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "attempt_count",
+              "type": "integer",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "0"
+              }
+            },
+            {
+              "name": "last_run_id",
+              "type": "text",
+              "nullable": true,
+              "default": {
+                "state": "absent"
+              }
+            },
+            {
+              "name": "created_at",
+              "type": "timestamp with time zone",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "now()"
+              }
+            },
+            {
+              "name": "updated_at",
+              "type": "timestamp with time zone",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "now()"
+              }
+            },
+            {
+              "name": "metadata_json",
+              "type": "jsonb",
+              "nullable": false,
+              "default": {
+                "state": "expression",
+                "expression": "'{}'::jsonb"
+              }
+            }
+          ],
+          "constraints": [
+            {
+              "name": "chk_eco_dashboard_delivery_operation_accepted",
+              "definition": "CHECK (((state <> ALL (ARRAY['PROVIDER_ACCEPTED'::text, 'REMOTE_DELIVERED'::text, 'FINALIZED'::text])) OR ((provider_message_id IS NOT NULL) AND (provider_accepted_at IS NOT NULL))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_bearer_absent",
+              "definition": "CHECK (((state <> ALL (ARRAY['PREPARED'::text, 'BEARER_RECOVERY_REQUIRED'::text, 'FINALIZED'::text, 'CAPABILITY_RETIRED'::text])) OR (capability_secret IS NULL)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_bearer_cleared",
+              "definition": "CHECK ((((capability_secret IS NULL) AND (bearer_persisted_at IS NOT NULL)) = (bearer_cleared_at IS NOT NULL)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_bearer_present",
+              "definition": "CHECK (((state <> ALL (ARRAY['CAPABILITY_PERSISTED'::text, 'EXTERNAL_MAILER_HANDOFF'::text, 'DELIVERY_INTENT_RECORDED'::text, 'PROVIDER_SUBMISSION_PENDING'::text, 'PROVIDER_ACCEPTED'::text, 'PROVIDER_AMBIGUOUS'::text])) OR ((capability_id IS NOT NULL) AND (capability_secret IS NOT NULL) AND (capability_digest IS NOT NULL) AND (bearer_persisted_at IS NOT NULL) AND (bearer_generation >= 1))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_binding_coherent",
+              "definition": "CHECK ((((provider_idempotency_key IS NULL) = (provider_name IS NULL)) AND ((provider_idempotency_key IS NULL) = (provider_backend_id IS NULL)) AND ((provider_idempotency_key IS NULL) = (provider_message_fingerprint IS NULL)) AND ((provider_idempotency_key IS NULL) = (provider_bound_capability_id IS NULL)) AND ((provider_idempotency_key IS NULL) = (provider_bound_bearer_generation IS NULL))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_bound_capability",
+              "definition": "CHECK (((provider_bound_capability_id IS NULL) OR (provider_bound_capability_id ~ '^[0-9a-f]{32}$'::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_bound_generation",
+              "definition": "CHECK (((provider_bound_bearer_generation IS NULL) OR (provider_bound_bearer_generation >= 1)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_capability_digest",
+              "definition": "CHECK (((capability_digest IS NULL) OR (capability_digest ~ '^[0-9a-f]{64}$'::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_capability_id",
+              "definition": "CHECK (((capability_id IS NULL) OR (capability_id ~ '^[0-9a-f]{32}$'::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_counters",
+              "definition": "CHECK (((attempt_count >= 0) AND (provider_attempts >= 0) AND (bearer_generation >= 0)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_external_mailer",
+              "definition": "CHECK (((external_mailer IS NULL) OR (btrim(external_mailer) <> ''::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_external_mailer_unbound",
+              "definition": "CHECK (((external_mailer IS NULL) OR ((provider_name IS NULL) AND (provider_idempotency_key IS NULL) AND (provider_backend_id IS NULL) AND (provider_message_fingerprint IS NULL) AND (provider_bound_capability_id IS NULL) AND (provider_bound_bearer_generation IS NULL) AND (provider_message_id IS NULL) AND (provider_submitted_at IS NULL) AND (provider_accepted_at IS NULL) AND (remote_delivered_at IS NULL) AND (provider_attempts = 0))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_finalized",
+              "definition": "CHECK (((state = 'FINALIZED'::text) = (finalized_at IS NOT NULL)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_handoff_owned",
+              "definition": "CHECK (((state <> 'EXTERNAL_MAILER_HANDOFF'::text) OR (external_mailer IS NOT NULL)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_lease_pairing",
+              "definition": "CHECK ((((lease_owner IS NULL) = (lease_expires_at IS NULL)) AND ((lease_owner IS NULL) OR (btrim(lease_owner) <> ''::text))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_message_fingerprint",
+              "definition": "CHECK (((provider_message_fingerprint IS NULL) OR (provider_message_fingerprint ~ '^[0-9a-f]{64}$'::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_metadata",
+              "definition": "CHECK ((jsonb_typeof(metadata_json) = 'object'::text))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_no_bearer_in_diagnostics",
+              "definition": "CHECK (((capability_secret IS NULL) OR ((POSITION((capability_secret) IN (COALESCE(failure_detail, ''::text))) = 0) AND (POSITION((capability_secret) IN (COALESCE(failure_code, ''::text))) = 0) AND (POSITION((capability_secret) IN ((metadata_json)::text)) = 0))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_operation_id",
+              "definition": "CHECK ((operation_id ~ '^[A-Za-z0-9_-]{16,64}$'::text))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_operator_flag",
+              "definition": "CHECK ((((state <> ALL (ARRAY['PROVIDER_AMBIGUOUS'::text, 'OPERATOR_REQUIRED'::text])) OR operator_action_required) AND ((NOT operator_action_required) OR (state = ANY (ARRAY['PROVIDER_AMBIGUOUS'::text, 'OPERATOR_REQUIRED'::text, 'PROVIDER_REJECTED'::text])))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_payload_digest",
+              "definition": "CHECK ((payload_digest ~ '^[0-9a-f]{64}$'::text))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_period",
+              "definition": "CHECK ((period_end_date > period_start_date))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_period_type",
+              "definition": "CHECK ((period_type = ANY (ARRAY['weekly'::text, 'monthly'::text])))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_provider_backend_id",
+              "definition": "CHECK (((provider_backend_id IS NULL) OR (provider_backend_id ~ '^pbk_[0-9a-f]{40}$'::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_provider_key_present",
+              "definition": "CHECK (((state <> ALL (ARRAY['DELIVERY_INTENT_RECORDED'::text, 'PROVIDER_SUBMISSION_PENDING'::text, 'PROVIDER_ACCEPTED'::text, 'PROVIDER_AMBIGUOUS'::text, 'PROVIDER_REJECTED'::text, 'REMOTE_DELIVERED'::text, 'FINALIZED'::text])) OR ((provider_idempotency_key IS NOT NULL) AND (provider_name IS NOT NULL) AND (provider_backend_id IS NOT NULL) AND (provider_message_fingerprint IS NOT NULL) AND (provider_bound_capability_id IS NOT NULL) AND (provider_bound_bearer_generation IS NOT NULL))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_provider_unbound",
+              "definition": "CHECK (((state <> ALL (ARRAY['PREPARED'::text, 'BEARER_RECOVERY_REQUIRED'::text, 'CAPABILITY_PERSISTED'::text, 'EXTERNAL_MAILER_HANDOFF'::text])) OR ((provider_name IS NULL) AND (provider_idempotency_key IS NULL) AND (provider_backend_id IS NULL) AND (provider_message_fingerprint IS NULL) AND (provider_bound_capability_id IS NULL) AND (provider_bound_bearer_generation IS NULL))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_recipient",
+              "definition": "CHECK (((btrim(recipient_email) <> ''::text) AND (btrim(recipient_identity) <> ''::text)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_remote_delivered",
+              "definition": "CHECK (((state <> ALL (ARRAY['REMOTE_DELIVERED'::text, 'FINALIZED'::text])) OR (remote_delivered_at IS NOT NULL)))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_retired_audit",
+              "definition": "CHECK (((state <> 'CAPABILITY_RETIRED'::text) OR ((capability_id IS NOT NULL) AND (capability_digest IS NOT NULL) AND (capability_expires_at IS NOT NULL) AND (bearer_generation >= 1))))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_send_scope",
+              "definition": "CHECK ((send_scope = ANY (ARRAY['normal'::text, 'test'::text])))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_state",
+              "definition": "CHECK ((state = ANY (ARRAY['PREPARED'::text, 'BEARER_RECOVERY_REQUIRED'::text, 'CAPABILITY_PERSISTED'::text, 'EXTERNAL_MAILER_HANDOFF'::text, 'DELIVERY_INTENT_RECORDED'::text, 'PROVIDER_SUBMISSION_PENDING'::text, 'PROVIDER_ACCEPTED'::text, 'PROVIDER_AMBIGUOUS'::text, 'PROVIDER_REJECTED'::text, 'REMOTE_DELIVERED'::text, 'FINALIZED'::text, 'CAPABILITY_RETIRED'::text, 'OPERATOR_REQUIRED'::text])))",
+              "validated": true
+            },
+            {
+              "name": "chk_eco_dashboard_delivery_operation_subject_ref",
+              "definition": "CHECK ((btrim(subject_ref) <> ''::text))",
+              "validated": true
+            },
+            {
+              "name": "eco_dashboard_delivery_operation_pkey",
+              "definition": "PRIMARY KEY (delivery_id)",
+              "validated": true
+            },
+            {
+              "name": "uq_eco_dashboard_delivery_operation_identity",
+              "definition": "UNIQUE (client_id, identity_key, period_type, period_start_date, period_end_date, send_scope)",
+              "validated": true
+            },
+            {
+              "name": "uq_eco_dashboard_delivery_operation_operation",
+              "definition": "UNIQUE (operation_id)",
+              "validated": true
+            },
+            {
+              "name": "uq_eco_dashboard_delivery_operation_provider_key",
+              "definition": "UNIQUE (provider_idempotency_key)",
+              "validated": true
+            }
+          ],
+          "_comment": [
+            "Columns are exactly the host delivery lifecycle's runtime projection - the",
+            "projection every SELECT, INSERT ... RETURNING and UPDATE ... RETURNING names",
+            "explicitly, so any absent one is an immediate runtime failure rather than a",
+            "degraded feature. A default is declared only where the column is NOT NULL",
+            "and the lifecycle's narrow INSERT relies on the table default. The projection",
+            "is pinned as RUNTIME_COLUMNS in",
+            "ops/tests_manual/test_migration_049_physical_preflight_postgres.py, which",
+            "proves it equals the column set the 049 + 050 + 051 chain creates.",
+            "",
+            "Constraints are every CHECK, UNIQUE and PRIMARY KEY the 049 + 050 + 051 chain",
+            "installs, each pinned to its canonical definition. Uniqueness carries logical delivery",
+            "identity (uq_..._identity), remote publication identity (uq_..._operation) and",
+            "provider idempotency (uq_..._provider_key); the CHECKs are what make every",
+            "durable state answer exactly one question. The non-unique indexes the chain",
+            "creates are deliberately NOT declared: they are access-path performance, and",
+            "their absence degrades no correctness property this gate exists to prove -",
+            "including idx_..._open and idx_..._expiring, whose predicates are documented",
+            "in 051 but whose absence would only make the same queries slower.",
+            "",
+            "The trigger is declared by binding - timing, events, level, target function,",
+            "enabled state, absence of a WHEN condition and of an UPDATE column list -",
+            "because it is the only enforcement of provider-binding immutability and of the",
+            "OLD-row bearer copy-and-clear case, and every one of those fields can be",
+            "changed while the name survives.",
+            "",
+            "050 is what makes external_mailer, the two ownership CHECKs, the",
+            "handoff-owned CHECK, the three EXTERNAL_MAILER_HANDOFF-aware state CHECKs and",
+            "the reviewed guard body true. 051 is what makes CAPABILITY_RETIRED",
+            "representable, makes a retired row physically unable to hold a raw bearer",
+            "(chk_..._bearer_absent) and makes it unable to forget which grant it held",
+            "(chk_..._retired_audit). They are declared here rather than in separate 050",
+            "and 051 blocks because the runtime projection is ONE contract and splitting",
+            "it would let parts of it drift."
+          ],
+          "triggers": [
+            {
+              "name": "trg_eco_dashboard_delivery_operation_guard",
+              "timing": "BEFORE",
+              "events": [
+                "INSERT",
+                "UPDATE"
+              ],
+              "level": "ROW",
+              "function": "public.eco_dashboard_delivery_operation_guard",
+              "enabled": true
+            }
+          ]
+        }
+      ],
+      "functions": [
+        {
+          "schema": "public",
+          "name": "eco_dashboard_delivery_operation_guard",
+          "arguments": "",
+          "language": "plpgsql",
+          "returns": "trigger",
+          "body_sha256": "b219334ae2128b86f4588a9da20c23268e625ca3078739932ee0f95ef4cf12a9"
+        }
+      ]
+    },
+    {
+      "migration": "068_portal_generated_reports.sql",
+      "scope": "platform",
+      "milestone": "S15",
+      "reason": "Report Explorer is a REQUIRED first-release product surface and reads these three relations on every library, detail, preview and download request. Without them the module cannot distinguish 'this client has no reports' from 'this database has no report schema', so a release carrying the S15 code over a database without 068 would render an empty library that looks correct. The declaration makes the rollout migration-first: activation refuses instead. 068 alone is NOT sufficient: the corrective migration 069 is declared separately below and is equally required, and portal_generated_report_instances_period_key_uniq is deliberately absent here because 069 drops that second, competing logical identity.",
+      "relations": [
+        {
+          "schema": "public",
+          "table": "portal_generated_report_definitions",
+          "columns": [
+            {
+              "name": "definition_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "type_key",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "display_name",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "cadence_class",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "cadence_detail",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "period_kind",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "period_timezone",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "source_dataset_slug",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "source_date_column",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "generation_definition_ref",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "file_contract_json",
+              "type": "jsonb",
+              "nullable": false
+            },
+            {
+              "name": "retention_months",
+              "type": "integer",
+              "nullable": true
+            },
+            {
+              "name": "is_active",
+              "type": "boolean",
+              "nullable": false
+            }
+          ],
+          "constraints": [
+            "portal_generated_report_definitions_pkey",
+            "portal_generated_report_definitions_type_key_key",
+            "portal_generated_report_definitions_type_key_check",
+            "portal_generated_report_definitions_cadence_class_check",
+            "portal_generated_report_definitions_period_kind_check",
+            "portal_generated_report_definitions_source_binding_check"
+          ],
+          "indexes": [
+            {
+              "name": "portal_generated_report_definitions_id_period_kind_key",
+              "definition": "CREATE UNIQUE INDEX portal_generated_report_definitions_id_period_kind_key ON public.portal_generated_report_definitions USING btree (definition_id, period_kind)"
+            }
+          ]
+        },
+        {
+          "schema": "public",
+          "table": "portal_generated_report_instances",
+          "columns": [
+            {
+              "name": "instance_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "definition_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "client_code",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "period_kind",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "period_key",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "period_start",
+              "type": "date",
+              "nullable": false
+            },
+            {
+              "name": "period_end",
+              "type": "date",
+              "nullable": false
+            },
+            {
+              "name": "display_name",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "generation_state",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "generation_started_at",
+              "type": "timestamp with time zone",
+              "nullable": true
+            },
+            {
+              "name": "generation_finished_at",
+              "type": "timestamp with time zone",
+              "nullable": true
+            },
+            {
+              "name": "last_published_at",
+              "type": "timestamp with time zone",
+              "nullable": true
+            },
+            {
+              "name": "library_timestamp",
+              "type": "timestamp with time zone",
+              "nullable": false
+            },
+            {
+              "name": "attempt_count",
+              "type": "integer",
+              "nullable": false
+            },
+            {
+              "name": "claim_token",
+              "type": "uuid",
+              "nullable": true
+            },
+            {
+              "name": "row_count",
+              "type": "bigint",
+              "nullable": true
+            },
+            {
+              "name": "published_member_count",
+              "type": "integer",
+              "nullable": false
+            },
+            {
+              "name": "available_member_count",
+              "type": "integer",
+              "nullable": false
+            },
+            {
+              "name": "available_expires_at",
+              "type": "timestamp with time zone",
+              "nullable": true
+            },
+            {
+              "name": "source_dataset_id",
+              "type": "uuid",
+              "nullable": true
+            },
+            {
+              "name": "source_provenance_json",
+              "type": "jsonb",
+              "nullable": false
+            },
+            {
+              "name": "safe_error_code",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "safe_error_message",
+              "type": "text",
+              "nullable": true
+            }
+          ],
+          "constraints": [
+            "portal_generated_report_instances_pkey",
+            "portal_generated_report_instances_period_start_uniq",
+            "portal_generated_report_instances_period_order_check",
+            "portal_generated_report_instances_period_alignment_check",
+            "portal_generated_report_instances_state_check",
+            "portal_generated_report_instances_succeeded_published_check",
+            "portal_generated_report_instances_member_counts_check",
+            "portal_generated_report_instances_available_expiry_check",
+            "portal_generated_report_instances_definition_fkey",
+            "portal_generated_report_instances_definition_period_kind_fkey",
+            "portal_generated_report_instances_client_code_fkey",
+            "portal_generated_report_instances_source_dataset_id_fkey"
+          ],
+          "triggers": [
+            {
+              "name": "portal_generated_report_instance_integrity",
+              "timing": "AFTER",
+              "events": [
+                "INSERT",
+                "UPDATE"
+              ],
+              "level": "ROW",
+              "function": "public.portal_generated_report_instance_integrity_trigger",
+              "enabled": true
+            },
+            {
+              "name": "portal_generated_report_instance_identity",
+              "timing": "BEFORE",
+              "events": [
+                "UPDATE"
+              ],
+              "level": "ROW",
+              "function": "public.portal_generated_report_instance_identity_trigger",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "schema": "public",
+          "table": "portal_generated_report_files",
+          "columns": [
+            {
+              "name": "member_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "instance_id",
+              "type": "uuid",
+              "nullable": false
+            },
+            {
+              "name": "artifact_id",
+              "type": "uuid",
+              "nullable": true
+            },
+            {
+              "name": "display_filename",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "file_format",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "content_type",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "size_bytes",
+              "type": "bigint",
+              "nullable": false
+            },
+            {
+              "name": "is_previewable",
+              "type": "boolean",
+              "nullable": false
+            },
+            {
+              "name": "semantic_role",
+              "type": "text",
+              "nullable": false
+            },
+            {
+              "name": "is_main_file",
+              "type": "boolean",
+              "nullable": false
+            },
+            {
+              "name": "content_metric_kind",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "content_metric_value",
+              "type": "bigint",
+              "nullable": true
+            },
+            {
+              "name": "expires_at",
+              "type": "timestamp with time zone",
+              "nullable": true
+            },
+            {
+              "name": "is_available",
+              "type": "boolean",
+              "nullable": false
+            },
+            {
+              "name": "display_order",
+              "type": "integer",
+              "nullable": false
+            }
+          ],
+          "constraints": [
+            "portal_generated_report_files_pkey",
+            "portal_generated_report_files_filename_uniq",
+            "portal_generated_report_files_format_check",
+            "portal_generated_report_files_role_check",
+            "portal_generated_report_files_available_needs_object_check",
+            "portal_generated_report_files_metric_check",
+            "portal_generated_report_files_instance_id_fkey",
+            "portal_generated_report_files_artifact_id_fkey"
+          ],
+          "indexes": [
+            {
+              "name": "portal_generated_report_files_main_uniq",
+              "definition": "CREATE UNIQUE INDEX portal_generated_report_files_main_uniq ON public.portal_generated_report_files USING btree (instance_id) WHERE is_main_file"
+            },
+            {
+              "name": "portal_generated_report_files_artifact_uniq",
+              "definition": "CREATE UNIQUE INDEX portal_generated_report_files_artifact_uniq ON public.portal_generated_report_files USING btree (instance_id, artifact_id) WHERE (artifact_id IS NOT NULL)"
+            }
+          ],
+          "triggers": [
+            {
+              "name": "portal_generated_report_member_integrity",
+              "timing": "AFTER",
+              "events": [
+                "INSERT",
+                "UPDATE",
+                "DELETE"
+              ],
+              "level": "ROW",
+              "function": "public.portal_generated_report_member_integrity_trigger",
+              "enabled": true
+            },
+            {
+              "name": "portal_generated_report_files_availability",
+              "timing": "BEFORE",
+              "events": [
+                "INSERT",
+                "UPDATE"
+              ],
+              "level": "ROW",
+              "function": "public.portal_generated_report_files_availability_trigger",
+              "enabled": true
+            },
+            {
+              "name": "portal_generated_report_files_summary",
+              "timing": "AFTER",
+              "events": [
+                "INSERT",
+                "UPDATE",
+                "DELETE"
+              ],
+              "level": "ROW",
+              "function": "public.portal_generated_report_files_summary_trigger",
+              "enabled": true
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "migration": "069_portal_generated_reports_integrity.sql",
+      "scope": "platform",
+      "milestone": "S15",
+      "reason": "The S15 correction pass. 068 is immutable shared history, so the integrity findings an independent review returned are closed by this second migration, and a release built from the S15 code is NOT ready on 068 alone. Each declaration below is what one finding turned into a database fact: the canonical period-key CHECK collapses two competing logical identities into one, so a concurrent begin_generation converges instead of escaping as 23505; completed_claim_token / completed_claim_outcome make a generation attempt terminal, so a stale or replayed callback cannot publish twice and a late fail() cannot turn a published report into a failed one; the summary_guard trigger makes the availability counters a projection of the member rows, so an ordinary UPDATE can no longer forge 'ready' over a report with no available file; the format / content-type and previewability CHECKs stop presentation metadata describing different content, which is what let an HTML payload be embedded as a PDF preview; and the filename CHECK keeps a path-shaped name out of the bulk archive. A database carrying 068 but not 069 accepts every one of those states, so activation must refuse it rather than run the corrected code over an uncorrected schema.",
+      "relations": [
+        {
+          "schema": "public",
+          "table": "portal_generated_report_instances",
+          "columns": [
+            {
+              "name": "completed_claim_token",
+              "type": "uuid",
+              "nullable": true
+            },
+            {
+              "name": "completed_claim_outcome",
+              "type": "text",
+              "nullable": true
+            }
+          ],
+          "constraints": [
+            "portal_generated_report_instances_period_key_canonical_check",
+            "portal_generated_report_instances_completed_claim_check",
+            "portal_generated_report_instances_claim_exclusive_check",
+            "portal_generated_report_instances_period_start_uniq"
+          ],
+          "triggers": [
+            {
+              "name": "portal_generated_report_instance_summary_guard",
+              "timing": "BEFORE",
+              "events": [
+                "INSERT",
+                "UPDATE"
+              ],
+              "level": "ROW",
+              "function": "public.portal_generated_report_instance_summary_guard",
+              "enabled": true
+            }
+          ]
+        },
+        {
+          "schema": "public",
+          "table": "portal_generated_report_files",
+          "constraints": [
+            "portal_generated_report_files_format_content_type_check",
+            "portal_generated_report_files_previewable_content_check",
+            "portal_generated_report_files_filename_safe_check"
+          ]
+        }
+      ]
+    }
+  ]
+}

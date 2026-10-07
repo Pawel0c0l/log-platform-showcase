@@ -1,0 +1,65 @@
+# Demo overlay. Isolates the stack from any other Log Platform instance on the
+# same machine: its own Compose project name (set by demo/up.sh), its own image
+# tag, its own volumes and host ports.
+#
+#   docker compose -p logplatform-demo --env-file demo/.env.demo \
+#     -f docker-compose.yml -f demo/docker-compose.demo.yml up -d --build
+services:
+  postgres:
+    ports: !override
+      - "127.0.0.1:5433:5432"
+
+  minio:
+    ports: !override
+      - "127.0.0.1:9010:9000"
+      - "127.0.0.1:9011:9001"
+
+  api:
+    image: log-platform-api-demo:latest
+    env_file: !reset []
+    environment:
+      # Inside the Compose network Postgres listens on its native port, while
+      # demo/.env.demo points host-side scripts at the published 5433.
+      POSTGRES_PORT: "5432"
+      LOG_PLATFORM_EXPECTED_POSTGRES_PORT: "5432"
+      MINIO_ENDPOINT: "minio:9000"
+    ports: !override
+      - "127.0.0.1:8010:8000"
+    # api/platform_prune.py imports ops.retention_registry, but the image is
+    # built from the api/ context alone and does not contain ops/. Production
+    # runs the API natively from the repository checkout, where the import
+    # resolves; a container built from this tree needs the package mounted.
+    volumes:
+      - ./ops:/app/ops:ro
+
+  # One-off runner for the repository's host-side tools (client onboarding,
+  # portal admin bootstrap). It lives on the Compose network, so the client
+  # databases it creates are reachable by the API under the same host name.
+  # Started only through `docker compose run --rm tools <script> ...`.
+  tools:
+    image: python:3.12-slim
+    profiles: ["tools"]
+    working_dir: /repo
+    volumes:
+      - .:/repo
+      - demo-tools-venv:/opt/venv
+    environment:
+      PYTHONPATH: /repo
+      PYTHONDONTWRITEBYTECODE: "1"
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: "5432"
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    entrypoint:
+      - /bin/sh
+      - -c
+      - |
+        if [ ! -x /opt/venv/bin/python ]; then
+          python -m venv /opt/venv && /opt/venv/bin/pip install -q -r requirements-host.txt
+        fi
+        exec /opt/venv/bin/python "$@"
+      - --
+
+volumes:
+  demo-tools-venv:

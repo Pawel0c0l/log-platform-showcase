@@ -1,0 +1,321 @@
+/* Log Platform — approved design tokens.
+ *
+ * Source of truth: design-handoffs/log-platform/approved/v1.0/
+ * log-platform-approved-design-handoff/DESIGN_TOKENS.md
+ *
+ * Light and dark are the same layout with a different colour layer: only colour
+ * tokens are redefined per theme. Every dimension token is declared once, in
+ * `:root`, and is therefore byte-identical between themes (criterion SH-10).
+ *
+ * Theme resolution:
+ *   - no `data-theme` on <html>  -> AUTO, follows `prefers-color-scheme`
+ *   - `data-theme="light"`       -> explicit light, wins over a dark OS setting
+ *   - `data-theme="dark"`        -> explicit dark, wins over a light OS setting
+ */
+
+:root {
+  color-scheme: light dark;
+
+  /* ---------- typography ---------- */
+  --lp-font-sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --lp-font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  --lp-weight-regular: 400;
+  --lp-weight-medium: 500;
+  --lp-weight-semibold: 600;
+
+  /* ---------- spacing (2 px scale) ---------- */
+  --lp-space-1: 2px;
+  --lp-space-2: 4px;
+  --lp-space-3: 6px;
+  --lp-space-4: 8px;
+  --lp-space-5: 10px;
+  --lp-space-6: 12px;
+  --lp-space-7: 14px;
+  --lp-space-8: 16px;
+  --lp-space-9: 18px;
+  --lp-space-10: 20px;
+  --lp-space-11: 22px;
+  --lp-space-12: 24px;
+  --lp-space-13: 28px;
+  --lp-space-14: 32px;
+  --lp-space-15: 44px;
+  --lp-space-16: 56px;
+
+  /* ---------- radius ---------- */
+  --lp-radius-xs: 1px;
+  --lp-radius-sm: 2px;
+  --lp-radius-md: 3px;
+  --lp-radius-lg: 4px;
+  --lp-radius-pill: 999px;
+
+  /* ---------- component heights ---------- */
+  --lp-height-appbar: 56px;
+  --lp-height-context-bar: 64px;
+  --lp-height-breadcrumb-bar: 56px;
+  --lp-height-toolbar: 48px;
+  --lp-height-footer: 44px;
+  --lp-height-control-lg: 36px;
+  --lp-height-control: 34px;
+  --lp-height-control-sm: 32px;
+  --lp-height-control-xs: 30px;
+  --lp-height-control-touch: 44px;
+  --lp-height-segment: 26px;
+  --lp-height-row-compact: 32px;
+  --lp-height-row-comfortable: 40px;
+  --lp-height-row-header: 36px;
+  --lp-height-badge: 20px;
+  --lp-height-chip: 24px;
+
+  /* ---------- fixed widths ---------- */
+  --lp-width-rail: 288px;
+  --lp-width-rail-compact: 252px;
+  --lp-width-filter-panel: 352px;
+  --lp-width-column-panel: 400px;
+  --lp-width-row-panel: 520px;
+  --lp-width-detail-side: 480px;
+  --lp-width-drawer: 400px;
+
+  /* ---------- working-area padding (see DESIGN_TOKENS §3) ---------- */
+  --lp-work-padding-x: var(--lp-space-13);
+
+  /* ---------- colour: surfaces ---------- */
+  --lp-surface-page: #f4f6f7;
+  --lp-surface-raised: #ffffff;
+  --lp-surface-subtle: #fafbfb;
+  --lp-surface-header-cell: #f7f8f9;
+  --lp-surface-appbar: #14171c;
+  --lp-surface-field: #fbfcfc;
+  --lp-surface-inset: #eef0f3;
+  --lp-surface-preview-desk: #eef0f3;
+
+  /* ---------- colour: borders ---------- */
+  --lp-border-default: #e2e5e9;
+  --lp-border-strong: #d7dbe0;
+  --lp-border-row: #f0f2f4;
+  --lp-border-faint: #f4f6f7;
+  --lp-border-checkbox: #b9c0c9;
+
+  /* ---------- colour: text ---------- */
+  --lp-text-primary: #14171c;
+  --lp-text-secondary: #33393f;
+  --lp-text-muted: #5c646f;
+  --lp-text-faint: #8b939e;
+  --lp-text-on-appbar: #f4f6f8;
+  --lp-text-on-appbar-idle: #b9c0c9;
+  --lp-text-on-appbar-quiet: #8b939e;
+
+  /* ---------- colour: accent ---------- */
+  --lp-accent-base: #ff7a18;
+  --lp-accent-on-surface: #a85a0d;
+  --lp-accent-tint: #fdf3ea;
+  --lp-accent-tint-cell: #fefaf6;
+  --lp-accent-text-on-tint: #8a4409;
+
+  /* ---------- colour: action ---------- */
+  --lp-action-primary-bg: #14171c;
+  --lp-action-primary-fg: #ffffff;
+  --lp-action-secondary-bg: #ffffff;
+  --lp-action-secondary-fg: #33393f;
+  --lp-action-segment-on: #eef0f3;
+  --lp-action-accent-fg-on-accent: #1a0c02;
+
+  /* ---------- colour: semantic state ---------- */
+  --lp-state-positive-fg: #1f6b45;
+  --lp-state-positive-bg: #f0f8f3;
+  --lp-state-positive-border: #c6e3d3;
+  --lp-state-warning-fg: #8a5b09;
+  --lp-state-warning-bg: #fdf6e6;
+  --lp-state-warning-border: #f0dda6;
+  --lp-state-warning-edge: #c9922a;
+  --lp-state-negative-fg: #9e2c26;
+  --lp-state-negative-bg: #fdeceb;
+  --lp-state-negative-border: #f3c9c6;
+  --lp-state-neutral-fg: #5c646f;
+  --lp-state-neutral-bg: #f7f8f9;
+
+  /* ---------- colour: data visualization ---------- */
+  --lp-viz-bar-neutral: #d7dbe0;
+  --lp-viz-bar-accent: #a85a0d;
+  --lp-viz-bar-track: #eef0f3;
+  --lp-viz-score-good: #1f6b45;
+  --lp-viz-score-mid: #8a5b09;
+  --lp-viz-score-low: #9e2c26;
+  --lp-viz-loss-high: #9e2c26;
+  --lp-viz-loss-mid: #c9922a;
+  --lp-viz-loss-none: #cfd4da;
+
+  /* ---------- elevation ---------- */
+  --lp-elevation-menu: 0 16px 40px rgba(20, 23, 28, 0.16);
+  --lp-elevation-drawer: -8px 0 24px rgba(20, 23, 28, 0.06);
+  --lp-elevation-scrim: rgba(20, 23, 28, 0.42);
+
+  /* ---------- legacy `--portal-*` compatibility layer ----------
+   * Module-scoped CSS shipped before the redesign (Database Explorer, Eco
+   * Driving, Artifacts) references these names. They are aliases onto the
+   * approved tokens so pre-redesign surfaces inherit the approved colour layer
+   * without being rewritten in this slice. Do not introduce new uses.
+   */
+  --portal-bg: var(--lp-surface-page);
+  --portal-bg-deep: var(--lp-surface-page);
+  --portal-surface: var(--lp-surface-raised);
+  --portal-surface-2: var(--lp-surface-subtle);
+  --portal-surface-3: var(--lp-surface-raised);
+  --portal-sidebar: var(--lp-surface-appbar);
+  --portal-border: var(--lp-border-default);
+  --portal-border-strong: var(--lp-border-strong);
+  --portal-text: var(--lp-text-primary);
+  --portal-muted: var(--lp-text-muted);
+  --portal-muted-2: var(--lp-text-faint);
+  --portal-accent: var(--lp-accent-on-surface);
+  --portal-accent-rgb: 168, 90, 13;
+  --portal-accent-soft: var(--lp-accent-tint);
+  --portal-accent-line: var(--lp-accent-base);
+  --portal-success: var(--lp-state-positive-fg);
+  --portal-success-soft: var(--lp-state-positive-bg);
+  --portal-warning: var(--lp-state-warning-fg);
+  --portal-warning-soft: var(--lp-state-warning-bg);
+  --portal-danger: var(--lp-state-negative-fg);
+  --portal-danger-soft: var(--lp-state-negative-bg);
+  --portal-shadow: none;
+}
+
+/* AUTO: follow the operating system. Guarded so an explicit light override is
+ * not overwritten by a dark OS preference. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --lp-surface-page: #0f1215;
+    --lp-surface-raised: #16191e;
+    --lp-surface-subtle: #1b1f25;
+    --lp-surface-header-cell: #1b1f25;
+    --lp-surface-appbar: #0a0c0f;
+    --lp-surface-field: #0f1215;
+    --lp-surface-inset: #242a32;
+    --lp-surface-preview-desk: #242a32;
+
+    --lp-border-default: #262b33;
+    --lp-border-strong: #313841;
+    --lp-border-row: #1f242b;
+    --lp-border-faint: #1f242b;
+    --lp-border-checkbox: #3e4650;
+
+    --lp-text-primary: #eef1f4;
+    --lp-text-secondary: #c5ccd4;
+    --lp-text-muted: #99a1ab;
+    --lp-text-faint: #737c87;
+    --lp-text-on-appbar: #eef1f4;
+    --lp-text-on-appbar-idle: #99a1ab;
+    --lp-text-on-appbar-quiet: #737c87;
+
+    --lp-accent-base: #ff8a33;
+    --lp-accent-on-surface: #ffab63;
+    --lp-accent-tint: #2a1d10;
+    --lp-accent-tint-cell: #1a1712;
+    --lp-accent-text-on-tint: #ffbe86;
+
+    --lp-action-primary-bg: #eef1f4;
+    --lp-action-primary-fg: #0f1215;
+    --lp-action-secondary-bg: #16191e;
+    --lp-action-secondary-fg: #c5ccd4;
+    --lp-action-segment-on: #2a3038;
+
+    --lp-state-positive-fg: #6fd3a0;
+    --lp-state-positive-bg: #14241c;
+    --lp-state-positive-border: #22432f;
+    --lp-state-warning-fg: #e8c37a;
+    --lp-state-warning-bg: #2a2211;
+    --lp-state-warning-border: #3d3315;
+    --lp-state-negative-fg: #ff9b96;
+    --lp-state-negative-bg: #2a1615;
+    --lp-state-negative-border: #4a2422;
+    --lp-state-neutral-fg: #99a1ab;
+    --lp-state-neutral-bg: #1b1f25;
+
+    --lp-viz-bar-neutral: #2f353d;
+    --lp-viz-bar-accent: #ff8a33;
+    --lp-viz-bar-track: #242a32;
+    --lp-viz-score-good: #6fd3a0;
+    --lp-viz-score-mid: #e8c37a;
+    --lp-viz-score-low: #ff9b96;
+    --lp-viz-loss-high: #ff9b96;
+    --lp-viz-loss-none: #3e4650;
+
+    --lp-elevation-menu: 0 16px 40px rgba(0, 0, 0, 0.55);
+    --lp-elevation-drawer: -8px 0 24px rgba(0, 0, 0, 0.35);
+
+    --portal-accent-rgb: 255, 138, 51;
+  }
+}
+
+/* Explicit dark override wins over a light OS preference. Kept identical to the
+ * AUTO-dark block above; both must be edited together. */
+:root[data-theme="dark"] {
+  --lp-surface-page: #0f1215;
+  --lp-surface-raised: #16191e;
+  --lp-surface-subtle: #1b1f25;
+  --lp-surface-header-cell: #1b1f25;
+  --lp-surface-appbar: #0a0c0f;
+  --lp-surface-field: #0f1215;
+  --lp-surface-inset: #242a32;
+  --lp-surface-preview-desk: #242a32;
+
+  --lp-border-default: #262b33;
+  --lp-border-strong: #313841;
+  --lp-border-row: #1f242b;
+  --lp-border-faint: #1f242b;
+  --lp-border-checkbox: #3e4650;
+
+  --lp-text-primary: #eef1f4;
+  --lp-text-secondary: #c5ccd4;
+  --lp-text-muted: #99a1ab;
+  --lp-text-faint: #737c87;
+  --lp-text-on-appbar: #eef1f4;
+  --lp-text-on-appbar-idle: #99a1ab;
+  --lp-text-on-appbar-quiet: #737c87;
+
+  --lp-accent-base: #ff8a33;
+  --lp-accent-on-surface: #ffab63;
+  --lp-accent-tint: #2a1d10;
+  --lp-accent-tint-cell: #1a1712;
+  --lp-accent-text-on-tint: #ffbe86;
+
+  --lp-action-primary-bg: #eef1f4;
+  --lp-action-primary-fg: #0f1215;
+  --lp-action-secondary-bg: #16191e;
+  --lp-action-secondary-fg: #c5ccd4;
+  --lp-action-segment-on: #2a3038;
+
+  --lp-state-positive-fg: #6fd3a0;
+  --lp-state-positive-bg: #14241c;
+  --lp-state-positive-border: #22432f;
+  --lp-state-warning-fg: #e8c37a;
+  --lp-state-warning-bg: #2a2211;
+  --lp-state-warning-border: #3d3315;
+  --lp-state-negative-fg: #ff9b96;
+  --lp-state-negative-bg: #2a1615;
+  --lp-state-negative-border: #4a2422;
+  --lp-state-neutral-fg: #99a1ab;
+  --lp-state-neutral-bg: #1b1f25;
+
+  --lp-viz-bar-neutral: #2f353d;
+  --lp-viz-bar-accent: #ff8a33;
+  --lp-viz-bar-track: #242a32;
+  --lp-viz-score-good: #6fd3a0;
+  --lp-viz-score-mid: #e8c37a;
+  --lp-viz-score-low: #ff9b96;
+  --lp-viz-loss-high: #ff9b96;
+  --lp-viz-loss-none: #3e4650;
+
+  --lp-elevation-menu: 0 16px 40px rgba(0, 0, 0, 0.55);
+  --lp-elevation-drawer: -8px 0 24px rgba(0, 0, 0, 0.35);
+
+  --portal-accent-rgb: 255, 138, 51;
+}
+
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
+
+/* Working-area padding steps (DESIGN_TOKENS §3). Declared here because the step
+ * is a token, not a layout rule. */
+@media (max-width: 1439px) { :root { --lp-work-padding-x: var(--lp-space-10); } }
+@media (max-width: 1279px) { :root { --lp-work-padding-x: var(--lp-space-8); } }
+@media (max-width: 1023px) { :root { --lp-work-padding-x: var(--lp-space-7); } }

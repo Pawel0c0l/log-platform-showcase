@@ -1,0 +1,31 @@
+[Unit]
+# Enforce the journald retention ceiling on a schedule, not only on write.
+#
+# `MaxRetentionSec=` is applied by journald when it rotates or vacuums, which is
+# driven by log traffic. A host quiet enough to stop rotating therefore stops
+# enforcing, and "the ceiling holds as long as the machine is busy" is not a
+# retention policy. This unit vacuums explicitly, every day.
+#
+# It runs as root because the system journal is root-owned; it does nothing else
+# and touches nothing else. `--vacuum-time` is idempotent and removes only
+# archived journal files whose entries are already past the horizon.
+Description=Enforce the journald 13-calendar-month retention ceiling
+After=systemd-journald.service
+Wants=systemd-journald.service
+OnFailure=log-platform-unit-failure@%n.service
+
+[Service]
+Type=oneshot
+# The value MUST equal MaxRetentionSec in
+# ops/systemd/proposed/journald-retention.conf, which is derived from
+# ops.retention_registry.journald_max_retention(). Both are pinned by
+# ops/tests_manual/test_journald_retention.py.
+ExecStart=/usr/bin/journalctl --vacuum-time=385d
+TimeoutStartSec=600
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=true
+
+[Install]
+WantedBy=multi-user.target

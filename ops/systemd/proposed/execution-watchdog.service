@@ -1,0 +1,41 @@
+[Unit]
+Description=Independent missing-run and stuck-run watchdog
+After=network-online.target docker.service
+Wants=network-online.target
+# The watchdog cannot fully monitor itself. An external systemd failure signal
+# is what makes a dead watchdog visible.
+OnFailure=log-platform-unit-failure@%n.service
+
+[Service]
+Type=oneshot
+User=logplatform
+Group=logplatform
+# The release root, not the development checkout. The launcher cd's to the
+# resolved release itself, so this only has to be a stable directory that exists
+# and is not the mutable tree.
+WorkingDirectory=/opt/log-platform-release
+UMask=0077
+# Deliberately NO Environment=PYTHONPATH=. The watchdog's expectation set is
+# ops/watchdog_expectations.json resolved from REPO_ROOT, i.e. from this
+# process's own __file__ — so whichever tree supplies the module also supplies
+# the subjects it asserts. Binding that to the active release is what makes
+# "activate a release" sufficient to change the expectation set, and it is why
+# the path must be resolved per invocation by /usr/local/bin/log-ops-runner.sh
+# rather than written here.
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+ExecStart=/usr/local/bin/log-ops-runner.sh ops.execution_watchdog
+TimeoutStartSec=600
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+
+# Deliberately NO [Install] section. These are timer-driven oneshot jobs: the
+# timer is the only thing that should ever schedule them. With
+# `WantedBy=multi-user.target` the unit runs on every boot as well, which for
+# backup-retention.service means destructive deletion at boot. Omitting [Install]
+# makes `systemctl enable <this>.service` fail loudly instead of silently wiring
+# an unwanted activation. Enable the .timer; run the .service by hand with
+# `systemctl start` only when a one-off execution is explicitly intended.

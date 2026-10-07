@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "contract_id": "driver_eco_dashboard_snapshot",
+  "generated_at_utc": "2026-07-20T04:40:11Z",
+  "timezone": "Europe/Warsaw",
+  "locale": "pl-PL",
+  "constants": {
+    "min_qualifying_distance_km": 100,
+    "rating_thresholds": {
+      "safe": 85,
+      "acceptable": 40
+    },
+    "score_max": 100
+  },
+  "periods": {
+    "weekly": {
+      "status": "INSUFFICIENT_DISTANCE",
+      "period_identity": {
+        "period_type": "weekly",
+        "period_label": "2026-07-W1",
+        "period_start_date": "2026-07-01",
+        "period_end_date_exclusive": "2026-07-05",
+        "period_end_date_display": "2026-07-04",
+        "period_sequence_in_month": 1,
+        "closed_periods_in_month": 5,
+        "is_partial_period": true,
+        "snapshot_updated_at_utc": "2026-07-20T04:40:11Z"
+      },
+      "current": null,
+      "previous": null,
+      "series": [],
+      "series_reference": null
+    },
+    "monthly": null
+  }
+}

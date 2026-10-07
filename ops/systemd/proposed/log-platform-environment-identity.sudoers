@@ -1,0 +1,4 @@
+# Install as /etc/sudoers.d/log-platform-environment-identity (mode 0440).
+# The helper itself accepts only /etc/log-platform/environment-identity.env and
+# validates every value, checksum, backup and attestation. No shell is allowed.
+logplatform ALL=(root) /usr/local/sbin/log-platform-environment-identity-helper *

@@ -1,0 +1,43 @@
+[Unit]
+Description=Database Explorer async export worker
+After=network-online.target docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=logplatform
+# The release root, not the development checkout. The launcher cd's to the
+# resolved release itself, so this only has to be a stable directory that exists
+# and is not the mutable tree.
+WorkingDirectory=/opt/log-platform-release
+UMask=0077
+
+# Deliberately NO Environment=PYTHONPATH=. This unit's Python source root is the
+# active release — a symlink target that changes without this file changing — so
+# it cannot be written here. /usr/local/bin/log-ops-runner.sh resolves it per
+# invocation and exports it in-process, which is also the only place it can win:
+# /etc/log-platform/runtime.env exports a PYTHONPATH naming the development tree
+# and EnvironmentFile= overrides Environment=.
+#
+# ops/database_export_worker.py does `from api import main as api_main`, so the
+# API module is as much this unit's code as the worker module is: a release that
+# carried one without the other would run a mixed pair. Both are asserted before
+# any project code runs, so a structurally broken release fails once with exit 92
+# instead of restarting on a 30s loop with an indistinguishable exit 1.
+Environment=OPS_RUNNER_REQUIRE_RELEASE_FILE=ops/database_export_worker.py:api/main.py
+
+ExecStart=/usr/local/bin/log-ops-runner.sh ops.database_export_worker --loop --poll-seconds 30 --cleanup-interval-seconds 3600
+
+# Configuration and secrets stay host-managed and are NOT release content: they
+# must survive a code rollback unchanged. environment-identity.env stays last so
+# it wins, as it does on every other unit.
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/database-export-minio-host.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+
+Restart=on-failure
+RestartSec=30s
+TimeoutStopSec=60s
+
+[Install]
+WantedBy=multi-user.target

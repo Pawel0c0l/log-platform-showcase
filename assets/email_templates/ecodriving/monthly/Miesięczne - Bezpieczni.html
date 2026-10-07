@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Program Ecodriving Telematics</title>
+  <!--
+    Outlook-safe email template.
+    Rules:
+    - no JavaScript
+    - table-based layout
+    - inline styles
+    - no interactive accordion
+    - VML button for Outlook desktop
+  -->
+</head>
+
+<body style="margin:0; padding:0; background-color:#F4F7F5; font-family:Arial, Helvetica, sans-serif; color:#1F2933;">
+
+  <!-- Outer background -->
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F4F7F5;">
+    <tr>
+      <td align="center" style="padding:32px 12px;">
+
+        <!-- Main email container -->
+        <table role="presentation" width="620" cellspacing="0" cellpadding="0" border="0" style="width:620px; max-width:620px; background-color:#FFFFFF; border-collapse:separate;">
+
+          <!-- Header -->
+          <tr>
+            <td style="background-color:#FF7300; padding:34px 32px; text-align:left;">
+              <div style="font-size:15px; color:#111111; font-weight:bold; letter-spacing:0.4px; text-transform:uppercase;">
+                Program Ecodriving
+              </div>
+
+              <div style="font-size:30px; line-height:1.25; color:#111111; font-weight:bold; margin-top:10px;">
+                Twój aktualny wynik jazdy
+              </div>
+
+              <div style="font-size:15px; line-height:1.6; color:#111111; margin-top:12px;">
+                Sprawdź swoje punkty, pozycję w rankingu i obszary, które miały największy wpływ na wynik.
+              </div>
+            </td>
+          </tr>
+
+          <!-- Intro -->
+          <tr>
+            <td style="padding:30px 32px 10px 32px;">
+              <div style="font-size:18px; font-weight:bold; color:#1F2933;">
+                Witaj!
+              </div>
+
+              <div style="font-size:15px; line-height:1.7; color:#52616B; margin-top:8px;">
+                Oto Twoje aktualne podsumowanie w Programie Ecodriving za okres:
+                <strong style="color:#1F2933;">{month_start_date} - {month_end_date}</strong>.
+              </div>
+            </td>
+          </tr>
+
+          <!-- Score Card -->
+          <tr>
+            <td style="padding:16px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F0FAF4; border:1px solid #D9F0E2;">
+                <tr>
+                  <td align="center" style="padding:30px 22px;">
+
+                    <div style="font-size:14px; color:#1F2933; font-weight:bold; text-transform:uppercase; letter-spacing:0.5px;">
+                      Twój wynik
+                    </div>
+
+                    <div style="font-size:56px; line-height:1; color:#1F8A4C; font-weight:bold; margin-top:12px;">
+                      {eco_driving_score_total}
+                    </div>
+
+                    <div style="font-size:18px; color:#1F8A4C; font-weight:bold; margin-top:4px;">
+                      punktów
+                    </div>
+
+                    {eco_score_bar_html}
+
+                    <div style="font-size:13px; color:#52616B; margin-top:12px;">
+                      Aktualna punktacja za styl jazdy
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Ranking -->
+          <tr>
+            <td style="padding:10px 32px 16px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0">
+                <tr>
+
+                  <td width="50%" valign="top" style="padding:0 6px 0 0;">
+                    <table role="presentation" width="100%" height="148" cellspacing="0" cellpadding="0" border="0" style="height:148px; background-color:#FFFFFF; border:1px solid #E3E8E5;">
+                      <tr>
+                        <td height="108" style="height:108px; padding:20px;">
+                          <table role="presentation" width="100%" height="108" cellspacing="0" cellpadding="0" border="0" style="height:108px;">
+                            <tr>
+                              <td valign="top" height="34" style="height:34px; font-size:13px; line-height:17px; color:#6B7780; font-weight:bold; text-transform:uppercase;">
+                                Pozycja w rankingu
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="middle" height="42" style="height:42px; font-size:30px; line-height:34px; color:#1F2933; font-weight:bold;">
+                                #{ranking_position}
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="bottom" height="32" style="height:32px; font-size:15px; line-height:21px; color:#1F2933; font-weight:bold;">
+                                &nbsp;
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+
+                  <td width="50%" valign="top" style="padding:0 0 0 6px;">
+                    <table role="presentation" width="100%" height="148" cellspacing="0" cellpadding="0" border="0" style="height:148px; background-color:#FFFFFF; border:1px solid #E3E8E5;">
+                      <tr>
+                        <td height="108" style="height:108px; padding:20px;">
+                          <table role="presentation" width="100%" height="108" cellspacing="0" cellpadding="0" border="0" style="height:108px;">
+                            <tr>
+                              <td valign="top" height="34" style="height:34px; font-size:13px; line-height:17px; color:#6B7780; font-weight:bold; text-transform:uppercase;">
+                                Należysz do grupy
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="middle" height="42" style="height:42px; font-size:30px; line-height:34px; color:#1F8A4C; font-weight:bold;">
+                                {ecodriving_rating_type_share_percent}%
+                              </td>
+                            </tr>
+                            <tr>
+                              <td valign="bottom" height="32" style="height:32px; font-size:15px; line-height:21px; color:#1F8A4C; font-weight:bold;">
+                                kierowców bezpiecznych
+                              </td>
+                            </tr>
+                          </table>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Driver Eco Dashboard section (empty when the integration is off) -->
+          {eco_dashboard_section_html}
+
+          <!-- Main Message -->
+          <tr>
+            <td style="padding:10px 32px 16px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#FFFFFF; border:1px solid #E3E8E5;">
+                <tr>
+                  <td style="padding:24px;">
+
+                    <div style="font-size:18px; font-weight:bold; color:#1F2933;">
+                      Podsumowanie
+                    </div>
+
+                    <div style="font-size:15px; line-height:1.7; color:#52616B; margin-top:10px;">
+                      Twoja punktacja wskazuje na to, że jesteś kierowcą, z którego można brać przykład!
+                    </div>
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          {area_score_axes_html}
+
+                    <!-- Recommendation -->
+          <tr>
+            <td style="padding:0 32px 20px 32px;">
+              <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color:#F8FAFC; border:1px solid #E3E8E5;">
+                <tr>
+                  <td style="padding:22px;">
+                    <div style="font-size:17px; font-weight:bold; color:#1F2933;">
+                      Rekomendacja
+                    </div>
+
+                    <div style="font-size:15px; line-height:1.7; color:#52616B; margin-top:10px;">
+                      Twój styl jazdy sprzyja bezpieczeństwu na drodze oraz ma pozytywny wpływ na środowisko. Tak trzymaj!  
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Driver Eco Dashboard CTA (empty when the integration is off) -->
+          {eco_dashboard_link_html}
+
+          <!-- CTA / Internal PDF link -->
+          <tr>
+            <td align="center" style="padding:8px 32px 34px 32px;">
+
+              <!--[if mso]>
+              <v:roundrect xmlns:v="urn:schemas-microsoft-com:vml"
+                xmlns:w="urn:schemas-microsoft-com:office:word"
+                href="https://sharepoint.example.invalid/witryny/hrportal/organizacja-pracy/SitePages/Podejmij-wyzwanie-%E2%80%93-startuje-Program-Ecodriving!.aspx"
+                style="height:48px; v-text-anchor:middle; width:260px;"
+                arcsize="50%"
+                strokecolor="#1F8A4C"
+                fillcolor="#1F8A4C">
+                <w:anchorlock/>
+                <center style="color:#FFFFFF; font-family:Arial, Helvetica, sans-serif; font-size:16px; font-weight:bold;">
+                  Dowiedz się więcej
+                </center>
+              </v:roundrect>
+              <![endif]-->
+
+              <!--[if !mso]><!-- -->
+              <a href="https://sharepoint.example.invalid/witryny/hrportal/organizacja-pracy/SitePages/Podejmij-wyzwanie-%E2%80%93-startuje-Program-Ecodriving!.aspx" style="display:inline-block; background-color:#1F8A4C; color:#FFFFFF; text-decoration:none; font-size:16px; font-weight:bold; padding:15px 28px; border-radius:999px;">
+                Dowiedz się więcej
+              </a>
+              <!--<![endif]-->
+
+              <div style="font-size:13px; line-height:1.6; color:#7B8790; margin-top:18px;">
+                Dzięki regularnej analizie stylu jazdy możesz poprawiać wynik, ograniczać zużycie paliwa
+                i zwiększać bezpieczeństwo na drodze.
+              </div>
+
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="background-color:#FF7300; padding:22px 32px; text-align:center; border-top:1px solid #E36A00;">
+
+              <div style="font-size:13px; line-height:1.6; color:#111111;">
+                Partner technologiczny Programu Ecodriving
+              </div>
+
+              <div style="font-size:14px; font-weight:bold; color:#111111; margin-top:4px;">
+                Telematics Polska
+              </div>
+
+            </td>
+          </tr>
+
+        </table>
+
+      </td>
+    </tr>
+  </table>
+
+</body>
+</html>

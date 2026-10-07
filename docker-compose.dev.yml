@@ -1,0 +1,22 @@
+# Development-only overlay. Opt-in, never auto-loaded.
+#
+# Compose auto-loads only docker-compose.override.yml / compose.override.yaml.
+# This file is deliberately named docker-compose.dev.yml so that a plain
+# `docker compose ...` invocation always resolves to the production-safe base
+# definition and can never silently acquire a read-write source bind.
+#
+#   development:  docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#   production:   docker compose -f docker-compose.yml up -d --no-deps --force-recreate api
+#
+# Restores the live source bind so edits under api/ are visible without a
+# rebuild. uvicorn still does not auto-reload; restart the service after editing
+# (docs/07_operations.md § 1.1).
+#
+# The base image already runs as 1000:1000, which is the uid that owns the
+# checkout, so no user override is needed and the 0600 eco_driving_explorer
+# admin modules stay readable through the bind. cap_drop and no-new-privileges
+# are inherited from the base definition.
+services:
+  api:
+    volumes:
+      - ./api:/app

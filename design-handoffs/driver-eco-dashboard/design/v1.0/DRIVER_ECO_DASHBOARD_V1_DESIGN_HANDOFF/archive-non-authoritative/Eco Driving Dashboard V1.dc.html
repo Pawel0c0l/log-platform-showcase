@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Driver Eco Driving Dashboard V1 — wzorzec UI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #F6F3F0; }
+  * { box-sizing: border-box; }
+  a { color: #C24E06; text-decoration: none; }
+  a:hover { color: #8F3A04; text-decoration: underline; }
+  button { font: inherit; }
+</style>
+</helmet>
+
+<div style="font-family: Archivo, Helvetica, Arial, sans-serif; color: #1A1714; background: #F6F3F0; min-height: 100vh; padding: 0 0 72px 0;">
+
+  <div style="background: #221D19; color: #EDE7E1; padding: 14px 28px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; position: sticky; top: 0; z-index: 40;">
+    <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #A69B92; border-right: 1px solid #453C34; padding-right: 20px;">Wzorzec projektowy<br>nie część produktu</div>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <span style="font-size: 11px; color: #A69B92; text-transform: uppercase; letter-spacing: 0.08em;">Okres</span>
+      <button onClick="{{ setWeekly }}" style="padding: 7px 13px; border-radius: 6px; border: 1px solid #453C34; background: {{ weeklyBtnBg }}; color: {{ weeklyBtnFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">Tygodniowy</button>
+      <button onClick="{{ setMonthly }}" style="padding: 7px 13px; border-radius: 6px; border: 1px solid #453C34; background: {{ monthlyBtnBg }}; color: {{ monthlyBtnFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">Miesięczny</button>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: center;">
+      <span style="font-size: 11px; color: #A69B92; text-transform: uppercase; letter-spacing: 0.08em;">Widok</span>
+      <button onClick="{{ setSummary }}" style="padding: 7px 13px; border-radius: 6px; border: 1px solid #453C34; background: {{ summaryBtnBg }}; color: {{ summaryBtnFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">Podsumowanie</button>
+      <button onClick="{{ setDetailed }}" style="padding: 7px 13px; border-radius: 6px; border: 1px solid #453C34; background: {{ detailedBtnBg }}; color: {{ detailedBtnFg }}; font-size: 13px; font-weight: 600; cursor: pointer;">Szczegóły</button>
+    </div>
+    <div style="display: flex; gap: 6px; align-items: center; flex-wrap: wrap;">
+      <span style="font-size: 11px; color: #A69B92; text-transform: uppercase; letter-spacing: 0.08em;">Stan</span>
+      <select value="{{ profileKey }}" onChange="{{ onProfile }}" style="padding: 7px 10px; border-radius: 6px; border: 1px solid #453C34; background: #2E2822; color: #EDE7E1; font-size: 13px; cursor: pointer; max-width: 320px;">
+        <sc-for list="{{ profileOptions }}" as="opt" hint-placeholder-count="4">
+          <option value="{{ opt.key }}">{{ opt.label }}</option>
+        </sc-for>
+      </select>
+    </div>
+  </div>
+
+  <div style="max-width: 1240px; margin: 0 auto; padding: 28px 28px 0 28px;">
+
+    <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 14px; overflow: hidden; box-shadow: 0 1px 2px rgba(26,23,20,0.04);">
+
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: center; justify-content: space-between; padding: 18px 24px; border-bottom: 1px solid #EFEAE5;">
+        <div style="display: flex; gap: 12px; align-items: center;">
+          <div style="width: 26px; height: 26px; border-radius: 5px; background: #E8620E;"></div>
+          <div>
+            <div style="font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Program Ecodriving</div>
+            <div style="font-size: 19px; font-weight: 700; letter-spacing: -0.01em;">Twoje Eco Driving</div>
+          </div>
+        </div>
+        <div style="text-align: right; font-size: 12px; color: #5B534D; line-height: 1.5;">
+          <div style="display: inline-flex; gap: 7px; align-items: center; background: #F4F1EE; border: 1px solid #E6E0DA; border-radius: 999px; padding: 5px 11px;">
+            <span style="width: 7px; height: 7px; border-radius: 2px; background: #8A7F76;"></span>
+            <span>Dane z zamkniętego okresu sprawozdawczego</span>
+          </div>
+          <div style="margin-top: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8A7F76;">Migawka zaktualizowana: {{ updatedAt }}</div>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 8px; padding: 0 24px; border-bottom: 1px solid #EFEAE5;">
+        <button onClick="{{ setSummary }}" style="padding: 14px 4px; margin-right: 20px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 600; color: {{ tabSummaryFg }}; box-shadow: {{ tabSummaryLine }};">Podsumowanie</button>
+        <button onClick="{{ setDetailed }}" style="padding: 14px 4px; border: 0; background: transparent; cursor: pointer; font-size: 14px; font-weight: 600; color: {{ tabDetailedFg }}; box-shadow: {{ tabDetailedLine }};">Szczegóły dzienne</button>
+        <div style="flex: 1"></div>
+        <div style="display: flex; gap: 4px; align-items: center; padding: 9px 0;">
+          <button onClick="{{ setWeekly }}" style="padding: 6px 12px; border-radius: 999px 0 0 999px; border: 1px solid #E0D9D2; border-right: 0; background: {{ pillWeeklyBg }}; color: {{ pillWeeklyFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">Tygodniowy</button>
+          <button onClick="{{ setMonthly }}" style="margin-left: -4px; padding: 6px 12px; border-radius: 0 999px 999px 0; border: 1px solid #E0D9D2; background: {{ pillMonthlyBg }}; color: {{ pillMonthlyFg }}; font-size: 12px; font-weight: 600; cursor: pointer;">Miesięczny</button>
+        </div>
+      </div>
+
+      <div style="padding: 20px 24px; background: #FBF9F7; border-bottom: 1px solid #EFEAE5; display: flex; flex-wrap: wrap; gap: 20px; align-items: flex-end; justify-content: space-between;">
+        <div style="flex: 1 1 340px; min-width: 300px;">
+          <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">{{ periodKindLabel }}</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 26px; font-weight: 700; letter-spacing: -0.02em; margin-top: 4px;">{{ rangeDisplay }}</div>
+          <div style="margin-top: 8px; display: flex; flex-wrap: wrap; gap: 8px;">
+            <span style="display: inline-block; background: #FDF0E4; border: 1px solid #F6D3AF; color: #8F3A04; border-radius: 6px; padding: 4px 9px; font-size: 12px; font-weight: 600;">{{ cumulativeChip }}</span>
+            <span style="display: inline-block; background: #FFFFFF; border: 1px solid #E6E0DA; color: #5B534D; border-radius: 6px; padding: 4px 9px; font-size: 12px;">{{ sequenceChip }}</span>
+          </div>
+        </div>
+        <div style="text-align: right; flex: 0 1 380px; min-width: 260px;">
+          <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Baza porównania</div>
+          <div style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 500; margin-top: 4px;">{{ prevRangeDisplay }}</div>
+          <div style="font-size: 12px; color: #5B534D; margin-top: 4px; line-height: 1.45;">{{ comparisonNote }}</div>
+        </div>
+      </div>
+
+      <sc-if value="{{ isSummary }}" hint-placeholder-val="{{ true }}">
+      <div style="padding: 24px;">
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 16px; align-items: stretch;">
+
+          <div style="grid-column: {{ scoreCardSpan }}; background: {{ scoreCardBg }}; border: 1px solid {{ scoreCardBorder }}; border-radius: 12px; padding: 20px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: flex-start;">
+              <div>
+                <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Wynik Eco Driving</div>
+                <div style="display: flex; align-items: baseline; gap: 10px; margin-top: 6px;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 62px; line-height: 1; font-weight: 700; letter-spacing: -0.03em; color: {{ scoreColor }};">{{ scoreDisplay }}</span>
+                  <span style="font-size: 14px; color: #5B534D;">/ 100 pkt</span>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; align-items: center;">
+                  <span style="display: inline-flex; gap: 7px; align-items: center; background: #FFFFFF; border: 1px solid {{ ratingBorder }}; border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 600; color: {{ scoreColor }};">
+                    <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px;">{{ ratingGlyph }}</span>{{ ratingLabel }}
+                  </span>
+                  <span style="font-size: 12px; color: #5B534D;">{{ ratingRangeNote }}</span>
+                </div>
+              </div>
+              <div style="text-align: right;">
+                <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Zmiana</div>
+                <div style="display: inline-flex; align-items: center; gap: 7px; margin-top: 6px; background: {{ deltaBg }}; border: 1px solid {{ deltaBorder }}; color: {{ deltaFg }}; border-radius: 8px; padding: 7px 12px;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;">{{ deltaGlyph }}</span>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700;">{{ scoreDeltaDisplay }}</span>
+                  <span style="font-size: 12px; font-weight: 600;">{{ deltaUnit }}</span>
+                </div>
+                <div style="font-size: 11px; color: #8A7F76; margin-top: 6px; max-width: 190px;">wobec {{ prevRangeDisplay }} ({{ prevScoreDisplay }} pkt)</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 22px; padding-top: 18px; border-top: 1px dashed {{ scoreAxisDivider }};">
+              <div style="display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 26px;">
+                <div style="font-size: 12px; font-weight: 700;">Oś wyniku całkowitego</div>
+                <div style="font-size: 12px; color: #5B534D;">{{ nextBandNote }}</div>
+              </div>
+
+              <div style="position: relative; height: 74px;">
+                <div style="position: absolute; left: 0; right: 0; top: 30px; height: 16px; display: flex; border-radius: 4px; overflow: hidden; border: 1px solid #DCD5CE;">
+                  <div style="width: 40%; background: #F4C9C2; background-image: repeating-linear-gradient(135deg, rgba(192,57,43,0.28) 0 3px, transparent 3px 7px);"></div>
+                  <div style="width: 45%; background: #F7E3B8; background-image: radial-gradient(rgba(180,120,10,0.35) 1px, transparent 1.4px); background-size: 6px 6px; border-left: 1px solid #B8AFA6;"></div>
+                  <div style="width: 15%; background: #BFE0CC; border-left: 1px solid #B8AFA6;"></div>
+                </div>
+
+                <sc-if value="{{ hasScoreMarker }}" hint-placeholder-val="{{ true }}">
+                  <div style="position: absolute; left: {{ scoreMarkerLeft }}; top: 0; transform: translateX(-50%); text-align: center;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; background: #221D19; color: #FFF; border-radius: 5px; padding: 3px 7px; white-space: nowrap;">{{ scoreDisplay }}</div>
+                    <div style="width: 2px; height: 12px; background: #221D19; margin: 0 auto;"></div>
+                  </div>
+                </sc-if>
+                <sc-if value="{{ noScoreAxisNote }}" hint-placeholder-val="{{ false }}">
+                  <div style="position: absolute; left: 0; right: 0; top: 2px; font-size: 12px; color: #5B534D;">Bez wyniku dla tego okresu — oś pokazana wyłącznie jako odniesienie do progów.</div>
+                </sc-if>
+
+                <sc-if value="{{ hasPrevMarker }}" hint-placeholder-val="{{ true }}">
+                  <div style="position: absolute; left: {{ prevMarkerLeft }}; top: 47px; transform: translateX(-50%); text-align: center;">
+                    <div style="width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 7px solid #8A7F76; margin: 0 auto;"></div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 10px; color: #8A7F76; white-space: nowrap; margin-top: 2px;">poprz. {{ prevScoreDisplay }}</div>
+                  </div>
+                </sc-if>
+
+                <div style="position: absolute; left: 40%; top: 30px; bottom: 22px; width: 1px; background: transparent;"></div>
+                <div style="position: absolute; left: 40%; top: 50px; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B534D;">40</div>
+                <div style="position: absolute; left: 85%; top: 50px; transform: translateX(-50%); font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B534D;">85</div>
+                <div style="position: absolute; left: 0; top: 50px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8A7F76;">0</div>
+                <div style="position: absolute; right: 0; top: 50px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #8A7F76;">100</div>
+              </div>
+
+              <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 6px; font-size: 11px; color: #5B534D;">
+                <span>◤ 0–39 niebezpieczny</span>
+                <span>◦ 40–84 akceptowalny</span>
+                <span>▬ 85–100 bezpieczny</span>
+                <span style="color: #8A7F76;">Skala liniowa 0–100 pkt</span>
+              </div>
+              <sc-if value="{{ isNegativeScore }}" hint-placeholder-val="{{ false }}">
+                <div style="margin-top: 10px; background: #FBEAE7; border: 1px solid #E9BDB4; border-radius: 8px; padding: 9px 12px; font-size: 12px; color: #8E2B1F;">Wynik poniżej 0 pkt jest pokazany liczbowo ({{ scoreDisplay }} pkt) i przypięty do lewej krawędzi osi — oś nie skaluje wartości ujemnych.</div>
+              </sc-if>
+            </div>
+          </div>
+
+          <div style="display: grid; gap: 16px; align-content: start;">
+            <sc-if value="{{ showRanking }}" hint-placeholder-val="{{ true }}">
+              <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 12px; padding: 18px;">
+                <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Pozycja w rankingu</div>
+                <div style="display: flex; align-items: baseline; gap: 6px; margin-top: 8px;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 34px; font-weight: 700; letter-spacing: -0.02em;">{{ rankDisplay }}</span>
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 16px; color: #8A7F76;">/ {{ populationDisplay }}</span>
+                </div>
+                <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                  <span style="display: inline-flex; gap: 6px; align-items: center; background: {{ rankDeltaBg }}; border: 1px solid {{ rankDeltaBorder }}; color: {{ rankDeltaFg }}; border-radius: 6px; padding: 4px 9px; font-size: 12px; font-weight: 600;">
+                    <span style="font-family: 'JetBrains Mono', monospace;">{{ rankDeltaGlyph }}</span>{{ rankDeltaLabel }}
+                  </span>
+                </div>
+                <div style="font-size: 11px; color: #8A7F76; margin-top: 8px; line-height: 1.45;">{{ rankNote }}</div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showRankingNotice }}" hint-placeholder-val="{{ false }}">
+              <div style="background: #F7F4F1; border: 1px solid #E6E0DA; border-radius: 12px; padding: 18px;">
+                <div style="display: flex; gap: 10px; align-items: flex-start;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #5B534D; border: 1px solid #CFC7BF; border-radius: 5px; padding: 1px 6px;">i</span>
+                  <div>
+                    <div style="font-size: 13px; font-weight: 700;">{{ rankingNoticeTitle }}</div>
+                    <div style="font-size: 12px; color: #5B534D; margin-top: 5px; line-height: 1.5;">{{ rankingNoticeBody }}</div>
+                  </div>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ showGroupShare }}" hint-placeholder-val="{{ true }}">
+              <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 12px; padding: 18px;">
+                <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Twoja grupa oceny</div>
+                <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px; flex-wrap: wrap;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700; white-space: nowrap;">{{ shareDisplay }}</span>
+                  <span style="font-size: 13px; color: #5B534D; flex: 1 1 150px;">uczestników rankingu należy do grupy <strong style="color: {{ scoreColor }};">{{ ratingLabelGenitive }}</strong></span>
+                </div>
+                <div style="display: flex; height: 12px; margin-top: 14px; border-radius: 3px; overflow: hidden; border: 1px solid #DCD5CE;">
+                  <div style="width: {{ shareSafeW }}; background: #BFE0CC; border-right: 1px solid #FFF;"></div>
+                  <div style="width: {{ shareAcceptableW }}; background: #F7E3B8; background-image: radial-gradient(rgba(180,120,10,0.35) 1px, transparent 1.4px); background-size: 6px 6px; border-right: 1px solid #FFF;"></div>
+                  <div style="width: {{ shareDangerousW }}; background: #F4C9C2; background-image: repeating-linear-gradient(135deg, rgba(192,57,43,0.28) 0 3px, transparent 3px 7px);"></div>
+                </div>
+                <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-top: 8px; font-size: 11px; color: #5B534D;">
+                  <span>bezpieczni {{ shareSafeDisplay }}</span>
+                  <span>akceptowalni {{ shareAcceptableDisplay }}</span>
+                  <span>niebezpieczni {{ shareDangerousDisplay }}</span>
+                </div>
+                <div style="font-size: 11px; color: #8A7F76; margin-top: 8px;">Statystyka populacji {{ populationDisplay }} uczestników rankingu — nie zawiera wyników innych kierowców.</div>
+              </div>
+            </sc-if>
+
+            <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 12px; padding: 18px;">
+              <div style="font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Dystans kwalifikujący</div>
+              <div style="display: flex; align-items: baseline; gap: 8px; margin-top: 8px;">
+                <span style="font-family: 'JetBrains Mono', monospace; font-size: 30px; font-weight: 700;">{{ kmDisplay }}</span>
+                <span style="font-size: 14px; color: #5B534D;">km</span>
+              </div>
+              <div style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center;">
+                <span style="display: inline-flex; gap: 6px; align-items: center; background: #F4F1EE; border: 1px solid #E0D9D2; color: #3D3630; border-radius: 6px; padding: 4px 9px; font-size: 12px; font-weight: 600;">
+                  <span style="font-family: 'JetBrains Mono', monospace;">{{ kmDeltaGlyph }}</span>{{ kmDeltaDisplay }} km
+                </span>
+                <span style="font-size: 12px; color: #5B534D;">{{ tripsDisplay }} przejazdów</span>
+              </div>
+              <div style="font-size: 11px; color: #8A7F76; margin-top: 8px; line-height: 1.45;">Wszystkie wskaźniki są liczone na 100 km — dystans zmienia ich wartość przy tym samym zachowaniu.</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top: 28px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Co teraz najbardziej wpływa na Twój wynik</h2>
+            <span style="font-size: 12px; color: #8A7F76;">Wnioski wyliczone deterministycznie z tabeli punktowej — bez prognoz.</span>
+          </div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 14px;">
+            <sc-for list="{{ coaching }}" as="tip" hint-placeholder-count="4">
+              <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-top: 3px solid {{ tip.accent }}; border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 8px;">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: {{ tip.accentText }}; background: {{ tip.accentBg }}; border-radius: 4px; padding: 2px 6px;">{{ tip.glyph }}</span>
+                  <span style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">{{ tip.kindLabel }}</span>
+                </div>
+                <div style="font-size: 15px; font-weight: 700; line-height: 1.3;">{{ tip.category }}</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 19px; font-weight: 700; color: {{ tip.accentText }};">{{ tip.value }}</div>
+                <div style="font-size: 12px; color: #3D3630; line-height: 1.5;">{{ tip.body }}</div>
+                <div style="font-size: 11px; color: #8A7F76; line-height: 1.45; margin-top: auto; padding-top: 8px; border-top: 1px dashed #EAE4DE;">Dlaczego: {{ tip.why }}</div>
+              </div>
+            </sc-for>
+          </div>
+          <sc-if value="{{ coachingSuppressed }}" hint-placeholder-val="{{ false }}">
+            <div style="margin-top: 14px; background: #F7F4F1; border: 1px solid #E6E0DA; border-radius: 10px; padding: 14px 16px; font-size: 13px; color: #3D3630; line-height: 1.5;">{{ coachingSuppressedNote }}</div>
+          </sc-if>
+        </div>
+
+        <div style="margin-top: 30px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Punkty według obszarów</h2>
+            <span style="font-size: 12px; color: #8A7F76;">Liczba zdarzeń → wskaźnik na 100 km → próg punktowy. Kolor pochodzi z progu, nie z liczby zdarzeń.</span>
+          </div>
+
+          <div style="margin-top: 14px; border: 1px solid #E6E0DA; border-radius: 12px; background: #FFFFFF; overflow: hidden;">
+            <div style="display: grid; grid-template-columns: minmax(190px, 1.5fr) 100px 116px 1.6fr 120px 34px; gap: 12px; padding: 11px 16px; background: #FBF9F7; border-bottom: 1px solid #EFEAE5; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">
+              <div>Obszar</div>
+              <div>Zdarzenia</div>
+              <div>Wskaźnik</div>
+              <div>Próg punktowy</div>
+              <div style="text-align: right;">Punkty</div>
+              <div></div>
+            </div>
+
+            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="8">
+              <div style="border-bottom: 1px solid #F2EEEA; opacity: {{ cat.rowOpacity }};">
+                <div style="display: grid; grid-template-columns: minmax(190px, 1.5fr) 100px 116px 1.6fr 120px 34px; gap: 12px; padding: 13px 16px; align-items: center;">
+                  <div>
+                    <div style="font-size: 14px; font-weight: 600;">{{ cat.label }}</div>
+                    <div style="font-size: 11px; color: #8A7F76; margin-top: 2px;">{{ cat.note }}</div>
+                  </div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px;">{{ cat.countDisplay }}</div>
+                  <div style="display: flex; gap: 7px; align-items: center;">
+                    <span style="display: inline-flex; gap: 5px; align-items: center; background: {{ cat.statusBg }}; border: 1px solid {{ cat.statusBorder }}; color: {{ cat.statusFg }}; border-radius: 5px; padding: 3px 7px; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700;">{{ cat.statusGlyph }} {{ cat.coefDisplay }}</span>
+                  </div>
+                  <div>
+                    <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 2px;">
+                      <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                        <div style="height: 16px; border-radius: 2px; background: {{ band.bg }}; background-image: {{ band.pattern }}; border: {{ band.border }};"></div>
+                      </sc-for>
+                    </div>
+                    <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 2px; margin-top: 3px;">
+                      <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                        <div style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; color: {{ band.markerColor }}; font-weight: 700;">{{ band.marker }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                  <div style="text-align: right;">
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700;">{{ cat.pointsDisplay }}</div>
+                    <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: {{ cat.lostColor }}; margin-top: 2px;">{{ cat.lostDisplay }}</div>
+                  </div>
+                  <div>
+                    <button onClick="{{ cat.toggle }}" style="width: 30px; height: 30px; border-radius: 7px; border: 1px solid #E0D9D2; background: {{ cat.toggleBg }}; color: #3D3630; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 13px;">{{ cat.toggleGlyph }}</button>
+                  </div>
+                </div>
+
+                <sc-if value="{{ cat.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding: 4px 16px 22px 16px; background: #FBF9F7; border-top: 1px dashed #EAE4DE;">
+                    <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: baseline; padding: 14px 0 18px 0;">
+                      <div style="font-size: 13px; font-weight: 700;">Oś punktacji — {{ cat.label }}</div>
+                      <div style="font-size: 12px; color: #3D3630;">{{ cat.axisSummary }}</div>
+                    </div>
+                    <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 3px;">
+                      <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                        <div style="text-align: center;">
+                          <div style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B534D; padding-bottom: 4px;">{{ band.label }}</div>
+                          <div style="height: 22px; border-radius: 3px; background: {{ band.bg }}; background-image: {{ band.pattern }}; border: {{ band.border }};"></div>
+                          <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: #1A1714; padding-top: 4px;">{{ band.lostLabel }}</div>
+                          <div style="height: 20px; font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; color: {{ band.markerColor }};">{{ band.marker }}</div>
+                          <div style="font-size: 10px; color: {{ band.captionColor }}; min-height: 26px; line-height: 1.25;">{{ band.caption }}</div>
+                        </div>
+                      </sc-for>
+                    </div>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px;">
+                      <div style="flex: 1; min-width: 240px; background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 8px; padding: 12px 14px;">
+                        <div style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Stan obecny</div>
+                        <div style="font-size: 13px; color: #1A1714; margin-top: 5px; line-height: 1.5;">{{ cat.currentExplain }}</div>
+                      </div>
+                      <div style="flex: 1; min-width: 240px; background: {{ cat.opportunityBg }}; border: 1px solid {{ cat.opportunityBorder }}; border-radius: 8px; padding: 12px 14px;">
+                        <div style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Potencjał</div>
+                        <div style="font-size: 13px; color: #1A1714; margin-top: 5px; line-height: 1.5;">{{ cat.opportunityExplain }}</div>
+                      </div>
+                      <div style="flex: 1; min-width: 200px; background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 8px; padding: 12px 14px;">
+                        <div style="font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Zmiana</div>
+                        <div style="font-size: 13px; color: #1A1714; margin-top: 5px; line-height: 1.5;">{{ cat.trendExplain }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="display: flex; flex-wrap: wrap; gap: 16px; margin-top: 10px; font-size: 11px; color: #5B534D;">
+            <span>✓ pełne punkty w obszarze</span>
+            <span>! punkty utracone, obszar nadal dodaje do wyniku</span>
+            <span>✕ obszar odejmuje od wyniku</span>
+            <span>– brak oceny (za mały dystans lub brak danych)</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+          <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 12px; padding: 18px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: baseline;">
+              <div style="font-size: 14px; font-weight: 700;">{{ trendTitle }}</div>
+              <div style="font-size: 11px; color: #8A7F76;">{{ trendSubtitle }}</div>
+            </div>
+            <div style="display: flex; align-items: flex-end; gap: 10px; height: 168px; margin-top: 18px; padding-bottom: 2px; border-bottom: 1px solid #E6E0DA;">
+              <sc-for list="{{ trendSeries }}" as="pt" hint-placeholder-count="5">
+                <div style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 6px; height: 100%;">
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: {{ pt.labelColor }};">{{ pt.score }}</div>
+                  <div style="width: 100%; max-width: 54px; height: {{ pt.barH }}; background: {{ pt.barBg }}; background-image: {{ pt.barPattern }}; border: 1px solid {{ pt.barBorder }}; border-radius: 4px 4px 0 0;"></div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="display: flex; gap: 10px; margin-top: 6px;">
+              <sc-for list="{{ trendSeries }}" as="pt" hint-placeholder-count="5">
+                <div style="flex: 1; text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: {{ pt.labelColor }}; line-height: 1.3;">{{ pt.label }}</div>
+              </sc-for>
+            </div>
+            <div style="font-size: 11px; color: #8A7F76; margin-top: 12px; line-height: 1.5;">{{ trendFootnote }}</div>
+          </div>
+
+          <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 12px; padding: 18px;">
+            <div style="display: flex; flex-wrap: wrap; gap: 8px; justify-content: space-between; align-items: baseline;">
+              <div style="font-size: 14px; font-weight: 700;">Trend obszarów — utracone punkty</div>
+              <div style="font-size: 11px; color: #8A7F76;">mniej = lepiej</div>
+            </div>
+            <div style="display: grid; gap: 9px; margin-top: 16px;">
+              <sc-for list="{{ categoryTrends }}" as="ct" hint-placeholder-count="7">
+                <div style="display: grid; grid-template-columns: minmax(120px, 1.2fr) 1fr 82px; gap: 10px; align-items: center;">
+                  <div style="font-size: 12px; color: #3D3630;">{{ ct.label }}</div>
+                  <div style="display: flex; gap: 4px; align-items: flex-end; height: 26px;">
+                    <sc-for list="{{ ct.points }}" as="p" hint-placeholder-count="4">
+                      <div style="flex: 1; height: {{ p.h }}; background: {{ p.bg }}; background-image: {{ p.pattern }}; border: 1px solid {{ p.border }}; border-radius: 2px;"></div>
+                    </sc-for>
+                  </div>
+                  <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; color: {{ ct.deltaColor }};">{{ ct.deltaLabel }}</div>
+                </div>
+              </sc-for>
+            </div>
+            <div style="font-size: 11px; color: #8A7F76; margin-top: 14px; line-height: 1.5;">{{ categoryTrendFootnote }}</div>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-if value="{{ isDetailed }}" hint-placeholder-val="{{ false }}">
+      <div style="padding: 24px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; justify-content: space-between; align-items: flex-end;">
+          <div style="max-width: 620px;">
+            <h2 style="margin: 0; font-size: 16px; font-weight: 700;">Jak powstał ten wynik — dzień po dniu</h2>
+            <p style="margin: 7px 0 0 0; font-size: 13px; color: #3D3630; line-height: 1.55;">{{ detailedIntro }}</p>
+          </div>
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <button onClick="{{ toggleCompact }}" style="padding: 8px 13px; border-radius: 7px; border: 1px solid #E0D9D2; background: {{ compactBg }}; color: #3D3630; font-size: 12px; font-weight: 600; cursor: pointer;">{{ compactLabel }}</button>
+            <button onClick="{{ toggleAllGroups }}" style="padding: 8px 13px; border-radius: 7px; border: 1px solid #E0D9D2; background: #FFFFFF; color: #3D3630; font-size: 12px; font-weight: 600; cursor: pointer;">{{ expandAllLabel }}</button>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; margin-top: 18px;">
+          <sc-for list="{{ detailedKpis }}" as="kpi" hint-placeholder-count="4">
+            <div style="background: #FBF9F7; border: 1px solid #E6E0DA; border-radius: 10px; padding: 13px 15px;">
+              <div style="font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">{{ kpi.label }}</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; margin-top: 5px;">{{ kpi.value }}</div>
+              <div style="font-size: 11px; color: #8A7F76; margin-top: 3px;">{{ kpi.note }}</div>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 20px; border: 1px solid #E6E0DA; border-radius: 12px; background: #FFFFFF; overflow: hidden;">
+          <div style="display: grid; grid-template-columns: 128px 92px 1fr 152px; gap: 10px; padding: 11px 16px; background: #FBF9F7; border-bottom: 1px solid #EFEAE5; font-size: 11px; letter-spacing: 0.06em; text-transform: uppercase; color: #8A7F76; font-weight: 600; position: sticky; top: 62px; z-index: 5;">
+            <div>Dzień</div>
+            <div>Dystans</div>
+            <div>Zdarzenia według obszarów</div>
+            <div style="text-align: right;">Status dnia</div>
+          </div>
+
+          <sc-for list="{{ dayGroups }}" as="grp" hint-placeholder-count="3">
+            <div>
+              <button onClick="{{ grp.toggle }}" style="width: 100%; display: grid; grid-template-columns: 128px 92px 1fr 152px; gap: 10px; align-items: center; padding: 11px 16px; background: {{ grp.headerBg }}; border: 0; border-bottom: 1px solid #EFEAE5; cursor: pointer; text-align: left;">
+                <div style="display: flex; gap: 8px; align-items: center;">
+                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B534D;">{{ grp.chevron }}</span>
+                  <span style="font-size: 13px; font-weight: 700;">{{ grp.title }}</span>
+                </div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: #3D3630;">{{ grp.km }}</div>
+                <div style="display: flex; flex-wrap: wrap; gap: 7px; align-items: center;">
+                  <span style="font-size: 11px; color: #5B534D;">{{ grp.note }}</span>
+                  <sc-if value="{{ grp.isLatest }}" hint-placeholder-val="{{ false }}">
+                    <span style="display: inline-block; background: #FDF0E4; border: 1px solid #F6D3AF; color: #8F3A04; border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600;">najnowszy odcinek migawki</span>
+                  </sc-if>
+                </div>
+                <div style="text-align: right; font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B534D;">{{ grp.summary }}</div>
+              </button>
+
+              <sc-if value="{{ grp.open }}" hint-placeholder-val="{{ true }}">
+                <div>
+                  <sc-for list="{{ grp.days }}" as="day" hint-placeholder-count="7">
+                    <div style="border-bottom: 1px solid #F5F2EF; background: {{ day.rowBg }};">
+                      <div style="display: grid; grid-template-columns: 128px 92px 1fr 152px; gap: 10px; padding: 10px 16px; align-items: center;">
+                        <div style="display: flex; gap: 8px; align-items: baseline;">
+                          <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600;">{{ day.date }}</span>
+                          <span style="font-size: 11px; color: #8A7F76;">{{ day.dow }}</span>
+                        </div>
+                        <div style="font-family: 'JetBrains Mono', monospace; font-size: 13px; color: {{ day.kmColor }};">{{ day.km }}</div>
+                        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
+                          <sc-for list="{{ day.cells }}" as="cell" hint-placeholder-count="7">
+                            <span style="display: inline-flex; gap: 5px; align-items: center; background: {{ cell.bg }}; border: 1px solid {{ cell.border }}; color: {{ cell.fg }}; border-radius: 5px; padding: 3px 7px; font-size: 11px;">
+                              <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700;">{{ cell.glyph }}</span>
+                              <span style="color: #5B534D;">{{ cell.short }}</span>
+                              <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700;">{{ cell.count }}</span>
+                            </span>
+                          </sc-for>
+                          <sc-if value="{{ day.isEmpty }}" hint-placeholder-val="{{ false }}">
+                            <span style="font-size: 12px; color: #8A7F76;">{{ day.emptyNote }}</span>
+                          </sc-if>
+                        </div>
+                        <div style="display: flex; gap: 7px; align-items: center; justify-content: flex-end;">
+                          <span style="display: inline-flex; gap: 5px; align-items: center; background: {{ day.statusBg }}; border: 1px solid {{ day.statusBorder }}; color: {{ day.statusFg }}; border-radius: 5px; padding: 3px 8px; font-size: 11px; font-weight: 600;">
+                            <span style="font-family: 'JetBrains Mono', monospace;">{{ day.statusGlyph }}</span>{{ day.statusLabel }}
+                          </span>
+                          <button onClick="{{ day.toggle }}" style="width: 26px; height: 26px; border-radius: 6px; border: 1px solid #E0D9D2; background: #FFFFFF; color: #3D3630; cursor: pointer; font-family: 'JetBrains Mono', monospace; font-size: 12px;">{{ day.toggleGlyph }}</button>
+                        </div>
+                      </div>
+
+                      <sc-if value="{{ day.open }}" hint-placeholder-val="{{ false }}">
+                        <div style="padding: 2px 16px 16px 16px;">
+                          <div style="background: #FBF9F7; border: 1px solid #EAE4DE; border-radius: 8px; padding: 12px 14px;">
+                            <div style="font-size: 12px; color: #3D3630; line-height: 1.55;">{{ day.explain }}</div>
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; margin-top: 12px;">
+                              <sc-for list="{{ day.detailRows }}" as="dr" hint-placeholder-count="6">
+                                <div style="display: flex; justify-content: space-between; gap: 8px; background: #FFFFFF; border: 1px solid #EAE4DE; border-left: 3px solid {{ dr.accent }}; border-radius: 6px; padding: 7px 10px;">
+                                  <span style="font-size: 11px; color: #3D3630;">{{ dr.label }}</span>
+                                  <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700; color: {{ dr.valueColor }};">{{ dr.value }}</span>
+                                </div>
+                              </sc-for>
+                            </div>
+                          </div>
+                        </div>
+                      </sc-if>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-if>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="margin-top: 14px; display: flex; flex-wrap: wrap; gap: 16px; font-size: 11px; color: #5B534D;">
+          <span>Kolor = wskaźnik dnia na 100 km w progu punktowym obszaru, nigdy sama liczba zdarzeń.</span>
+          <span>– brak oceny: dystans dnia poniżej {{ minDailyKm }} km.</span>
+          <span>Dzienne punkty nie sumują się do wyniku okresu i nie są tu pokazywane.</span>
+        </div>
+      </div>
+      </sc-if>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #E0D9D2; padding-bottom: 10px;">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase;">Wzorzec mobilny · 390 px</h2>
+        <span style="font-size: 12px; color: #8A7F76;">Ta sama hierarchia, inna kompozycja: karty zamiast tabeli, oś punktacji pionowa.</span>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 22px; margin-top: 20px;">
+
+        <div style="width: 390px; background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(26,23,20,0.06);">
+          <div style="padding: 13px 16px; border-bottom: 1px solid #EFEAE5; display: flex; gap: 9px; align-items: center;">
+            <div style="width: 20px; height: 20px; border-radius: 4px; background: #E8620E;"></div>
+            <div style="font-size: 14px; font-weight: 700;">Twoje Eco Driving</div>
+          </div>
+          <div style="padding: 12px 16px; background: #FBF9F7; border-bottom: 1px solid #EFEAE5;">
+            <div style="display: flex; gap: 4px;">
+              <div style="flex: 1; text-align: center; padding: 7px; border-radius: 7px; background: #221D19; color: #FFF; font-size: 12px; font-weight: 600;">Podsumowanie</div>
+              <div style="flex: 1; text-align: center; padding: 7px; border-radius: 7px; background: #FFFFFF; border: 1px solid #E0D9D2; color: #5B534D; font-size: 12px; font-weight: 600;">Szczegóły</div>
+            </div>
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 15px; font-weight: 700; margin-top: 11px;">{{ rangeDisplay }}</div>
+            <div style="font-size: 11px; color: #8F3A04; margin-top: 3px;">{{ cumulativeChip }}</div>
+          </div>
+          <div style="padding: 16px;">
+            <div style="background: {{ scoreCardBg }}; border: 1px solid {{ scoreCardBorder }}; border-radius: 12px; padding: 15px;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                <div>
+                  <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Wynik</div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 44px; font-weight: 700; line-height: 1.05; color: {{ scoreColor }};">{{ scoreDisplay }}</div>
+                  <div style="font-size: 12px; font-weight: 600; color: {{ scoreColor }};">{{ ratingGlyph }} {{ ratingLabel }}</div>
+                </div>
+                <div style="text-align: right;">
+                  <div style="display: inline-flex; gap: 5px; align-items: center; background: {{ deltaBg }}; border: 1px solid {{ deltaBorder }}; color: {{ deltaFg }}; border-radius: 7px; padding: 5px 9px; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;">{{ deltaGlyph }} {{ scoreDeltaDisplay }}</div>
+                  <div style="font-size: 10px; color: #8A7F76; margin-top: 4px;">vs {{ prevRangeDisplay }}</div>
+                </div>
+              </div>
+              <div style="position: relative; height: 40px; margin-top: 14px;">
+                <div style="position: absolute; left: 0; right: 0; top: 16px; height: 14px; display: flex; border-radius: 4px; overflow: hidden; border: 1px solid #DCD5CE;">
+                  <div style="width: 40%; background: #F4C9C2; background-image: repeating-linear-gradient(135deg, rgba(192,57,43,0.28) 0 3px, transparent 3px 7px);"></div>
+                  <div style="width: 45%; background: #F7E3B8; background-image: radial-gradient(rgba(180,120,10,0.35) 1px, transparent 1.4px); background-size: 6px 6px;"></div>
+                  <div style="width: 15%; background: #BFE0CC;"></div>
+                </div>
+                <div style="position: absolute; left: {{ scoreMarkerLeft }}; top: 0; transform: translateX(-50%);">
+                  <div style="width: 2px; height: 30px; background: #221D19; margin: 0 auto;"></div>
+                </div>
+              </div>
+              <div style="font-size: 11px; color: #3D3630;">{{ nextBandNote }}</div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px;">
+              <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 10px; padding: 12px;">
+                <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Ranking</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; margin-top: 4px;">{{ mobileRankLine }}</div>
+                <div style="font-size: 11px; color: #5B534D; margin-top: 3px;">{{ rankDeltaLabel }}</div>
+              </div>
+              <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 10px; padding: 12px;">
+                <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">Dystans</div>
+                <div style="font-family: 'JetBrains Mono', monospace; font-size: 20px; font-weight: 700; margin-top: 4px;">{{ kmDisplay }}</div>
+                <div style="font-size: 11px; color: #5B534D; margin-top: 3px;">{{ kmDeltaGlyph }} {{ kmDeltaDisplay }} km</div>
+              </div>
+            </div>
+
+            <div style="margin-top: 12px; background: #FFFFFF; border: 1px solid #E6E0DA; border-top: 3px solid {{ mobileTip.accent }}; border-radius: 10px; padding: 14px;">
+              <div style="font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; color: #8A7F76; font-weight: 600;">{{ mobileTip.kindLabel }}</div>
+              <div style="font-size: 14px; font-weight: 700; margin-top: 5px;">{{ mobileTip.category }}</div>
+              <div style="font-family: 'JetBrains Mono', monospace; font-size: 18px; font-weight: 700; color: {{ mobileTip.accentText }}; margin-top: 3px;">{{ mobileTip.value }}</div>
+              <div style="font-size: 12px; color: #3D3630; line-height: 1.5; margin-top: 6px;">{{ mobileTip.body }}</div>
+            </div>
+
+            <div style="margin-top: 12px; background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 10px; padding: 14px;">
+              <div style="font-size: 12px; font-weight: 700;">Punkty według obszarów</div>
+              <div style="display: grid; gap: 10px; margin-top: 10px;">
+                <sc-for list="{{ mobileCategories }}" as="cat" hint-placeholder-count="3">
+                  <div style="border-bottom: 1px solid #F2EEEA; padding-bottom: 10px;">
+                    <div style="display: flex; justify-content: space-between; gap: 8px; align-items: baseline;">
+                      <span style="font-size: 13px; font-weight: 600;">{{ cat.label }}</span>
+                      <span style="font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700;">{{ cat.pointsDisplay }}</span>
+                    </div>
+                    <div style="display: flex; gap: 7px; align-items: center; margin-top: 6px;">
+                      <span style="display: inline-flex; gap: 4px; align-items: center; background: {{ cat.statusBg }}; border: 1px solid {{ cat.statusBorder }}; color: {{ cat.statusFg }}; border-radius: 5px; padding: 2px 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 700;">{{ cat.statusGlyph }} {{ cat.coefDisplay }}</span>
+                      <span style="font-size: 11px; color: #5B534D;">{{ cat.countDisplay }}</span>
+                    </div>
+                    <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 2px; margin-top: 7px;">
+                      <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                        <div style="height: 13px; border-radius: 2px; background: {{ band.bg }}; background-image: {{ band.pattern }}; border: {{ band.border }};"></div>
+                      </sc-for>
+                    </div>
+                    <div style="display: grid; grid-template-columns: {{ cat.bandCols }}; gap: 2px;">
+                      <sc-for list="{{ cat.bands }}" as="band" hint-placeholder-count="7">
+                        <div style="text-align: center; font-family: 'JetBrains Mono', monospace; font-size: 9px; font-weight: 700; color: {{ band.markerColor }};">{{ band.marker }}</div>
+                      </sc-for>
+                    </div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="text-align: center; margin-top: 10px; font-size: 12px; font-weight: 600; color: #C24E06;">Pokaż wszystkie 8 obszarów</div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width: 390px; background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 16px; overflow: hidden; box-shadow: 0 1px 3px rgba(26,23,20,0.06);">
+          <div style="padding: 13px 16px; border-bottom: 1px solid #EFEAE5; display: flex; gap: 9px; align-items: center;">
+            <div style="width: 20px; height: 20px; border-radius: 4px; background: #E8620E;"></div>
+            <div style="font-size: 14px; font-weight: 700;">Szczegóły dzienne</div>
+          </div>
+          <div style="padding: 12px 16px; background: #FBF9F7; border-bottom: 1px solid #EFEAE5;">
+            <div style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;">{{ rangeDisplay }}</div>
+            <div style="font-size: 11px; color: #5B534D; margin-top: 3px;">{{ mobileDetailedNote }}</div>
+          </div>
+          <div style="padding: 14px 16px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; background: #F4F1EE; border: 1px solid #E6E0DA; border-radius: 8px; padding: 9px 12px;">
+              <span style="font-size: 12px; font-weight: 700;">{{ mobileGroupTitle }}</span>
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #5B534D;">{{ mobileGroupSummary }}</span>
+            </div>
+            <div style="display: grid; gap: 10px; margin-top: 12px;">
+              <sc-for list="{{ mobileDays }}" as="day" hint-placeholder-count="3">
+                <div style="border: 1px solid #E6E0DA; border-left: 4px solid {{ day.statusBorder }}; border-radius: 10px; padding: 12px;">
+                  <div style="display: flex; justify-content: space-between; align-items: baseline;">
+                    <div>
+                      <span style="font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 700;">{{ day.date }}</span>
+                      <span style="font-size: 11px; color: #8A7F76; margin-left: 6px;">{{ day.dow }}</span>
+                    </div>
+                    <span style="display: inline-flex; gap: 5px; align-items: center; background: {{ day.statusBg }}; border: 1px solid {{ day.statusBorder }}; color: {{ day.statusFg }}; border-radius: 5px; padding: 2px 7px; font-size: 11px; font-weight: 600;">
+                      <span style="font-family: 'JetBrains Mono', monospace;">{{ day.statusGlyph }}</span>{{ day.statusLabel }}
+                    </span>
+                  </div>
+                  <div style="font-family: 'JetBrains Mono', monospace; font-size: 12px; color: #5B534D; margin-top: 5px;">{{ day.km }} · {{ day.tripsLabel }}</div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 5px; margin-top: 9px;">
+                    <sc-for list="{{ day.cells }}" as="cell" hint-placeholder-count="4">
+                      <span style="display: inline-flex; gap: 4px; align-items: center; background: {{ cell.bg }}; border: 1px solid {{ cell.border }}; color: {{ cell.fg }}; border-radius: 5px; padding: 2px 6px; font-size: 11px;">
+                        <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700;">{{ cell.glyph }}</span>
+                        <span style="color: #5B534D;">{{ cell.short }}</span>
+                        <span style="font-family: 'JetBrains Mono', monospace; font-weight: 700;">{{ cell.count }}</span>
+                      </span>
+                    </sc-for>
+                  </div>
+                  <div style="font-size: 11px; color: #C24E06; font-weight: 600; margin-top: 9px;">Pokaż wskaźniki dnia</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px;">
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; align-items: baseline; justify-content: space-between; border-bottom: 1px solid #E0D9D2; padding-bottom: 10px;">
+        <h2 style="margin: 0; font-size: 15px; font-weight: 700; letter-spacing: 0.02em; text-transform: uppercase;">Stany dostępu i braku danych</h2>
+        <span style="font-size: 12px; color: #8A7F76;">Link z e-maila jest jedynym poświadczeniem — brak logowania, brak odzyskiwania hasła.</span>
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 16px; margin-top: 20px;">
+        <sc-for list="{{ accessStates }}" as="st" hint-placeholder-count="4">
+          <div style="background: #FFFFFF; border: 1px solid #E6E0DA; border-radius: 12px; overflow: hidden;">
+            <div style="padding: 8px 14px; background: #221D19; color: #C9C0B8; font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.06em;">{{ st.code }}</div>
+            <div style="padding: 20px 16px 22px 16px; text-align: center;">
+              <div style="width: 36px; height: 36px; margin: 0 auto; border-radius: 9px; background: {{ st.iconBg }}; border: 1px solid {{ st.iconBorder }}; display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 17px; font-weight: 700; color: {{ st.iconFg }};">{{ st.glyph }}</div>
+              <div style="font-size: 15px; font-weight: 700; margin-top: 12px;">{{ st.title }}</div>
+              <div style="font-size: 12px; color: #3D3630; line-height: 1.55; margin-top: 7px;">{{ st.body }}</div>
+              <div style="font-size: 11px; color: #8A7F76; margin-top: 12px; padding-top: 10px; border-top: 1px dashed #EAE4DE; text-align: left;">{{ st.spec }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="margin-top: 40px; background: #221D19; color: #D9D2CB; border-radius: 14px; padding: 22px 24px;">
+      <div style="font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: #A69B92; font-weight: 600;">Niezmienniki tego wzorca</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; margin-top: 14px; font-size: 12px; line-height: 1.6;">
+        <div><strong style="color: #FFF;">Kolor pochodzi z punktacji.</strong> Zielony / żółty / czerwony wynika ze wskaźnika na 100 km w progu punktowym obszaru — nigdy z surowej liczby zdarzeń. Dwa dni z tą samą liczbą zdarzeń mogą mieć różny kolor.</div>
+        <div><strong style="color: #FFF;">Tydzień jest narastający.</strong> Okres tygodniowy to zamknięta migawka od 1. dnia miesiąca. Porównanie zawsze pokazuje pełne daty obu migawek — nigdy słowa „ostatni tydzień”.</div>
+        <div><strong style="color: #FFF;">Brak rankingu jest stanem, nie brakiem danych.</strong> Kierowca poza rankingiem widzi pełny wynik, obszary, trendy i coaching; kafle pozycji i udziału w grupie nie istnieją w układzie.</div>
+        <div><strong style="color: #FFF;">Dane są zamknięte.</strong> Brak wskaźników czasu rzeczywistego, brak lokalizacji, brak numerów rejestracyjnych, brak wyników innych kierowców.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  state = {
+    periodType: 'weekly',
+    view: 'summary',
+    profile: 'ranked_acceptable',
+    openCat: 'idle',
+    openDay: null,
+    openGroups: null,
+    compact: false
+  };
+
+  CATS = [
+    { key: 'overrev', label: 'Nadmierne obroty', short: 'Obroty', max: 15, dead: true },
+    { key: 'harsh_braking', label: 'Gwałtowne hamowania', short: 'Hamowania', max: 10 },
+    { key: 'harsh_acceleration', label: 'Gwałtowne przyspieszenia', short: 'Przyspieszenia', max: 10 },
+    { key: 'harsh_turning', label: 'Gwałtowne skręty', short: 'Skręty', max: 10 },
+    { key: 'idle', label: 'Postój na biegu jałowym', short: 'Postój', max: 10 },
+    { key: 'speeding_140_160', label: 'Prędkość 140–160 km/h', short: '140–160', max: 15 },
+    { key: 'speeding_160_170', label: 'Prędkość 160–170 km/h', short: '160–170', max: 15 },
+    { key: 'speeding_170_plus', label: 'Prędkość powyżej 170 km/h', short: '>170', max: 15 }
+  ];
+
+  BANDS = {
+    overrev: [['0', 0], ['1–2', -4], ['3–5', -8], ['6–9', -11], ['10–13', -15], ['14–20', -22], ['>20', -30]],
+    harsh_braking: [['0', 0], ['1', -2], ['2–4', -6], ['5–6', -8], ['7–8', -10], ['9–10', -15], ['>10', -20]],
+    harsh_acceleration: [['0', 0], ['1', -5], ['2', -10], ['3–4', -15], ['>4', -20]],
+    harsh_turning: [['0–4', 0], ['5–7', -3], ['8–12', -6], ['13–16', -10], ['17–23', -14], ['24–30', -18], ['>30', -20]],
+    idle: [['0', 0], ['1–2', -3], ['3–4', -6], ['5', -10], ['6', -15], ['7–8', -17], ['>8', -20]],
+    speeding_140_160: [['0', 0], ['1–2', -5], ['3–4', -10], ['5–6', -15], ['7–8', -20], ['9–10', -25], ['>10', -30]],
+    speeding_160_170: [['0', 0], ['1', -5], ['2', -10], ['3', -15], ['4', -20], ['5', -25], ['>5', -30]],
+    speeding_170_plus: [['0', 0], ['1', -15], ['2', -22], ['>2', -30]]
+  };
+
+  UPPER = {
+    overrev: [0, 2, 5, 9, 13, 20, null],
+    harsh_braking: [0, 1, 4, 6, 8, 10, null],
+    harsh_acceleration: [0, 1, 2, 4, null],
+    harsh_turning: [4, 7, 12, 16, 23, 30, null],
+    idle: [0, 2, 4, 5, 6, 8, null],
+    speeding_140_160: [0, 2, 4, 6, 8, 10, null],
+    speeding_160_170: [0, 1, 2, 3, 4, 5, null],
+    speeding_170_plus: [0, 1, 2, null]
+  };
+
+  MIN_DAILY_KM = 50;
+
+  PROFILES = [
+    { key: 'ranked_acceptable', label: 'Kierowca akceptowalny, w rankingu (domyślny)' },
+    { key: 'ranked_safe', label: 'Kierowca bezpieczny, w rankingu' },
+    { key: 'ranked_dangerous', label: 'Kierowca niebezpieczny, w rankingu' },
+    { key: 'excluded', label: 'Poza rankingiem (stan EXCLUDED)' },
+    { key: 'newly_ranked', label: 'Nowo w rankingu (brak poprzedniej pozycji)' },
+    { key: 'left_ranking', label: 'Wypadł z rankingu w tej migawce' },
+    { key: 'first_snapshot', label: 'Pierwsza migawka miesiąca (brak porównania)' },
+    { key: 'low_distance', label: 'Poniżej 100 km — brak wyniku' },
+    { key: 'partial_data', label: 'Brak danych w jednym obszarze' }
+  ];
+
+  // ---------- helpers ----------
+  n(v) { return String(Math.round(Number(v))).replace(/\B(?=(\d{3})+(?!\d))/g, '\u202F'); }
+  dec(v, d) { return Number(v).toLocaleString('pl-PL', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  signed(v) { return (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(v); }
+
+  statusOf(points, max) {
+    if (points === null || points === undefined) return 'neutral';
+    if (points === max) return 'green';
+    if (points >= 0) return 'yellow';
+    return 'red';
+  }
+
+  tone(status) {
+    if (status === 'green') return { bg: '#EAF4EE', border: '#B4D7C1', fg: '#1B6E45', glyph: '✓', label: 'w normie' };
+    if (status === 'yellow') return { bg: '#FBF2DE', border: '#EBD3A0', fg: '#8A5B06', glyph: '!', label: 'podwyższony' };
+    if (status === 'red') return { bg: '#FBEAE7', border: '#E9BDB4', fg: '#A6301F', glyph: '✕', label: 'strata pkt' };
+    return { bg: '#F2EFEC', border: '#DCD5CE', fg: '#5B534D', glyph: '–', label: 'brak oceny' };
+  }
+
+  bandFill(status) {
+    if (status === 'green') return { bg: '#BFE0CC', pattern: 'none', border: '1px solid #96C6A9' };
+    if (status === 'yellow') return { bg: '#F7E3B8', pattern: 'radial-gradient(rgba(180,120,10,0.4) 1px, transparent 1.4px)', border: '1px solid #DFC58C' };
+    return { bg: '#F4C9C2', pattern: 'repeating-linear-gradient(135deg, rgba(192,57,43,0.3) 0 3px, transparent 3px 7px)', border: '1px solid #DFA79C' };
+  }
+
+  bandsFor(catKey, max, lost) {
+    const rows = this.BANDS[catKey];
+    const idx = lost === null || lost === undefined ? -1 : rows.findIndex(r => r[1] === lost);
+    return rows.map((r, i) => {
+      const pts = max + r[1];
+      const fill = this.bandFill(this.statusOf(pts, max));
+      const isCurrent = i === idx;
+      const isTarget = idx > 0 && i === idx - 1;
+      return {
+        label: r[0], lost: r[1], lostLabel: r[1] === 0 ? '0' : '−' + Math.abs(r[1]),
+        bg: fill.bg, pattern: fill.pattern,
+        border: isCurrent ? '2px solid #221D19' : (isTarget ? '2px dashed #C24E06' : fill.border),
+        marker: isCurrent ? '▲' : (isTarget ? '◇' : ''),
+        markerColor: isCurrent ? '#221D19' : '#C24E06',
+        caption: isCurrent ? 'Twój wskaźnik' : (isTarget ? 'próg docelowy: ' + this.signed(r[1] - lost) + ' pkt' : ''),
+        captionColor: isCurrent ? '#221D19' : '#C24E06'
+      };
+    });
+  }
+
+  // ---------- dataset ----------
+  baseData() {
+    return {
+      weekly: {
+        kind: 'Okres tygodniowy — migawka narastająca',
+        range: '01.07 – 19.07.2026', prevRange: '01.07 – 12.07.2026',
+        cumulativeChip: 'Narastająco od 01.07 — nie „ostatni tydzień”',
+        sequenceChip: '3. z 5 zamkniętych migawek w lipcu · zamknięta 20.07.2026',
+        comparisonNote: 'Poprzednia zamknięta migawka narastająca tego samego miesiąca. Porównujemy 19 dni z 12 dniami — nie dwa osobne tygodnie.',
+        updatedAt: '20.07.2026, 06:40',
+        score: 71, prevScore: 67, rank: 18, prevRank: 24, population: 158,
+        shares: { safe: 39.2, acceptable: 52.5, dangerous: 8.3 },
+        km: 3418, prevKm: 2106, trips: 214,
+        cats: {
+          overrev:            { count: 0,   coef: 0, lost: 0,   prevLost: 0 },
+          harsh_braking:      { count: 74,  coef: 2, lost: -6,  prevLost: -8 },
+          harsh_acceleration: { count: 34,  coef: 1, lost: -5,  prevLost: -5 },
+          harsh_turning:      { count: 202, coef: 6, lost: -3,  prevLost: 0 },
+          idle:               { count: 168, coef: 5, lost: -10, prevLost: -10 },
+          speeding_140_160:   { count: 41,  coef: 1, lost: -5,  prevLost: -10 },
+          speeding_160_170:   { count: 8,   coef: 0, lost: 0,   prevLost: 0 },
+          speeding_170_plus:  { count: 0,   coef: 0, lost: 0,   prevLost: 0 }
+        },
+        series: [
+          { label: '01.07–05.07', score: 58 },
+          { label: '01.07–12.07', score: 67 },
+          { label: '01.07–19.07', score: 71, current: true }
+        ],
+        trendTitle: 'Kolejne zamknięte migawki lipca',
+        trendSubtitle: 'każdy słupek = wynik narastający od 01.07',
+        trendFootnote: 'Wynik miesiąca dojrzewa: każda migawka obejmuje wszystkie dni od 1. dnia miesiąca do daty zamknięcia. Migawki nie sumują się i nie są osobnymi tygodniami.',
+        dayFrom: 1, dayTo: 19
+      },
+      monthly: {
+        kind: 'Okres miesięczny — zamknięty miesiąc',
+        range: '01.07 – 31.07.2026', prevRange: '01.06 – 30.06.2026',
+        cumulativeChip: 'Miesiąc zamknięty 01.08.2026',
+        sequenceChip: 'Pełny miesiąc · 31 dni sprawozdawczych',
+        comparisonNote: 'Poprzedni zamknięty miesiąc kalendarzowy. Oba okresy są pełnymi miesiącami, ale mają różny dystans — porównuj wskaźniki, nie liczby zdarzeń.',
+        updatedAt: '12.08.2026, 07:15',
+        score: 75, prevScore: 70, rank: 15, prevRank: 21, population: 158,
+        shares: { safe: 41.1, acceptable: 50.6, dangerous: 8.3 },
+        km: 5902, prevKm: 5214, trips: 361,
+        cats: {
+          overrev:            { count: 0,   coef: 0, lost: 0,  prevLost: 0 },
+          harsh_braking:      { count: 128, coef: 2, lost: -6, prevLost: -8 },
+          harsh_acceleration: { count: 59,  coef: 1, lost: -5, prevLost: -5 },
+          harsh_turning:      { count: 295, coef: 5, lost: -3, prevLost: -6 },
+          idle:               { count: 236, coef: 4, lost: -6, prevLost: -6 },
+          speeding_140_160:   { count: 71,  coef: 1, lost: -5, prevLost: -5 },
+          speeding_160_170:   { count: 11,  coef: 0, lost: 0,  prevLost: 0 },
+          speeding_170_plus:  { count: 0,   coef: 0, lost: 0,  prevLost: 0 }
+        },
+        series: [
+          { label: '01.07–05.07', score: 58 },
+          { label: '01.07–12.07', score: 67 },
+          { label: '01.07–19.07', score: 71 },
+          { label: '01.07–26.07', score: 73 },
+          { label: '01.07–31.07', score: 75, current: true }
+        ],
+        trendTitle: 'Przebieg wewnątrz zamkniętego miesiąca',
+        trendSubtitle: 'migawki narastające lipca · poprzedni miesiąc: 70 pkt',
+        trendFootnote: 'Kształt miesiąca odtworzony z zamkniętych migawek narastających. Wynik nagłówkowy dotyczy pełnego miesiąca i jest porównywany z poprzednim zamkniętym miesiącem (70 pkt).',
+        dayFrom: 1, dayTo: 31
+      }
+    };
+  }
+
+  data() {
+    const base = this.baseData()[this.state.periodType];
+    const d = JSON.parse(JSON.stringify(base));
+    const p = this.state.profile;
+    d.ranked = true;
+    d.rankingState = 'RANKED';
+    d.qualified = true;
+
+    if (p === 'ranked_safe') {
+      d.rank = 6; d.prevRank = 9;
+      d.cats.harsh_braking = { count: 37, coef: 1, lost: -2, prevLost: -6 };
+      d.cats.harsh_acceleration = { count: 12, coef: 0, lost: 0, prevLost: -5 };
+      d.cats.harsh_turning = { count: 118, coef: 3, lost: 0, prevLost: 0 };
+      d.cats.idle = { count: 98, coef: 3, lost: -6, prevLost: -6 };
+      d.cats.speeding_140_160 = { count: 22, coef: 1, lost: -5, prevLost: -5 };
+      d.cats.speeding_160_170 = { count: 3, coef: 0, lost: 0, prevLost: 0 };
+    } else if (p === 'ranked_dangerous') {
+      d.rank = 147; d.prevRank = 131;
+      d.cats.harsh_braking = { count: 289, coef: 8, lost: -10, prevLost: -8 };
+      d.cats.harsh_acceleration = { count: 143, coef: 4, lost: -15, prevLost: -10 };
+      d.cats.harsh_turning = { count: 621, coef: 18, lost: -14, prevLost: -10 };
+      d.cats.idle = { count: 208, coef: 6, lost: -15, prevLost: -15 };
+      d.cats.speeding_140_160 = { count: 143, coef: 4, lost: -10, prevLost: -10 };
+      d.cats.speeding_160_170 = { count: 39, coef: 1, lost: -5, prevLost: -5 };
+      d.cats.speeding_170_plus = { count: 2, coef: 0, lost: 0, prevLost: 0 };
+    } else if (p === 'excluded') {
+      d.ranked = false; d.rankingState = 'NOT_RANKED_BY_CONFIGURATION';
+    } else if (p === 'newly_ranked') {
+      d.prevRank = null; d.rankingState = 'NEWLY_RANKED';
+    } else if (p === 'left_ranking') {
+      d.ranked = false; d.rankingState = 'LEFT_RANKING'; d.lastKnownRank = 33;
+    } else if (p === 'first_snapshot') {
+      d.range = '01.07 – 05.07.2026'; d.prevRange = null;
+      d.sequenceChip = '1. z 5 zamkniętych migawek w lipcu · zamknięta 06.07.2026';
+      d.comparisonNote = 'To pierwsza zamknięta migawka lipca. Poprzedniej migawki tego miesiąca nie ma, więc nie pokazujemy zmiany — wynik czerwca dotyczy innego okresu i innej populacji rankingu.';
+      d.prevRank = null; d.rank = 41;
+      d.km = 742; d.prevKm = null; d.trips = 48;
+      d.dayTo = 5;
+      d.series = [{ label: '01.07–05.07', current: true }];
+      d.updatedAt = '06.07.2026, 06:35';
+      d.cats.harsh_braking = { count: 19, coef: 3, lost: -6, prevLost: null };
+      d.cats.harsh_acceleration = { count: 7, coef: 1, lost: -5, prevLost: null };
+      d.cats.harsh_turning = { count: 52, coef: 7, lost: -3, prevLost: null };
+      d.cats.idle = { count: 43, coef: 6, lost: -15, prevLost: null };
+      d.cats.speeding_140_160 = { count: 14, coef: 2, lost: -5, prevLost: null };
+      d.cats.speeding_160_170 = { count: 2, coef: 0, lost: 0, prevLost: null };
+    } else if (p === 'low_distance') {
+      d.qualified = false; d.ranked = false; d.rankingState = 'BELOW_MINIMUM_DISTANCE';
+      d.score = null; d.prevScore = null; d.km = 68; d.prevKm = 402; d.trips = 9;
+      d.dayTo = this.state.periodType === 'weekly' ? 19 : 31;
+      Object.keys(d.cats).forEach(k => { d.cats[k] = { count: d.cats[k].count, coef: null, lost: null, prevLost: null }; });
+    } else if (p === 'partial_data') {
+      d.cats.speeding_140_160 = { count: null, coef: null, lost: null, prevLost: -10 };
+      d.scoreIncomplete = true;
+    }
+    return this.deriveTotals(d);
+  }
+
+  // Single source of truth: the score IS 100 + the sum of category losses.
+  deriveTotals(d) {
+    const keys = Object.keys(d.cats);
+    const lost = keys.map(k => d.cats[k].lost);
+    const prev = keys.map(k => d.cats[k].prevLost);
+    const missing = v => v === null || v === undefined;
+    d.score = lost.some(missing) ? null : 100 + lost.reduce((a, v) => a + v, 0);
+    d.prevScore = prev.some(missing) ? null : 100 + prev.reduce((a, v) => a + v, 0);
+
+    const n = d.series.length;
+    const isMonthly = d.kind.indexOf('miesięczny') !== -1;
+    if (d.score === null) {
+      d.series.forEach(s => { s.score = null; });
+    } else if (n === 1) {
+      d.series[0].score = d.score;
+    } else if (isMonthly) {
+      const offs = [-17, -8, -4, -2, 0].slice(-n);
+      d.series.forEach((s, i) => { s.score = Math.max(0, Math.min(100, d.score + offs[i])); });
+    } else {
+      d.series[n - 1].score = d.score;
+      d.series[n - 2].score = d.prevScore === null ? Math.max(0, d.score - 4) : d.prevScore;
+      for (let i = n - 3; i >= 0; i--) d.series[i].score = Math.max(0, d.series[i + 1].score - 9);
+    }
+    d.series.forEach((s, i) => { s.current = i === n - 1; });
+
+    if (isMonthly && d.prevScore !== null) {
+      d.trendSubtitle = 'migawki narastające lipca · poprzedni miesiąc: ' + d.prevScore + ' pkt';
+      d.trendFootnote = 'Kształt miesiąca odtworzony z zamkniętych migawek narastających. Wynik nagłówkowy dotyczy pełnego miesiąca i jest porównywany z poprzednim zamkniętym miesiącem (' + d.prevScore + ' pkt).';
+    }
+    return d;
+  }
+
+  // ---------- days ----------
+  buildDays(d) {
+    const rnd = (() => { let s = 20260701; return () => { s = (s * 1103515245 + 12345) % 2147483648; return s / 2147483648; }; })();
+    const dows = ['Nd', 'Pn', 'Wt', 'Śr', 'Cz', 'Pt', 'So'];
+    const cats = this.CATS.filter(c => !c.dead);
+    const out = [];
+    for (let i = d.dayFrom; i <= d.dayTo; i++) {
+      const dowIdx = (3 + i - 1) % 7;
+      const weekend = dowIdx === 0 || dowIdx === 6;
+      let km = weekend ? Math.round(rnd() * 60) : Math.round(110 + rnd() * 180);
+      if (i === 6) km = 0;
+      if (i === 12) km = 12;
+      const counts = {};
+      cats.forEach(c => {
+        const periodCoef = (d.cats[c.key].coef === null ? 1 : d.cats[c.key].coef);
+        const expect = (periodCoef / 100) * km * (0.4 + rnd() * 0.95);
+        counts[c.key] = km === 0 ? 0 : Math.round(expect);
+      });
+      if (i === 15) { counts.idle = Math.round(counts.idle + km * 0.035); counts.harsh_braking = Math.round(counts.harsh_braking + km * 0.03); }
+      out.push({ dayNum: i, date: String(i).padStart(2, '0') + '.07', dow: dows[dowIdx], km, counts, trips: km === 0 ? 0 : Math.max(1, Math.round(km / 26)) });
+    }
+    return out;
+  }
+
+  dayCell(catKey, count, km, max) {
+    if (km <= 0) return null;
+    if (km < this.MIN_DAILY_KM) {
+      const t = this.tone('neutral');
+      return { status: 'neutral', bg: t.bg, border: t.border, fg: t.fg, glyph: '–', count: this.n(count), coef: null };
+    }
+    const coef = Math.round((count / km) * 100);
+    const uppers = this.UPPER[catKey];
+    let idx = uppers.findIndex(u => u !== null && coef <= u);
+    if (idx === -1) idx = uppers.length - 1;
+    const pts = max + this.BANDS[catKey][idx][1];
+    const st = this.statusOf(pts, max);
+    const t = this.tone(st);
+    return { status: st, bg: t.bg, border: t.border, fg: t.fg, glyph: t.glyph, count: this.n(count), coef, lost: this.BANDS[catKey][idx][1], band: this.BANDS[catKey][idx][0] };
+  }
+
+  // ---------- coaching ----------
+  coachingFor(d) {
+    const cats = this.CATS.filter(c => !c.dead && d.cats[c.key].lost !== null);
+    const tips = [];
+    const byLoss = cats.filter(c => d.cats[c.key].lost < 0).sort((a, b) => d.cats[a.key].lost - d.cats[b.key].lost);
+    if (byLoss.length) {
+      const c = byLoss[0]; const v = d.cats[c.key];
+      tips.push({
+        kindLabel: 'Największa strata punktów', glyph: '1', accent: '#C0392B', accentText: '#A6301F', accentBg: '#FBEAE7',
+        category: c.label, value: this.signed(v.lost) + ' pkt',
+        body: 'Wskaźnik ' + v.coef + ' zdarzeń na 100 km mieści się w progu „' + this.BANDS[c.key][this.BANDS[c.key].findIndex(b => b[1] === v.lost)][0] + '”, który odbiera ' + Math.abs(v.lost) + ' z ' + c.max + ' punktów tego obszaru.',
+        why: 'Najniższa wartość utraconych punktów wśród ośmiu obszarów w tej migawce (pole *_maxpoints_subtract).'
+      });
+    }
+    const improved = cats.filter(c => d.cats[c.key].prevLost !== null && d.cats[c.key].lost > d.cats[c.key].prevLost)
+      .sort((a, b) => (d.cats[b.key].lost - d.cats[b.key].prevLost) - (d.cats[a.key].lost - d.cats[a.key].prevLost));
+    if (improved.length) {
+      const c = improved[0]; const v = d.cats[c.key]; const gain = v.lost - v.prevLost;
+      tips.push({
+        kindLabel: 'Największa poprawa', glyph: '2', accent: '#1B6E45', accentText: '#1B6E45', accentBg: '#EAF4EE',
+        category: c.label, value: '+' + gain + ' pkt',
+        body: 'Utrata punktów spadła z ' + this.signed(v.prevLost) + ' do ' + this.signed(v.lost) + ' pkt między migawkami ' + d.prevRange + ' i ' + d.range + '.',
+        why: 'Największa dodatnia różnica utraconych punktów wobec bazy porównania. Dystans wzrósł z ' + this.n(d.prevKm) + ' do ' + this.n(d.km) + ' km, więc wskaźnik uwzględnia większą ekspozycję.'
+      });
+    }
+    const worse = cats.filter(c => d.cats[c.key].prevLost !== null && d.cats[c.key].lost < d.cats[c.key].prevLost)
+      .sort((a, b) => (d.cats[a.key].lost - d.cats[a.key].prevLost) - (d.cats[b.key].lost - d.cats[b.key].prevLost));
+    if (worse.length) {
+      const c = worse[0]; const v = d.cats[c.key]; const drop = v.lost - v.prevLost;
+      tips.push({
+        kindLabel: 'Największe pogorszenie', glyph: '3', accent: '#B4780A', accentText: '#8A5B06', accentBg: '#FBF2DE',
+        category: c.label, value: this.signed(drop) + ' pkt',
+        body: 'Utrata punktów wzrosła z ' + this.signed(v.prevLost) + ' do ' + this.signed(v.lost) + ' pkt. Wskaźnik: ' + v.coef + ' na 100 km.',
+        why: 'Największa ujemna różnica utraconych punktów wobec bazy porównania — liczona na wskaźnikach, nie na liczbie zdarzeń.'
+      });
+    }
+    const opp = cats.filter(c => d.cats[c.key].lost < 0).map(c => {
+      const rows = this.BANDS[c.key]; const idx = rows.findIndex(b => b[1] === d.cats[c.key].lost);
+      if (idx <= 0) return null;
+      const gain = rows[idx - 1][1] - d.cats[c.key].lost;
+      const targetUpper = this.UPPER[c.key][idx - 1];
+      return { c, gain, targetUpper, coef: d.cats[c.key].coef };
+    }).filter(Boolean).sort((a, b) => (b.gain - a.gain) || (a.coef - a.targetUpper) - (b.coef - b.targetUpper));
+    if (opp.length) {
+      const o = opp[0];
+      const maxEvents = Math.ceil((o.targetUpper + 0.5) * d.km / 100) - 1;
+      tips.push({
+        kindLabel: 'Największy potencjał', glyph: '4', accent: '#E8620E', accentText: '#8F3A04', accentBg: '#FDF0E4',
+        category: o.c.label, value: '+' + o.gain + ' pkt',
+        body: 'Obniżenie wskaźnika z ' + o.coef + ' do ' + o.targetUpper + ' zdarzeń na 100 km przenosi ten obszar do lepszego progu: ' + o.gain + ' pkt więcej.',
+        why: 'Przy obecnym dystansie ' + this.n(d.km) + ' km to nie więcej niż ' + this.n(maxEvents) + ' zdarzeń w okresie. Wartość wynika wyłącznie z tabeli progów — bez prognozy.'
+      });
+    }
+    return tips;
+  }
+
+  // ---------- render ----------
+  renderVals() {
+    const s = this.state;
+    const d = this.data();
+    const isWeekly = s.periodType === 'weekly';
+    const isSummary = s.view === 'summary';
+    const hasScore = d.score !== null && d.score !== undefined;
+    const hasPrev = d.prevScore !== null && d.prevScore !== undefined;
+    const delta = hasScore && hasPrev ? d.score - d.prevScore : null;
+
+    const rating = !hasScore ? null : (d.score >= 85 ? 'safe' : d.score >= 40 ? 'acceptable' : 'dangerous');
+    const ratingMap = {
+      safe: { label: 'bezpieczny', gen: 'kierowców bezpiecznych', color: '#1B6E45', bg: '#F1F8F4', border: '#B4D7C1', glyph: '▬', range: 'próg 85–100 pkt' },
+      acceptable: { label: 'akceptowalny', gen: 'kierowców akceptowalnych', color: '#8A5B06', bg: '#FDF8EE', border: '#EBD3A0', glyph: '◦', range: 'próg 40–84 pkt' },
+      dangerous: { label: 'niebezpieczny', gen: 'kierowców niebezpiecznych', color: '#A6301F', bg: '#FDF1EF', border: '#E9BDB4', glyph: '◤', range: 'próg poniżej 40 pkt' },
+      none: { label: 'brak klasyfikacji', gen: '—', color: '#5B534D', bg: '#F7F4F1', border: '#E0D9D2', glyph: '–', range: 'wynik nie został wyliczony' }
+    };
+    const r = ratingMap[rating || 'none'];
+
+    const nextBand = !hasScore ? 'Wynik nie został wyliczony dla tego okresu.'
+      : d.score >= 85 ? 'Jesteś w najwyższym progu — do utrzymania: 85 pkt.'
+      : d.score >= 40 ? 'Do progu 85 pkt (bezpieczny): ' + (85 - d.score) + ' pkt.'
+      : 'Do progu 40 pkt (akceptowalny): ' + (40 - d.score) + ' pkt.';
+
+    const catRows = this.CATS.map(c => {
+      const v = d.cats[c.key];
+      const hasCoef = v.coef !== null && v.coef !== undefined;
+      const pts = v.lost === null || v.lost === undefined ? null : c.max + v.lost;
+      const st = this.statusOf(pts, c.max);
+      const t = this.tone(st);
+      const bands = this.bandsFor(c.key, c.max, v.lost);
+      const idx = bands.findIndex(b => b.marker === '▲');
+      const target = bands.findIndex(b => b.marker === '◇');
+      const gain = idx > 0 ? bands[idx - 1].lost - v.lost : 0;
+      const prevDelta = v.prevLost === null || v.prevLost === undefined || v.lost === null ? null : v.lost - v.prevLost;
+      return {
+        key: c.key, label: c.label, open: s.openCat === c.key,
+        note: c.dead ? 'brak pomiaru w tej flocie — zawsze pełne ' + c.max + ' pkt' : 'maksimum ' + c.max + ' pkt',
+        rowOpacity: c.dead ? '0.62' : '1',
+        countDisplay: v.count === null ? 'brak danych' : this.n(v.count),
+        coefDisplay: hasCoef ? v.coef + ' / 100 km' : 'brak',
+        statusBg: t.bg, statusBorder: t.border, statusFg: t.fg, statusGlyph: t.glyph,
+        bands, bandCols: 'repeat(' + bands.length + ', minmax(0, 1fr))',
+        pointsDisplay: pts === null ? '—' : pts + ' / ' + c.max,
+        lostDisplay: v.lost === null ? 'brak oceny' : (v.lost === 0 ? 'pełne punkty' : this.signed(v.lost) + ' pkt'),
+        lostColor: v.lost === null ? '#5B534D' : (v.lost === 0 ? '#1B6E45' : '#A6301F'),
+        toggle: () => this.setState({ openCat: s.openCat === c.key ? null : c.key }),
+        toggleGlyph: s.openCat === c.key ? '−' : '+',
+        toggleBg: s.openCat === c.key ? '#F4F1EE' : '#FFFFFF',
+        axisSummary: hasCoef ? v.count === null ? '' : this.n(v.count) + ' zdarzeń · ' + this.n(d.km) + ' km · wskaźnik ' + v.coef + ' na 100 km' : 'Wskaźnik nie został wyliczony dla tego okresu.',
+        currentExplain: !hasCoef
+          ? 'Brak wskaźnika: dystans lub dane źródłowe nie pozwalają ocenić tego obszaru. Punkty i kolor są wstrzymane, nie zgadywane.'
+          : 'Wskaźnik ' + v.coef + ' na 100 km trafia w próg „' + (idx >= 0 ? bands[idx].label : '—') + '”, który daje ' + pts + ' z ' + c.max + ' pkt' + (v.lost === 0 ? '.' : ' (' + this.signed(v.lost) + ' pkt).'),
+        opportunityExplain: idx > 0
+          ? 'Próg lepszy o jeden stopień to „' + bands[idx - 1].label + '”: ' + this.signed(gain) + ' pkt. Wymaga wskaźnika nie wyższego niż ' + this.UPPER[c.key][idx - 1] + ' na 100 km.'
+          : (c.dead ? 'Ten obszar nie jest mierzony w tej flocie, więc nie ma tu potencjału do odzyskania.' : 'Jesteś w najlepszym progu tego obszaru — nie ma punktów do odzyskania.'),
+        opportunityBg: idx > 0 ? '#FEF7F1' : '#F7F4F1',
+        opportunityBorder: idx > 0 ? '#F6D3AF' : '#E6E0DA',
+        trendExplain: prevDelta === null
+          ? 'Brak bazy porównania dla tego obszaru w tym okresie.'
+          : (prevDelta === 0 ? 'Bez zmiany wobec ' + d.prevRange + ' (' + this.signed(v.prevLost) + ' pkt).'
+            : this.signed(prevDelta) + ' pkt wobec ' + d.prevRange + ' (było ' + this.signed(v.prevLost) + ' pkt).')
+      };
+    });
+
+    const maxSeries = Math.max.apply(null, d.series.map(x => Math.max(x.score, 10)).concat([100]));
+    const trendSeries = d.series.map(x => {
+      const st = x.score >= 85 ? 'green' : x.score >= 40 ? 'yellow' : 'red';
+      const f = this.bandFill(st);
+      return {
+        label: x.label, score: x.score, barH: Math.round((x.score / maxSeries) * 132) + 'px',
+        barBg: x.current ? f.bg : '#F1EDE9', barPattern: x.current ? f.pattern : 'none',
+        barBorder: x.current ? '2px solid #221D19' : '1px solid #DCD5CE',
+        labelColor: x.current ? '#221D19' : '#8A7F76'
+      };
+    });
+
+    const categoryTrends = this.CATS.filter(c => !c.dead).map(c => {
+      const v = d.cats[c.key];
+      const hist = [v.prevLost === null || v.prevLost === undefined ? 0 : v.prevLost, v.lost === null ? 0 : v.lost];
+      const pts = hist.map(h => {
+        const st = h === 0 ? 'green' : (c.max + h >= 0 ? 'yellow' : 'red');
+        const f = this.bandFill(st);
+        return { h: Math.max(4, Math.round(Math.abs(h) / 30 * 24)) + 'px', bg: f.bg, pattern: f.pattern, border: f.border };
+      });
+      const delta = v.prevLost === null || v.prevLost === undefined || v.lost === null ? null : v.lost - v.prevLost;
+      return {
+        label: c.label, points: pts,
+        deltaLabel: delta === null ? 'brak bazy' : (delta === 0 ? 'bez zmian' : this.signed(delta) + ' pkt'),
+        deltaColor: delta === null ? '#8A7F76' : delta > 0 ? '#1B6E45' : delta < 0 ? '#A6301F' : '#5B534D'
+      };
+    });
+
+    // days
+    const days = this.buildDays(d);
+    const weekSegments = isWeekly
+      ? [{ from: 1, to: 5, title: '01.07 – 05.07' }, { from: 6, to: 12, title: '06.07 – 12.07' }, { from: 13, to: 19, title: '13.07 – 19.07' }]
+      : [{ from: 1, to: 5, title: '01.07 – 05.07' }, { from: 6, to: 12, title: '06.07 – 12.07' }, { from: 13, to: 19, title: '13.07 – 19.07' }, { from: 20, to: 26, title: '20.07 – 26.07' }, { from: 27, to: 31, title: '27.07 – 31.07' }];
+    const segs = weekSegments.filter(w => w.from <= d.dayTo);
+    const defaultOpen = segs.length ? segs[segs.length - 1].title : null;
+    const openGroups = s.openGroups === null ? [defaultOpen] : s.openGroups;
+    const catsLive = this.CATS.filter(c => !c.dead);
+
+    const dayGroups = segs.map((w, wi) => {
+      const list = days.filter(x => x.dayNum >= w.from && x.dayNum <= w.to);
+      const km = list.reduce((a, x) => a + x.km, 0);
+      const isOpen = openGroups.indexOf(w.title) !== -1;
+      const rows = list.map(x => {
+        const cells = catsLive.map(c => {
+          const cell = this.dayCell(c.key, x.counts[c.key], x.km, c.max);
+          if (!cell) return null;
+          if (s.compact && cell.status === 'green' && x.counts[c.key] === 0) return null;
+          return Object.assign({ short: c.short, label: c.label, catMax: c.max }, cell);
+        }).filter(Boolean);
+        const worst = cells.reduce((acc, c) => {
+          const rank = { red: 3, yellow: 2, green: 1, neutral: 0 };
+          return rank[c.status] > rank[acc] ? c.status : acc;
+        }, x.km === 0 ? 'none' : (x.km < this.MIN_DAILY_KM ? 'neutral' : 'green'));
+        const t = this.tone(worst === 'none' ? 'neutral' : worst);
+        const detailRows = cells.filter(c => c.coef !== null).map(c => ({
+          label: c.label + ' · ' + c.count + ' zdarzeń',
+          value: c.coef + '/100 km · próg ' + c.band,
+          accent: c.border, valueColor: c.fg
+        }));
+        return {
+          date: x.date, dow: x.dow, km: x.km === 0 ? '—' : this.n(x.km) + ' km',
+          kmColor: x.km === 0 ? '#8A7F76' : (x.km < this.MIN_DAILY_KM ? '#8A5B06' : '#1A1714'),
+          tripsLabel: x.trips + ' przejazdów',
+          cells, isEmpty: x.km === 0,
+          emptyNote: 'Brak przejazdów kwalifikujących w tym dniu',
+          rowBg: x.dayNum % 2 === 0 ? '#FDFCFB' : '#FFFFFF',
+          statusBg: t.bg, statusBorder: t.border, statusFg: t.fg, statusGlyph: x.km === 0 ? '·' : t.glyph,
+          statusLabel: x.km === 0 ? 'brak jazdy' : (x.km < this.MIN_DAILY_KM ? 'brak oceny' : t.label),
+          open: s.openDay === x.date,
+          toggle: () => this.setState({ openDay: s.openDay === x.date ? null : x.date }),
+          toggleGlyph: s.openDay === x.date ? '−' : '+',
+          explain: x.km === 0
+            ? 'Ten dzień nie ma przejazdów kwalifikujących, więc nie wnosi ani zdarzeń, ani dystansu do wskaźników okresu.'
+            : (x.km < this.MIN_DAILY_KM
+              ? 'Dystans ' + this.n(x.km) + ' km jest zbyt mały, aby wskaźnik na 100 km był miarodajny — dzień pokazujemy bez oceny kolorem. Zdarzenia nadal wchodzą do sumy okresu.'
+              : 'Wskaźniki dnia liczone jako zdarzenia ÷ ' + this.n(x.km) + ' km × 100. Progi są te same co w wyniku okresu, ale punkty dzienne nie sumują się do wyniku okresu i dlatego nie są pokazywane.'),
+          detailRows
+        };
+      });
+      return {
+        title: w.title,
+        km: this.n(km) + ' km',
+        note: list.length + ' dni sprawozdawczych',
+        summary: rows.filter(x => x.statusLabel === 'strata pkt').length + ' dni ze stratą',
+        isLatest: wi === segs.length - 1,
+        open: isOpen,
+        headerBg: isOpen ? '#F4F1EE' : '#FBF9F7',
+        chevron: isOpen ? '▾' : '▸',
+        toggle: () => {
+          const next = openGroups.indexOf(w.title) !== -1 ? openGroups.filter(t => t !== w.title) : openGroups.concat([w.title]);
+          this.setState({ openGroups: next });
+        },
+        days: rows
+      };
+    });
+
+    const allOpen = openGroups.length >= segs.length;
+    const totalKm = days.reduce((a, x) => a + x.km, 0);
+    const evalDays = days.filter(x => x.km >= this.MIN_DAILY_KM).length;
+
+    const coaching = hasScore ? this.coachingFor(d) : [];
+    const mobileTip = coaching.length ? coaching[coaching.length - 1] : { kindLabel: 'Coaching wstrzymany', category: '—', value: '—', body: 'Brak zamkniętego wyniku dla tego okresu.', accent: '#8A7F76', accentText: '#5B534D' };
+
+    const accessStates = [
+      { code: 'INVALID_LINK', glyph: '✕', iconBg: '#FBEAE7', iconBorder: '#E9BDB4', iconFg: '#A6301F', title: 'Ten link nie jest prawidłowy', body: 'Otwórz panel z najnowszej wiadomości Programu Ecodriving. Linki są indywidualne i nie da się ich odtworzyć ręcznie.', spec: 'HTTP 401/404 z Workera. Brak formularza, brak logowania, brak informacji, czy link kiedykolwiek istniał.' },
+      { code: 'LINK_EXPIRED', glyph: '⏱', iconBg: '#FBF2DE', iconBorder: '#EBD3A0', iconFg: '#8A5B06', title: 'Link stracił ważność', body: 'Każde podsumowanie ma własny link. Najnowszy znajdziesz w ostatniej wiadomości e-mail z podsumowaniem okresu.', spec: 'Token wygasł lub został unieważniony. Komunikat nie ujawnia daty wygaśnięcia ani tożsamości kierowcy.' },
+      { code: 'SNAPSHOT_UNAVAILABLE', glyph: '–', iconBg: '#F2EFEC', iconBorder: '#DCD5CE', iconFg: '#5B534D', title: 'Ta migawka nie jest jeszcze dostępna', body: 'Panel pokazuje tylko zamknięte okresy sprawozdawcze. Gdy okres zostanie zamknięty i przeliczony, pojawi się tutaj.', spec: 'Token prawidłowy, obiekt migawki nie istnieje. Nigdy nie renderuj układu z pustymi wartościami — pokaż ten stan.' },
+      { code: 'SERVICE_UNAVAILABLE', glyph: '!', iconBg: '#F2EFEC', iconBorder: '#DCD5CE', iconFg: '#5B534D', title: 'Panel jest chwilowo niedostępny', body: 'Spróbuj ponownie za kilka minut. Twoje dane nie zostały utracone — nic nie jest liczone w tej przeglądarce.', spec: 'Błąd 5xx po stronie Workera lub magazynu. Przycisk ponowienia; bez automatycznego odpytywania.' }
+    ];
+
+    const dark = '#221D19';
+    return {
+      profileKey: s.profile,
+      profileOptions: this.PROFILES,
+      onProfile: e => this.setState({ profile: e.target.value, openCat: 'idle', openDay: null, openGroups: null }),
+      setWeekly: () => this.setState({ periodType: 'weekly', openDay: null, openGroups: null }),
+      setMonthly: () => this.setState({ periodType: 'monthly', openDay: null, openGroups: null }),
+      setSummary: () => this.setState({ view: 'summary' }),
+      setDetailed: () => this.setState({ view: 'detailed' }),
+      weeklyBtnBg: isWeekly ? '#E8620E' : '#2E2822', weeklyBtnFg: isWeekly ? '#FFFFFF' : '#C9C0B8',
+      monthlyBtnBg: !isWeekly ? '#E8620E' : '#2E2822', monthlyBtnFg: !isWeekly ? '#FFFFFF' : '#C9C0B8',
+      summaryBtnBg: isSummary ? '#E8620E' : '#2E2822', summaryBtnFg: isSummary ? '#FFFFFF' : '#C9C0B8',
+      detailedBtnBg: !isSummary ? '#E8620E' : '#2E2822', detailedBtnFg: !isSummary ? '#FFFFFF' : '#C9C0B8',
+      tabSummaryFg: isSummary ? dark : '#8A7F76',
+      tabDetailedFg: !isSummary ? dark : '#8A7F76',
+      tabSummaryLine: isSummary ? 'inset 0 -3px 0 #E8620E' : 'none',
+      tabDetailedLine: !isSummary ? 'inset 0 -3px 0 #E8620E' : 'none',
+      pillWeeklyBg: isWeekly ? '#221D19' : '#FFFFFF', pillWeeklyFg: isWeekly ? '#FFFFFF' : '#5B534D',
+      pillMonthlyBg: !isWeekly ? '#221D19' : '#FFFFFF', pillMonthlyFg: !isWeekly ? '#FFFFFF' : '#5B534D',
+
+      isSummary, isDetailed: !isSummary,
+      updatedAt: d.updatedAt,
+      periodKindLabel: d.kind,
+      rangeDisplay: d.range,
+      cumulativeChip: d.cumulativeChip,
+      sequenceChip: d.sequenceChip,
+      prevRangeDisplay: d.prevRange || 'brak poprzedniej migawki',
+      comparisonNote: d.comparisonNote,
+
+      scoreDisplay: hasScore ? String(d.score) : '—',
+      prevScoreDisplay: hasPrev ? String(d.prevScore) : 'brak',
+      scoreDeltaDisplay: delta === null ? 'brak bazy' : String(Math.abs(delta)),
+      deltaGlyph: delta === null ? '·' : delta > 0 ? '▲' : delta < 0 ? '▼' : '=',
+      deltaBg: delta === null ? '#F2EFEC' : delta > 0 ? '#EAF4EE' : delta < 0 ? '#FBEAE7' : '#F2EFEC',
+      deltaBorder: delta === null ? '#DCD5CE' : delta > 0 ? '#B4D7C1' : delta < 0 ? '#E9BDB4' : '#DCD5CE',
+      deltaFg: delta === null ? '#5B534D' : delta > 0 ? '#1B6E45' : delta < 0 ? '#A6301F' : '#5B534D',
+      scoreColor: r.color, scoreCardBg: r.bg, scoreCardBorder: r.border, scoreAxisDivider: r.border,
+      ratingLabel: r.label, ratingLabelGenitive: r.gen, ratingGlyph: r.glyph, ratingBorder: r.border, ratingRangeNote: r.range,
+      scoreCardSpan: 'span 1',
+      nextBandNote: nextBand,
+      scoreMarkerLeft: (hasScore ? Math.max(0, Math.min(100, d.score)) : 0) + '%',
+      hasScoreMarker: hasScore,
+      noScoreAxisNote: !hasScore,
+      deltaUnit: delta === null ? '' : 'pkt',
+      hasPrevMarker: hasPrev,
+      prevMarkerLeft: (hasPrev ? Math.max(0, Math.min(100, d.prevScore)) : 0) + '%',
+      isNegativeScore: hasScore && d.score < 0,
+
+      showRanking: d.ranked && d.qualified,
+      showRankingNotice: !(d.ranked && d.qualified),
+      rankingNoticeTitle: d.rankingState === 'LEFT_RANKING' ? 'W tej migawce nie jesteś w rankingu'
+        : d.rankingState === 'BELOW_MINIMUM_DISTANCE' ? 'Poniżej progu 100 km w tym okresie'
+        : 'Ten okres jest bez rankingu',
+      rankingNoticeBody: d.rankingState === 'LEFT_RANKING'
+        ? 'Nie pokazujemy zmiany pozycji, bo nie ma z czym porównać. W poprzedniej migawce (' + d.prevRange + ') Twoja pozycja wynosiła ' + d.lastKnownRank + '. Wynik, obszary, trendy i wskazówki działają bez zmian.'
+        : d.rankingState === 'BELOW_MINIMUM_DISTANCE'
+          ? 'Wynik Eco Driving wymaga co najmniej 100 km w zamkniętym okresie. W tym okresie zarejestrowano ' + this.n(d.km) + ' km, dlatego nie pokazujemy ani wyniku, ani klasyfikacji — zamiast szacunku pokazujemy dystans i dni jazdy.'
+          : 'Twój wynik, obszary, trendy i wskazówki są pełne. Ten okres nie zawiera pozycji rankingowej ani udziału grupy — ranking obejmuje wybraną populację uczestników.',
+      rankDisplay: d.rank === null ? '—' : String(d.rank),
+      populationDisplay: this.n(d.population),
+      rankDeltaGlyph: d.prevRank === null ? '★' : d.prevRank - d.rank > 0 ? '▲' : d.prevRank - d.rank < 0 ? '▼' : '=',
+      rankDeltaLabel: d.prevRank === null ? 'Nowo w rankingu' : (d.prevRank === d.rank ? 'bez zmian' : Math.abs(d.prevRank - d.rank) + (d.prevRank - d.rank > 0 ? ' miejsc w górę' : ' miejsc w dół')),
+      rankDeltaBg: d.prevRank === null ? '#FDF0E4' : d.prevRank - d.rank > 0 ? '#EAF4EE' : d.prevRank - d.rank < 0 ? '#FBEAE7' : '#F2EFEC',
+      rankDeltaBorder: d.prevRank === null ? '#F6D3AF' : d.prevRank - d.rank > 0 ? '#B4D7C1' : d.prevRank - d.rank < 0 ? '#E9BDB4' : '#DCD5CE',
+      rankDeltaFg: d.prevRank === null ? '#8F3A04' : d.prevRank - d.rank > 0 ? '#1B6E45' : d.prevRank - d.rank < 0 ? '#A6301F' : '#5B534D',
+      rankNote: (d.prevRank === null
+        ? 'Pierwsza migawka z pozycją — nie pokazujemy zmiany, bo nie było poprzedniej pozycji.'
+        : 'Poprzednio ' + d.prevRank + ' / ' + this.n(d.population) + ' w okresie ' + d.prevRange + '.')
+        + (hasScore ? '' : ' Wynik całkowity tej migawki nie został wyliczony, dlatego porównanie punktowe jest wstrzymane.'),
+      mobileRankLine: d.ranked && d.qualified ? d.rank + ' / ' + this.n(d.population) : 'bez rankingu',
+
+      showGroupShare: d.ranked && d.qualified && hasScore,
+      shareDisplay: this.dec(d.shares[rating || 'acceptable'], 1) + ' %',
+      shareSafeW: d.shares.safe + '%', shareAcceptableW: d.shares.acceptable + '%', shareDangerousW: d.shares.dangerous + '%',
+      shareSafeDisplay: this.dec(d.shares.safe, 1) + ' %',
+      shareAcceptableDisplay: this.dec(d.shares.acceptable, 1) + ' %',
+      shareDangerousDisplay: this.dec(d.shares.dangerous, 1) + ' %',
+
+      kmDisplay: this.n(d.km),
+      kmDeltaGlyph: d.prevKm === null ? '·' : d.km - d.prevKm > 0 ? '▲' : '▼',
+      kmDeltaDisplay: d.prevKm === null ? 'brak bazy' : this.n(Math.abs(d.km - d.prevKm)),
+      tripsDisplay: this.n(d.trips),
+
+      coaching,
+      coachingSuppressed: !hasScore,
+      coachingSuppressedNote: d.qualified === false
+        ? 'Wskazówki są wstrzymane: przy dystansie poniżej 100 km wskaźniki na 100 km są szumem, a nie zachowaniem. System celowo nic nie twierdzi o Twojej jazdie w takim okresie.'
+        : 'Wskazówki są wstrzymane: jeden z obszarów nie ma wskaźnika, więc wynik całkowity nie został wyliczony. Pokazujemy dane, których jesteśmy pewni, i nie uzupełniamy braków szacunkiem.',
+      mobileTip,
+
+      categories: catRows,
+      mobileCategories: catRows.filter(c => c.key === 'idle' || c.key === 'harsh_braking' || c.key === 'speeding_140_160'),
+
+      trendTitle: d.trendTitle, trendSubtitle: d.trendSubtitle, trendSeries, trendFootnote: d.trendFootnote,
+      categoryTrends,
+      categoryTrendFootnote: 'Dwa słupki na obszar: baza porównania (' + (d.prevRange || 'brak') + ') i okres bieżący. Wysokość = utracone punkty, kolor = próg punktowy.',
+
+      detailedIntro: isWeekly
+        ? 'Migawka tygodniowa obejmuje wszystkie dni od 01.07 do ' + d.range.split('– ')[1] + ' Najnowszy odcinek jest rozwinięty, wcześniejsze tygodnie pozostają zwinięte i policzone.'
+        : 'Zamknięty miesiąc to ' + (d.dayTo) + ' dni. Tygodnie są zwinięte; rozwiń odcinek, aby zobaczyć dni. Kolor każdej komórki pochodzi ze wskaźnika dnia na 100 km, nie z liczby zdarzeń.',
+      detailedKpis: [
+        { label: 'Dystans w okresie', value: this.n(totalKm) + ' km', note: 'suma dni kwalifikujących' },
+        { label: 'Dni z jazdą', value: String(days.filter(x => x.km > 0).length) + ' / ' + days.length, note: 'dni sprawozdawcze okresu' },
+        { label: 'Dni ocenione kolorem', value: String(evalDays), note: 'dystans ≥ ' + this.MIN_DAILY_KM + ' km' },
+        { label: 'Wskaźnik okresu', value: hasScore ? d.score + ' pkt' : '—', note: 'liczone raz dla całego okresu' }
+      ],
+      dayGroups,
+      compactLabel: s.compact ? 'Tryb pełny' : 'Tryb zwięzły',
+      compactBg: s.compact ? '#F4F1EE' : '#FFFFFF',
+      toggleCompact: () => this.setState({ compact: !s.compact }),
+      expandAllLabel: allOpen ? 'Zwiń wszystkie tygodnie' : 'Rozwiń wszystkie tygodnie',
+      toggleAllGroups: () => this.setState({ openGroups: allOpen ? [] : segs.map(w => w.title) }),
+      minDailyKm: String(this.MIN_DAILY_KM),
+
+      mobileDetailedNote: isWeekly ? 'Najnowszy odcinek migawki · pozostałe tygodnie zwinięte' : 'Tygodnie zwinięte · rozwiń, aby zobaczyć dni',
+      mobileGroupTitle: dayGroups.length ? dayGroups[dayGroups.length - 1].title : '—',
+      mobileGroupSummary: dayGroups.length ? dayGroups[dayGroups.length - 1].km : '—',
+      mobileDays: dayGroups.length ? dayGroups[dayGroups.length - 1].days.slice(0, 3) : [],
+
+      accessStates
+    };
+  }
+}
+
+</script>
+</body>
+</html>

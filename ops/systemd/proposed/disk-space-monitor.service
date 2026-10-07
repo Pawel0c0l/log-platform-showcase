@@ -1,0 +1,30 @@
+[Unit]
+Description=Platform disk-space guard
+After=network-online.target docker.service
+Wants=network-online.target
+OnFailure=log-platform-unit-failure@%n.service
+
+[Service]
+Type=oneshot
+User=logplatform
+Group=logplatform
+WorkingDirectory=/opt/log-platform
+UMask=0077
+Environment=PYTHONPATH=/opt/log-platform
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+ExecStart=/opt/log-platform/.venv/bin/python -m ops.disk_space_monitor
+TimeoutStartSec=300
+
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=false
+
+# Deliberately NO [Install] section. These are timer-driven oneshot jobs: the
+# timer is the only thing that should ever schedule them. With
+# `WantedBy=multi-user.target` the unit runs on every boot as well, which for
+# backup-retention.service means destructive deletion at boot. Omitting [Install]
+# makes `systemctl enable <this>.service` fail loudly instead of silently wiring
+# an unwanted activation. Enable the .timer; run the .service by hand with
+# `systemctl start` only when a one-off execution is explicitly intended.

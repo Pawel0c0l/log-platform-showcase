@@ -1,0 +1,13 @@
+# Synthetic demo client. Secrets come from BRAVO_API_USERNAME, BRAVO_API_KEY,
+# BRAVO_DB_USERNAME and BRAVO_DB_KEY, set by demo/up.sh for this run only.
+client_name: Bravo
+client_code: BRAVO00016
+enabled: true
+provider_type: telematics_fleet
+provider_base_url: https://fleetapi.telematics-provider.example/rest
+client_db_host: postgres
+client_db_port: 5432
+client_db_name: bravo_main
+client_db_schema: public
+trip_metrics_population_source: api_migration
+speed_trigger_filter_text: SPEEDING

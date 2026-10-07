@@ -1,0 +1,20 @@
+[Unit]
+Description=Hourly Database Explorer async export expiry cleanup
+# NO ACTIVATING DEPENDENCY ON THE SERVICE, DELIBERATELY. A timer's [Unit]
+# dependencies are pulled in when the TIMER starts, not when it fires, so
+# `Requires=database-export-cleanup.service` made `systemctl start` and
+# `enable --now` run an unscheduled cleanup pass immediately, and repeat it at
+# every boot. The pass is idempotent, so nothing was corrupted by that — but
+# an execution outside the calendar this file declares is still an execution
+# the central schedule model does not know about, and `OnCalendar=hourly`
+# below is the whole intended contract.
+# `Unit=` in [Timer] is the only binding a timer needs.
+# Guarded by test_starting_a_timer_does_not_start_its_service.
+
+[Timer]
+OnCalendar=hourly
+Persistent=true
+Unit=database-export-cleanup.service
+
+[Install]
+WantedBy=timers.target

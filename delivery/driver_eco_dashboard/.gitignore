@@ -1,0 +1,4 @@
+# Local wrangler state and any operator-supplied binding overrides.
+.wrangler/
+.dev.vars
+node_modules/

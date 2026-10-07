@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Eco Dashboard — podgląd (preview only)</title>
+<!-- CACHE BUSTER: bump ?v= on EVERY production-file edit, or reviewers see a
+     stale build and report bugs that were already fixed. -->
+<link rel="stylesheet" href="../production/css/dashboard.css?v=20260824a">
+<style>
+  /* PREVIEW CHROME ONLY — none of these classes exists in production output.
+   * The panel is position:fixed and the handle is a small fixed overlay, so
+   * nothing sits in normal flow above #eco-root. That matters: production sets
+   * html,body{overflow:hidden} and .ed-stage/.ed-slide{height:100vh/100dvh},
+   * so any in-flow chrome pushes the slide stage down and the overflowed strip
+   * is clipped away with no way to scroll it back. Keep this chrome out of flow. */
+  .pv-handle{position:fixed;top:6px;right:6px;z-index:101;
+    width:30px;height:30px;padding:0;border:0;border-radius:8px;
+    background:#101828;color:#fff;font:700 15px/1 system-ui;cursor:pointer;opacity:.5}
+  .pv-handle:hover,.pv-handle:focus-visible{opacity:1}
+  .pv-panel{position:fixed;top:0;left:0;right:0;z-index:100;
+    display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+    padding:10px 44px 10px 16px;background:#101828;color:#fff;font:13px/1.4 system-ui}
+  .pv-panel[hidden]{display:none}
+  .pv-panel label{font-weight:700}
+  .pv-panel select,.pv-panel button{font:inherit;padding:6px 10px;border-radius:8px;border:0}
+  .pv-panel button{background:#FF7300;color:#fff;font-weight:700;cursor:pointer}
+  .pv-note{opacity:.6}
+</style>
+</head>
+<body>
+<!-- PREVIEW ONLY. Never served in production (Worker denies /preview*). -->
+<button id="pv-handle" class="pv-handle" type="button"
+  aria-expanded="false" aria-controls="pv-panel"
+  title="Panel podglądu — Esc zamyka">&#9776;</button>
+<div class="pv-panel" id="pv-panel" hidden>
+  <label for="pv-fixture">Fixture:</label>
+  <select id="pv-fixture"></select>
+  <label for="pv-access">Stan dostępu:</label>
+  <select id="pv-access">
+    <option value="">— (dashboard)</option>
+    <option>INVALID_LINK</option>
+    <option>LINK_EXPIRED</option>
+    <option>SNAPSHOT_UNAVAILABLE</option>
+    <option>SERVICE_UNAVAILABLE</option>
+  </select>
+  <button id="pv-go" type="button">Renderuj</button>
+  <span class="pv-note">panel podglądu — Esc zamyka</span>
+</div>
+<div id="eco-root" data-snapshot-url="/api/snapshot"></div>
+<script src="../production/js/format.js?v=20260824a"></script>
+<script src="../production/js/render.js?v=20260824a"></script>
+<script src="./repo-owned/snapshot-source.js?v=20260824a"></script>
+<script src="../production/js/app.js?v=20260824a"></script>
+<script>
+(function () {
+  "use strict";
+  var FIXTURES = [
+    "weekly_ranked_sparse",
+    "weekly_ranked_dangerous",
+    "weekly_ranked_safe_zero_events",
+    "weekly_perfect_score_sustained",
+    "weekly_perfect_sparse_period",
+    "weekly_not_ranked_by_configuration",
+    "weekly_not_on_roster",
+    "weekly_left_ranking",
+    "weekly_newly_ranked",
+    "weekly_no_comparison",
+    "weekly_no_driving_day",
+    "weekly_first_closed_period",
+    "weekly_skipped_period_in_series",
+    "weekly_insufficient_distance",
+    "weekly_report_not_ready",
+    "monthly_31_days"
+  ];
+  var sel = document.getElementById("pv-fixture");
+  FIXTURES.forEach(function (f) {
+    var o = document.createElement("option");
+    o.value = f; o.textContent = f;
+    sel.appendChild(o);
+  });
+  var params = new URLSearchParams(location.search);
+  var initial = params.get("fixture");
+  if (initial && FIXTURES.indexOf(initial) !== -1) sel.value = initial;
+
+  /* Panel open/close. Starts closed so the slide stage is unobstructed. */
+  var panel = document.getElementById("pv-panel");
+  var handle = document.getElementById("pv-handle");
+  function setPanel(open) {
+    panel.hidden = !open;
+    handle.setAttribute("aria-expanded", open ? "true" : "false");
+  }
+  handle.addEventListener("click", function () { setPanel(panel.hidden); });
+  document.addEventListener("keydown", function (ev) {
+    if (ev.key === "Escape" && !panel.hidden) { setPanel(false); handle.focus(); }
+  });
+  /* The slide engine listens for wheel/touchmove on document; a gesture over
+   * the open panel must not change slides. */
+  ["wheel", "touchmove"].forEach(function (type) {
+    panel.addEventListener(type, function (ev) { ev.stopPropagation(); }, { passive: true });
+  });
+
+  function run() {
+    var access = document.getElementById("pv-access").value;
+    if (access) {
+      document.getElementById("eco-root").innerHTML =
+        window.EcoRender.renderAccessState(access);
+      return;
+    }
+    window.EcoApp.boot({
+      source: window.EcoSnapshotSource.createFixtureSource({
+        name: sel.value, basePath: "./fixtures/"
+      })
+    });
+  }
+  document.getElementById("pv-go").addEventListener("click", function () {
+    var url = new URL(location.href);
+    url.searchParams.set("fixture", sel.value);
+    history.replaceState(null, "", url);
+    run();
+  });
+  sel.addEventListener("change", function () {
+    var url = new URL(location.href);
+    url.searchParams.set("fixture", sel.value);
+    history.replaceState(null, "", url);
+    run();
+  });
+  run();
+})();
+</script>
+</body>
+</html>

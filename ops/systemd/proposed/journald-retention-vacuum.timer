@@ -1,0 +1,21 @@
+[Unit]
+Description=Daily journald retention vacuum
+# NO ACTIVATING DEPENDENCY ON THE SERVICE, DELIBERATELY — same reason as
+# platform-hard-retention.timer, and the same observed consequence: with
+# `Requires=journald-retention-vacuum.service` here, `enable --now` on this timer
+# ran a second vacuum one second after the manual first one on 2026-08-29, with
+# no trigger recorded. `Unit=` in [Timer] is the only binding a timer needs.
+# Guarded by test_starting_a_timer_does_not_start_its_service.
+
+[Timer]
+# Daily. The interval is the journald policy's enforcement lead alongside
+# MaxFileSec, and is declared to the retention registry as the
+# `journald-retention-vacuum` maintenance cycle; changing it here without
+# changing it there is a schedule-catalogue drift failure.
+OnCalendar=*-*-* 05:45:00
+Persistent=true
+AccuracySec=1min
+Unit=journald-retention-vacuum.service
+
+[Install]
+WantedBy=timers.target

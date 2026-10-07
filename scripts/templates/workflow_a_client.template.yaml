@@ -1,0 +1,85 @@
+# ---------------------------------------------------------------------------
+# Workflow A — Client Onboarding Template
+# ---------------------------------------------------------------------------
+# Non-secret configuration for onboarding a new Telematics client.
+# Copy this file, fill in real values, and pass to:
+#   python scripts/onboard_workflow_a_client.py --config <this_file.yaml>
+#
+# Secret values (passwords, API keys) are NEVER placed here.
+# They are read from environment variables named after client_name:
+#   <CLIENT_NAME>_API_USERNAME   — Telematics API Basic-Auth username
+#   <CLIENT_NAME>_API_KEY        — Telematics API Basic-Auth password
+#   <CLIENT_NAME>_DB_USERNAME    — client business DB Postgres user
+#   <CLIENT_NAME>_DB_KEY         — client business DB Postgres password
+# ---------------------------------------------------------------------------
+
+# Human-readable client name (used as env-var prefix; no spaces/special chars)
+client_name: Telematics
+
+# Operator-friendly code (e.g. DELTA00001); unique across clients; optional
+client_code: BRAVO00016
+
+# Whether the client is active in the control-plane
+enabled: true
+
+# Provider integration type (v1: always telematics_fleet)
+provider_type: telematics_fleet
+
+# Base URL for the Telematics Fleet API (no trailing slash)
+provider_base_url: https://fleetapi-pl.telematics-provider.example/rest
+
+# --- Client business database (separate Postgres DB per client) ---
+
+# Hostname or IP of the Postgres instance hosting the client business DB
+client_db_host: 127.0.0.1
+
+# Postgres port (default: 5432)
+client_db_port: 5432
+
+# Database name to create / connect to
+client_db_name: telematics_main
+
+# Schema inside the client DB where business tables live
+client_db_schema: public
+
+# --- Trip metric source / legacy speeding filter ---
+
+# Source of truth for event-derived public.client_trips metrics
+# (speeding buckets plus HIGH_RPM/OVERREV counts). Allowed values:
+# api_migration, report_207_migration, d105_2_ecodriving_migration, disabled.
+trip_metrics_population_source: api_migration
+
+# Legacy field retained for compatibility. Current API speeding counters come
+# from raw /vehicles/events when trip_metrics_population_source=api_migration.
+speed_trigger_filter_text: SPEEDING
+
+# ---------------------------------------------------------------------------
+# Post-onboarding control-plane state (for reference; NOT configurable here)
+# ---------------------------------------------------------------------------
+#
+# In addition to the client_account row, the onboarding script seeds default
+# rows in the new central-config tables. They are created DISABLED so nothing
+# runs automatically until you flip them on.
+#
+#   workflow_a_control.client_dataset_schedule  (one row per dataset)
+#     - trips_sync             (enabled=false, frequency=daily, overwrite_existing=true,
+#                               event_enrichment_mode=enabled)
+#     - fuel_daily_aggregation (enabled=false, frequency=daily, overwrite_existing=true,
+#                               event_enrichment_mode=enabled, not forwarded)
+#
+#   workflow_a_control.client_table_retention   (one row per Workflow A table)
+#     - client_trips                       (enabled=false, retention_days=365)
+#     - client_speeding_notifications      (enabled=false, retention_days=365)
+#     - client_vehicle_daily_fuel          (enabled=false, retention_days=365)
+#     - client_vehicle_driver_daily_fuel   (enabled=false, retention_days=365)
+#
+# To enable, edit the rows directly in the platform DB, e.g.:
+#
+#   UPDATE workflow_a_control.client_dataset_schedule
+#      SET enabled=true, run_time='03:30', lookback_days=2,
+#          event_enrichment_mode='disabled'
+#    WHERE client_id='<uuid>' AND dataset_name='trips_sync';
+#
+#   UPDATE workflow_a_control.client_table_retention
+#      SET enabled=true, retention_days=180
+#    WHERE client_id='<uuid>' AND table_name='client_speeding_notifications';

@@ -1,0 +1,15 @@
+[Unit]
+Description=Deliver queued suspected_bug alert emails every 5 minutes
+# No Requires=suspected-bug-email-worker.service: a timer's [Unit] dependencies are
+# activated when the TIMER starts, so Requires= makes `systemctl start` (and
+# `enable --now`) run the job immediately. Unit= below is the only link a
+# timer needs.
+
+[Timer]
+OnBootSec=5min
+OnUnitActiveSec=5min
+Persistent=true
+Unit=suspected-bug-email-worker.service
+
+[Install]
+WantedBy=timers.target

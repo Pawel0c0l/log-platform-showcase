@@ -1,0 +1,18 @@
+[Unit]
+Description=Run the missing-run watchdog every 15 minutes
+# No Requires=execution-watchdog.service: a timer's [Unit] dependencies are
+# activated when the TIMER starts, so Requires= makes `systemctl start` (and
+# `enable --now`) run the job immediately. Unit= below is the only link a
+# timer needs.
+
+[Timer]
+# 15 minutes is well inside every grace window (shortest is the 30-minute
+# dispatcher heartbeat), so a lost scheduler is detected within two scans.
+OnBootSec=10min
+OnUnitActiveSec=15min
+Persistent=true
+AccuracySec=1min
+Unit=execution-watchdog.service
+
+[Install]
+WantedBy=timers.target

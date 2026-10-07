@@ -1,0 +1,35 @@
+[Unit]
+Description=Workflow A retention purge (deletes rows past retention_days)
+After=network-online.target docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=logplatform
+WorkingDirectory=/opt/log-platform
+UMask=0077
+# 3h is generous for a weekly run; per-batch COMMITs make this resumable.
+TimeoutStartSec=3h
+# Production job execution goes through the installed wrapper, never through
+# `python ops/runner.py` directly: the wrapper is the single place that decides
+# which source tree production runs from, so a direct invocation silently pins
+# this unit to the development working tree and would reintroduce that bypass
+# if this template were installed over a live release boundary. See
+# docs/07_operations.md -> Release boundary.
+#
+# Params: the wrapper reads <BASE_DIR>/jobs/config/<module>.json when that file
+# exists, and otherwise uses the inline JSON argument below. It does not accept
+# a params *file path* as the argument — that is a capability of ops/runner.py,
+# which is no longer invoked directly here. To change dry_run, batch_size or
+# client scope without editing this unit, ship
+# jobs/config/jobs.api.telematics.retention_purge.json in the release.
+#
+# The single quotes are required: systemd removes double quotes when it splits
+# ExecStart, so an unquoted JSON object would reach the wrapper as
+# {dry_run:true,batch_size:5000} and fail to parse.
+ExecStart=/usr/local/bin/log-job-runner.sh jobs.api.telematics.retention_purge '{"dry_run":true,"batch_size":5000}'
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+
+[Install]
+WantedBy=multi-user.target

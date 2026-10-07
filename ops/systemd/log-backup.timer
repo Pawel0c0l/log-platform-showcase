@@ -1,0 +1,10 @@
+[Unit]
+Description=Run nightly log-platform backup at 03:00
+
+[Timer]
+OnCalendar=*-*-* 03:00:00
+Persistent=true
+Unit=log-backup.service
+
+[Install]
+WantedBy=timers.target

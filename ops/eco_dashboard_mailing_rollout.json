@@ -1,0 +1,48 @@
+{
+  "$comment": [
+    "Per-client Driver Eco Dashboard MAILING rollout permission.",
+    "",
+    "Read by jobs/ecodriving_dashboard/dashboard_rollout.py, and ONLY when a run",
+    "was explicitly invoked with --with-dashboard. A default (legacy) Eco Driving",
+    "mailing run never reads this file and is unaffected by its contents.",
+    "",
+    "Dashboard-enabled sending requires BOTH conditions, and neither alone:",
+    "  1. the explicit --with-dashboard opt-in on the invocation. A scheduled",
+    "     fire acquires exactly that option, and only for a (client, dataset)",
+    "     pair declared in ops/eco_mailing_production_schedule.json;",
+    "  2. enabled: true for that client here.",
+    "",
+    "This permission is deliberately NOT derived from ECO_DASHBOARD_BASE_URL or",
+    "ECO_DASHBOARD_PUBLISHER_URL being configured. Provisioning a publisher must",
+    "never become a silent mailing rollout.",
+    "",
+    "A client that is not named here is DISABLED. New and unknown clients never",
+    "inherit a rollout. A wildcard entry is refused as a malformed declaration, so",
+    "\"all clients enabled\" is not expressible and cannot become the default.",
+    "",
+    "Enabling a client later is one explicit, reviewable edit to this file — flip",
+    "its enabled to true — and requires no change to any mailing business logic.",
+    "That edit is a separate, separately authorized owner decision.",
+    "",
+    "CURRENT OWNER DECISION:",
+    "  ALPHA00001  - dashboard mailing DISABLED. No ALPHA00001 Eco e-mail may",
+    "               include or publish a dashboard at this stage.",
+    "  BRAVO00016 - dashboard mailing ENABLED by explicit owner authorization.",
+    "               An Eco run for this client may carry a dashboard, but only",
+    "               when that run was invoked with --with-dashboard. Enabling",
+    "               this entry sends nothing by itself."
+  ],
+  "contract": "eco-dashboard-mailing-rollout/1",
+  "clients": [
+    {
+      "client_code": "ALPHA00001",
+      "enabled": false,
+      "note": "Owner decision: dashboard mailing disabled until an explicit future decision."
+    },
+    {
+      "client_code": "BRAVO00016",
+      "enabled": true,
+      "note": "Owner decision: dashboard mailing rollout authorized. Still requires a run that asks for the dashboard: an operator's --with-dashboard, or a scheduled fire whose (client, dataset) pair is declared in ops/eco_mailing_production_schedule.json. This permission asks for nothing by itself."
+    }
+  ]
+}

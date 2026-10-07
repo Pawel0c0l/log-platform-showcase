@@ -1,0 +1,8 @@
+{
+  "name": "driver-eco-dashboard-delivery",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Cloudflare Worker authorization boundary for the Driver Eco Dashboard V1. No runtime dependencies.",
+  "main": "worker/index.js"
+}

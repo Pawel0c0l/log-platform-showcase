@@ -1,0 +1,410 @@
+/* Artifact Explorer (`ART-001`) — module stylesheet.
+ *
+ * Loaded only by the Artifacts module. It supersedes the inline stylesheet the
+ * module used to emit on every page: that block hard-coded a dark surface,
+ * field, header-cell and text palette which stayed dark under the shared light
+ * theme. Every colour here comes from `tokens.css`, so the module follows
+ * AUTO / light / dark exactly like the rest of the portal.
+ *
+ * Artifact Explorer is a technical operator surface, not a client-data access
+ * mode. It keeps a dense, tabular, monospace-leaning treatment on purpose; the
+ * shared token layer supplies the colours, not the character.
+ */
+
+/* ---------- `ART-001` catalogue frame: 252 px kind rail + dense table ------- */
+
+/* The catalogue owns the height below the context bar, so the rail's divider
+   runs the full working area instead of stopping at the last kind. Scoped to
+   the pages that actually carry the catalogue — the shared `.lp-main` rule is
+   not changed for every other module. */
+.lp-main:has(> .art-page) { display: flex; flex-direction: column; }
+
+.art-page.lp-work-flush {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.art-catalogue {
+  display: flex;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.art-rail {
+  flex: 0 0 var(--lp-width-rail-compact);
+  width: var(--lp-width-rail-compact);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--lp-border-default);
+  background: var(--lp-surface-raised);
+}
+
+.art-rail-heading {
+  margin: 0;
+  padding: 0 var(--lp-space-7);
+  height: 38px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--lp-border-faint);
+  font-family: var(--lp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--lp-text-muted);
+}
+
+.art-rail-list {
+  list-style: none;
+  margin: 0;
+  padding: var(--lp-space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-1);
+  flex: 1;
+}
+
+.art-rail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  min-height: var(--lp-height-control-sm);
+  padding: var(--lp-space-2) var(--lp-space-5);
+  border-radius: var(--lp-radius-md);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.art-rail-item:hover { background: var(--lp-surface-inset); color: var(--lp-text-primary); }
+
+/* The active kind is carried by `aria-current` first. The tint, the weight step
+   and the 2 px accent mark are its visual echoes, so the state survives both a
+   colour-blind reader and a screen reader — it is never colour alone. */
+.art-rail-item[aria-current] {
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+  font-weight: var(--lp-weight-semibold);
+  box-shadow: inset 2px 0 0 var(--lp-accent-base);
+}
+
+.art-rail-name { min-width: 0; overflow-wrap: anywhere; }
+
+.art-rail-count {
+  margin-left: auto;
+  padding-left: var(--lp-space-4);
+  color: var(--lp-text-muted);
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+}
+
+.art-rail-note {
+  margin: 0;
+  padding: 13px var(--lp-space-7);
+  border-top: 1px solid var(--lp-border-faint);
+  color: var(--lp-text-muted);
+  font-size: 11px;
+  line-height: 1.5;
+}
+
+.art-main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  padding: var(--lp-space-8) var(--lp-work-padding-x) var(--lp-space-12);
+  gap: var(--lp-space-6);
+}
+
+.art-summary {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-6);
+  flex-wrap: wrap;
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+.art-summary-note { margin-left: auto; }
+
+/* `ART-001` stays a dense operator table at every width: it scrolls
+   horizontally rather than becoming a card list, because the operator compares
+   hashes and sizes across rows. */
+@media (max-width: 1279px) {
+  .art-catalogue { flex-direction: column; }
+  .art-rail {
+    flex: 0 0 auto;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--lp-border-default);
+  }
+  .art-rail-list { flex-direction: row; flex-wrap: wrap; }
+  .art-rail-item { flex: 0 1 auto; }
+  .art-rail-count { margin-left: var(--lp-space-3); padding-left: 0; }
+  .art-summary-note { margin-left: 0; }
+}
+
+/* ---------- module components used by every Artifacts page ---------- */
+
+.subtle { color: var(--lp-text-muted); }
+
+.panel {
+  background: var(--lp-surface-raised);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  padding: var(--lp-space-9);
+  margin-bottom: var(--lp-space-8);
+}
+
+.toolbar { display: flex; gap: var(--lp-space-4); align-items: center; flex-wrap: wrap; }
+
+.filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+  gap: var(--lp-space-5);
+  align-items: end;
+}
+
+.art-page label { display: block; color: var(--lp-text-secondary); font-size: 12px; margin-bottom: var(--lp-space-2); font-weight: var(--lp-weight-semibold); }
+
+.art-page input,
+.art-page select,
+.art-page textarea {
+  width: 100%;
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  padding: var(--lp-space-4) var(--lp-space-5);
+  background: var(--lp-surface-field);
+  color: var(--lp-text-primary);
+  font: inherit;
+}
+
+.art-page input::placeholder { color: var(--lp-text-faint); }
+.art-page textarea { min-height: 110px; }
+.art-page select[multiple] { min-height: 92px; padding: var(--lp-space-2); }
+
+.combo { position: relative; }
+.combo-input { min-height: var(--lp-height-control-lg); }
+
+.combo-menu {
+  display: none;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100% + var(--lp-space-2));
+  z-index: 5;
+  max-height: 220px;
+  overflow: auto;
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-raised);
+  box-shadow: var(--lp-elevation-menu);
+  padding: var(--lp-space-2);
+}
+
+.combo.open .combo-menu { display: block; }
+
+.combo-option {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  padding: var(--lp-space-3);
+  border-radius: var(--lp-radius-md);
+  cursor: pointer;
+  line-height: 1.3;
+  color: var(--lp-text-primary);
+}
+
+.combo-option:hover { background: var(--lp-surface-inset); }
+.art-page .combo-option input { width: auto; margin: 0; accent-color: var(--lp-accent-base); }
+.combo-empty { padding: var(--lp-space-4) var(--lp-space-3); color: var(--lp-text-muted); }
+
+/* The sort <select> is redundant with the sortable column headers and stays
+   hidden, exactly as before; it remains in the form so an existing bookmarked
+   `sort=` value round-trips. */
+.sort-control { display: none; }
+
+.art-page button,
+.art-page .button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--lp-height-control-lg);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  padding: var(--lp-space-3) var(--lp-space-6);
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  text-decoration: none;
+  font-weight: var(--lp-weight-medium);
+  font-size: 13px;
+  width: auto;
+  cursor: pointer;
+}
+
+.art-page .button.secondary,
+.art-page button.secondary {
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  border-color: var(--lp-border-strong);
+}
+
+.art-page .button.small,
+.art-page button.small { min-height: var(--lp-height-control-xs); padding: var(--lp-space-2) var(--lp-space-5); font-size: 12px; }
+
+.art-page :focus-visible { outline: 2px solid var(--lp-accent-base); outline-offset: 1px; }
+
+.table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+}
+
+.art-page table { width: 100%; border-collapse: separate; border-spacing: 0; min-width: 980px; }
+
+.art-page th,
+.art-page td {
+  padding: var(--lp-space-3) var(--lp-space-5);
+  border-bottom: 1px solid var(--lp-border-row);
+  text-align: left;
+  vertical-align: top;
+  font-size: 12px;
+}
+
+.art-page th {
+  background: var(--lp-surface-header-cell);
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-secondary);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  border-bottom: 1px solid var(--lp-border-strong);
+}
+
+.art-page td { color: var(--lp-text-primary); }
+.art-page th.sortable { white-space: nowrap; }
+.sort-label { color: inherit; text-decoration: none; font-weight: inherit; }
+.sort-label:hover { text-decoration: underline; }
+.art-page tr:last-child td { border-bottom: 0; }
+.art-page tbody tr:hover td { background: var(--lp-surface-subtle); }
+
+.art-col-num { text-align: right; }
+
+.mono { font-family: var(--lp-font-mono); font-size: 11px; word-break: break-all; }
+
+.copy-cell { cursor: pointer; }
+.copy-cell:hover { background: var(--lp-accent-tint-cell); }
+.copy-cell.copied { background: var(--lp-state-positive-bg); }
+
+.copy-status { min-height: 20px; padding: 0 0 var(--lp-space-3); color: var(--lp-text-muted); }
+.copy-status.copy-error { color: var(--lp-state-negative-fg); }
+
+/* Artifact state badge (`Stan`). Neutral technical marker, not a health signal
+   for the platform: `USUNIĘTY` means retention/cleanup removed the object. */
+.art-state {
+  display: inline-flex;
+  align-items: center;
+  height: 19px;
+  padding: 0 var(--lp-space-3);
+  border-radius: var(--lp-radius-sm);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  white-space: nowrap;
+}
+
+.art-state-verified { background: var(--lp-state-positive-bg); color: var(--lp-state-positive-fg); }
+.art-state-removed { background: var(--lp-state-neutral-bg); color: var(--lp-state-neutral-fg); }
+
+.grid-2 { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--lp-space-8); }
+.kv { min-width: 0; }
+.art-page .kv table { min-width: 0; }
+.art-page .kv th { width: 190px; position: static; }
+
+.notice {
+  border: 1px solid var(--lp-state-warning-border);
+  background: var(--lp-state-warning-bg);
+  color: var(--lp-state-warning-fg);
+  padding: var(--lp-space-5) var(--lp-space-6);
+  border-radius: var(--lp-radius-lg);
+  margin-bottom: var(--lp-space-6);
+}
+
+.notice.error,
+.art-page .error {
+  border-color: var(--lp-state-negative-border);
+  background: var(--lp-state-negative-bg);
+  color: var(--lp-state-negative-fg);
+}
+
+.actions { display: flex; gap: var(--lp-space-3); flex-wrap: wrap; }
+
+.breadcrumb {
+  display: flex;
+  gap: var(--lp-space-3);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: var(--lp-space-6);
+  color: var(--lp-text-muted);
+}
+
+.folder-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: var(--lp-space-5); }
+
+.folder-item {
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  padding: var(--lp-space-6);
+  background: var(--lp-surface-subtle);
+}
+
+.tag-list { display: flex; gap: var(--lp-space-3); flex-wrap: wrap; margin: var(--lp-space-4) 0; }
+
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-pill);
+  padding: var(--lp-space-1) var(--lp-space-5);
+  background: var(--lp-surface-subtle);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+}
+
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--lp-space-6);
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: var(--lp-space-6);
+}
+
+@media (max-width: 900px) {
+  .grid-2 { grid-template-columns: 1fr; }
+}
+
+/* The export bar of the operator table.
+
+   Above the table rather than in the app bar: the caption names the row count
+   of the CURRENT filtered result, so it has to sit next to the thing it counts
+   and move with it. Mirrors `.eco-export-bar` in `eco-driving.css` — two tables
+   offering the same download in two visual idioms is the drift the shared shell
+   exists to prevent. */
+.art-export-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-5);
+  flex-wrap: wrap;
+  margin: 0 0 var(--lp-space-5);
+}
+
+.art-export-caption {
+  color: var(--lp-text-muted);
+  font-size: 12px;
+  margin-right: auto;
+}

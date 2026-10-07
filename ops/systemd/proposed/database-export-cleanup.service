@@ -1,0 +1,28 @@
+[Unit]
+Description=Database Explorer async export expiry cleanup
+After=network-online.target docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=logplatform
+# The release root, not the development checkout. Same module as
+# database-export-worker.service, therefore the same code-source contract: a
+# cleanup pass that ran a different build of ops/database_export_worker.py than
+# the worker would expire artifacts under one version's rules and publish them
+# under another's.
+WorkingDirectory=/opt/log-platform-release
+UMask=0077
+
+# See database-export-worker.service for why this is declared here and not as
+# Environment=PYTHONPATH=.
+Environment=OPS_RUNNER_REQUIRE_RELEASE_FILE=ops/database_export_worker.py:api/main.py
+
+ExecStart=/usr/local/bin/log-ops-runner.sh ops.database_export_worker --cleanup-only
+
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/database-export-minio-host.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+
+[Install]
+WantedBy=multi-user.target

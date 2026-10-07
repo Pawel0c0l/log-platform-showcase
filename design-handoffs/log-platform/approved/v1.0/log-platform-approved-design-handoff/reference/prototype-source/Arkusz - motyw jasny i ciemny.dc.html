@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; background: #0a0b0d; }
+  body { font-family: "IBM Plex Sans", system-ui, sans-serif; color: #e8ebef; -webkit-font-smoothing: antialiased; }
+  a { color: #ff8a33; text-decoration: none; }
+  a:hover { color: #ffb27a; text-decoration: underline; }
+</style>
+</helmet>
+
+<section style="display:flex; flex-direction:column; gap:44px; padding:56px; background:#0a0b0d;">
+
+  <div style="display:flex; flex-direction:column; gap:20px; max-width:1400px;">
+    <div style="display:flex; align-items:baseline; gap:14px;">
+      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:0.14em; text-transform:uppercase; color:#ff8a33;">Iteracja 2 · kierunek 1b „Arkusz”</span>
+      <span style="font-size:13px; color:#7d8794;">jeden układ, dwie skóry · <span style="font-family:'IBM Plex Mono',monospace;">prefers-color-scheme</span></span>
+    </div>
+    <h1 style="font-size:40px; line-height:1.1; margin:0; font-weight:600; letter-spacing:-0.02em; color:#f4f6f8; max-width:24ch;">Arkusz — motyw jasny i ciemny</h1>
+    <div style="font-size:14px; line-height:1.65; color:#8d96a2; max-width:104ch;">Ten sam układ, ta sama gęstość, te same odstępy i te same rozmiary kontrolek w obu motywach — zmienia się wyłącznie warstwa kolorów. Motyw wynika z ustawienia systemowego użytkownika, z ręcznym nadpisaniem w menu konta (Auto / Jasny / Ciemny) zapamiętanym per konto. Mapa tokenów na końcu dokumentu jest jednoznaczna: każda wartość jasna ma dokładnie jeden odpowiednik ciemny.</div>
+    <div style="display:flex; gap:10px; flex-wrap:wrap;">
+      <sc-for list="{{ principles }}" as="p" hint-placeholder-count="4">
+        <span style="display:inline-flex; align-items:center; height:28px; padding:0 11px; flex:0 0 auto; border:1px solid #1e242d; border-radius:3px; background:#101318; color:#aeb6c1; font-size:12px;">{{ p }}</span>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; gap:56px; align-items:flex-start; flex-wrap:wrap;">
+
+    <div id="2a" style="display:flex; flex-direction:column; gap:20px; width:1920px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; padding:5px 10px; border-radius:3px; background:#e8ebef; color:#14171c; letter-spacing:0.04em;">2a</span>
+        <span style="font-size:24px; font-weight:600; color:#f4f6f8;">Motyw jasny</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#7d8794;">prefers-color-scheme: light · domyślny dla większości monitorów operacyjnych</span>
+      </div>
+
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">Arkusz wierszy — 1920 × 1080</div>
+      <div style="width:1920px; height:1080px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c;">
+        <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#14171c;">
+          <div style="display:flex; align-items:center; gap:9px;">
+            <div style="width:6px; height:18px; border-radius:1px; background:#ff7a18;"></div>
+            <span style="font-size:14px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:2px; height:56px;">
+            <sc-for list="{{ navL }}" as="n" hint-placeholder-count="5">
+              <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+            </sc-for>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+            <div style="width:340px; height:32px; border-radius:3px; background:rgba(255,255,255,0.08); display:flex; align-items:center; gap:9px; padding:0 10px;">
+              <span style="color:#8b939e; font-size:13px;">⌕</span><span style="font-size:13px; color:#8b939e;">Szukaj wszędzie</span>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#6f7883; border:1px solid rgba(255,255,255,0.14); border-radius:2px; padding:1px 5px;">⌘K</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:2px; height:26px; padding:2px; border-radius:3px; background:rgba(255,255,255,0.07);">
+              <span style="height:22px; display:flex; align-items:center; padding:0 8px; border-radius:2px; background:#f4f6f8; color:#14171c; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600;">AUTO</span>
+              <span style="height:22px; display:flex; align-items:center; padding:0 7px; border-radius:2px; color:#8b939e; font-family:'IBM Plex Mono',monospace; font-size:10px;">☀</span>
+              <span style="height:22px; display:flex; align-items:center; padding:0 7px; border-radius:2px; color:#8b939e; font-family:'IBM Plex Mono',monospace; font-size:10px;">☾</span>
+            </div>
+            <span style="font-size:12px; color:#b9c0c9;">Anna Kowalska</span>
+            <div style="width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+          </div>
+        </div>
+
+        <div style="height:64px; flex:0 0 64px; display:flex; align-items:center; gap:16px; padding:0 28px; background:#ffffff; border-bottom:1px solid #e2e5e9;">
+          <span style="width:4px; height:26px; border-radius:1px; background:#ff7a18;"></span>
+          <div style="display:flex; flex-direction:column; gap:1px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:17px; font-weight:600; color:#14171c; letter-spacing:-0.01em;">Acme Logistics</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; background:#f0f2f4; padding:2px 6px; border-radius:2px;">ACME00001</span>
+              <span style="color:#c3c9d0;">·</span>
+              <span style="font-size:15px; font-weight:500; color:#33393f;">Przejazdy klienta</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">client_trips_normalized</span>
+              <span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:2px; border:1px solid #d7dbe0; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.06em; color:#5c646f;">TYLKO ODCZYT</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">42 zatwierdzone kolumny</span>
+            </div>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; height:34px; padding:0 12px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Widok</span>
+              <span style="font-size:13px; font-weight:600; color:#14171c;">Niekompletne przejazdy</span>
+              <span style="font-size:9px; color:#8b939e;">▾</span>
+            </div>
+            <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; font-size:13px; font-weight:500; color:#33393f;">Zapisz zmiany</div>
+            <div style="height:34px; display:flex; align-items:center; padding:0 14px; border-radius:3px; background:#14171c; color:#ffffff; font-size:13px; font-weight:600;">Eksport</div>
+          </div>
+        </div>
+
+        <div style="flex:1; display:flex; min-height:0;">
+          <div style="flex:1; min-width:0; display:flex; flex-direction:column; background:#ffffff;">
+            <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; gap:10px; padding:0 20px; border-bottom:1px solid #e2e5e9; background:#fafbfb;">
+              <div style="width:300px; height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; display:flex; align-items:center; gap:9px; padding:0 10px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Szukaj w 16 kolumnach tekstowych</span></div>
+              <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #14171c; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Filtry <span style="display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; border-radius:2px; background:#ff7a18; color:#1a0c02; font-family:'IBM Plex Mono',monospace; font-size:10px;">3</span></div>
+              <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; color:#33393f; font-size:12px; font-weight:500;">Kolumny <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">12/42</span></div>
+              <div style="height:32px; display:flex; align-items:center; gap:2px; padding:2px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff;">
+                <span style="height:26px; display:flex; align-items:center; padding:0 9px; border-radius:2px; background:#eef0f3; color:#14171c; font-size:12px; font-weight:600;">Zwarta</span>
+                <span style="height:26px; display:flex; align-items:center; padding:0 9px; border-radius:2px; color:#5c646f; font-size:12px;">Wygodna</span>
+              </div>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f;">1 274 z 48 213 wierszy · sortowanie Start (UTC) ↓</span>
+            </div>
+
+            <div style="flex:1; min-height:0; overflow:hidden; position:relative;">
+              <div style="position:absolute; top:0; right:0; bottom:0; width:30px; pointer-events:none; z-index:4; background:linear-gradient(90deg, rgba(255,255,255,0), rgba(255,255,255,0.92));"></div>
+              <table style="border-collapse:separate; border-spacing:0; width:1676px; table-layout:fixed;">
+                <thead>
+                  <tr>
+                    <th style="width:30px; padding:0 0 0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; position:sticky; left:0; z-index:3; text-align:left;"><span style="display:inline-block; width:12px; height:12px; border:1px solid #b9c0c9; border-radius:2px;"></span></th>
+                    <th style="width:170px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; border-right:1px solid #e2e5e9; position:sticky; left:30px; z-index:3; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">ID przejazdu</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                    <th style="width:104px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">Nr rej.</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                    <th style="width:104px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">ID kierowcy</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                    <th style="width:150px; padding:0 12px; height:36px; background:#fdf3ea; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#8a4409;">Kierowca</span><span style="font-size:9px; color:#a85a0d;">≡</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                    <th style="width:140px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#14171c;">Start (UTC)</span><span style="font-size:10px; color:#a85a0d;">↓</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                    <th style="width:140px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">Koniec (UTC)</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                    <th style="width:88px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#a6adb6;">▾</span><span style="font-size:12px; font-weight:600; color:#33393f;">Czas (s)</span></div></th>
+                    <th style="width:100px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#a6adb6;">▾</span><span style="font-size:12px; font-weight:600; color:#33393f;">Dystans (m)</span></div></th>
+                    <th style="width:76px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#a6adb6;">▾</span><span style="font-size:12px; font-weight:600; color:#33393f;">Vśr</span></div></th>
+                    <th style="width:76px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#a6adb6;">▾</span><span style="font-size:12px; font-weight:600; color:#33393f;">Vmax</span></div></th>
+                    <th style="width:98px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:center;"><span style="font-size:12px; font-weight:600; color:#33393f;">Kompletny</span></th>
+                    <th style="width:400px; padding:0 12px; height:36px; background:#f7f8f9; border-bottom:1px solid #d7dbe0; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">Adres startu</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ rowsL }}" as="r" hint-placeholder-count="22">
+                    <tr>
+                      <td style="padding:0 0 0 12px; height:32px; border-bottom:1px solid #f0f2f4; position:sticky; left:0; z-index:2; background:#ffffff;"><span style="display:inline-block; width:12px; height:12px; border:1px solid #cfd4da; border-radius:2px;"></span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; border-right:1px solid #e2e5e9; position:sticky; left:30px; z-index:2; background:#ffffff; overflow:hidden;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f; white-space:nowrap;">{{ r.id }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.reg }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8b939e;">{{ r.drvId }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; background:#fefaf6;"><span style="font-size:12px; color:#14171c; white-space:nowrap;">{{ r.drv }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#33393f; white-space:nowrap;">{{ r.start }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8b939e; white-space:nowrap;">{{ r.end }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dur }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.dist }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">{{ r.vavg }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:{{ r.vmaxColor }};">{{ r.vmax }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; text-align:center;"><span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.04em; background:{{ r.okBg }}; color:{{ r.okFg }};">{{ r.ok }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #f0f2f4; overflow:hidden;"><span style="font-size:12px; color:#5c646f; white-space:nowrap;">{{ r.addr }}</span></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="height:44px; flex:0 0 44px; display:flex; align-items:center; gap:14px; padding:0 20px; border-top:1px solid #e2e5e9; background:#fafbfb;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f;">1–100 z 1 274</span>
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#b9c0c9; font-size:11px;">‹</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:2px; background:#14171c; color:#ffffff; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;">1</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#33393f; font-family:'IBM Plex Mono',monospace; font-size:11px;">2</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#33393f; font-family:'IBM Plex Mono',monospace; font-size:11px;">3</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #d7dbe0; border-radius:2px; color:#33393f; font-size:11px;">›</span>
+              </div>
+              <span style="width:1px; height:16px; background:#e2e5e9;"></span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">wierszy na stronie</span>
+              <div style="display:flex; align-items:center; gap:2px;">
+                <sc-for list="{{ pageSizesL }}" as="s" hint-placeholder-count="5">
+                  <span style="height:24px; display:flex; align-items:center; padding:0 9px; border-radius:2px; background:{{ s.bg }}; color:{{ s.fg }}; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:{{ s.w }};">{{ s.label }}</span>
+                </sc-for>
+              </div>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">zaznacz zakres i ⌘C, aby skopiować do arkusza</span>
+            </div>
+          </div>
+
+          <div style="width:352px; flex:0 0 352px; background:#ffffff; border-left:1px solid #e2e5e9; display:flex; flex-direction:column;">
+            <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; border-bottom:1px solid #e2e5e9; background:#fafbfb;">
+              <span style="font-size:13px; font-weight:600; color:#14171c;">Filtry</span>
+              <span style="font-size:12px; color:#a85a0d; font-weight:500;">Wyczyść wszystkie</span>
+            </div>
+            <div style="padding:14px 18px; border-bottom:1px solid #eef0f3; display:flex; flex-direction:column; gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">Aktywne — 3</span>
+              <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; gap:8px; min-height:32px; padding:5px 8px 5px 10px; border-radius:3px; background:#f7f8f9; border-left:2px solid #ff7a18;">
+                  <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+                    <span style="font-size:12px; font-weight:600; color:#14171c;">{{ ch.col }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ch.op }} {{ ch.val }}</span>
+                  </div>
+                  <span style="margin-left:auto; width:18px; height:18px; border-radius:2px; background:#eef0f3; color:#5c646f; font-size:11px; display:flex; align-items:center; justify-content:center;">×</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="padding:14px 18px; border-bottom:1px solid #eef0f3; display:flex; flex-direction:column; gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">Dodaj filtr</span>
+              <div style="height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Znajdź kolumnę spośród 42</span></div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <sc-for list="{{ suggestCols }}" as="s" hint-placeholder-count="6">
+                  <span style="display:inline-flex; align-items:center; height:26px; padding:0 9px; border:1px solid #d7dbe0; border-radius:2px; background:#ffffff; color:#33393f; font-size:12px;">{{ s }}</span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:14px 18px; display:flex; flex-direction:column; gap:10px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">Zakres daty — Start (UTC)</span>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <sc-for list="{{ presetsL }}" as="p" hint-placeholder-count="6">
+                  <span style="display:inline-flex; align-items:center; height:26px; padding:0 9px; border:1px solid {{ p.bd }}; border-radius:2px; background:{{ p.bg }}; color:{{ p.fg }}; font-size:12px; font-weight:{{ p.w }};">{{ p.label }}</span>
+                </sc-for>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:2px;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;"><span style="font-size:11px; color:#8b939e;">Od</span><div style="height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; padding:0 9px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">01.07.2026</span></div></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;"><span style="font-size:11px; color:#8b939e;">Do</span><div style="height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; padding:0 9px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">31.07.2026</span></div></div>
+              </div>
+            </div>
+            <div style="margin-top:auto; padding:14px 18px; border-top:1px solid #e2e5e9; background:#fafbfb; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; gap:8px;">
+                <span style="flex:1; height:32px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Zastosuj</span>
+                <span style="height:32px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #d7dbe0; background:#ffffff; color:#33393f; font-size:12px;">Zapisz jako widok</span>
+              </div>
+              <span style="font-size:11px; color:#8b939e; line-height:1.5;">Panel można przypiąć lub zwinąć. Zwinięty pozostawia tylko przycisk „Filtry 3” w pasku narzędzi.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">Katalog zbiorów — 1920 × 700 (wycinek)</div>
+      <div style="width:1920px; height:700px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#f4f6f7; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#14171c;">
+        <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#14171c;">
+          <div style="display:flex; align-items:center; gap:9px;">
+            <div style="width:6px; height:18px; border-radius:1px; background:#ff7a18;"></div>
+            <span style="font-size:14px; font-weight:600; color:#f4f6f8;">Log Platform</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:2px; height:56px;">
+            <sc-for list="{{ navL }}" as="n" hint-placeholder-count="5">
+              <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+            </sc-for>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+            <div style="width:340px; height:32px; border-radius:3px; background:rgba(255,255,255,0.08); display:flex; align-items:center; gap:9px; padding:0 10px;"><span style="color:#8b939e; font-size:13px;">⌕</span><span style="font-size:13px; color:#8b939e;">Szukaj wszędzie</span></div>
+            <span style="font-size:12px; color:#b9c0c9;">Anna Kowalska</span>
+            <div style="width:28px; height:28px; border-radius:3px; background:#2b3038; color:#e8ebef; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+          </div>
+        </div>
+        <div style="flex:1; display:flex; min-height:0;">
+          <div style="width:288px; flex:0 0 288px; background:#ffffff; border-right:1px solid #e2e5e9; display:flex; flex-direction:column;">
+            <div style="padding:18px 20px 14px; border-bottom:1px solid #eef0f3; display:flex; flex-direction:column; gap:12px;">
+              <div style="font-size:15px; font-weight:600; color:#14171c;">Zbiory danych</div>
+              <div style="height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Filtruj</span></div>
+            </div>
+            <div style="flex:1; padding:12px;">
+              <sc-for list="{{ clientsL }}" as="cl" hint-placeholder-count="2">
+                <div style="display:flex; flex-direction:column; gap:2px; margin-bottom:16px;">
+                  <div style="display:flex; align-items:center; gap:7px; padding:4px 8px;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#8b939e;">{{ cl.name }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:#a6adb6; margin-left:auto;">{{ cl.code }}</span>
+                  </div>
+                  <sc-for list="{{ cl.datasets }}" as="d" hint-placeholder-count="2">
+                    <div style="display:flex; align-items:center; gap:9px; height:36px; padding:0 10px; border-radius:3px; background:{{ d.bg }}; box-shadow:{{ d.mark }};">
+                      <span style="font-size:13px; font-weight:{{ d.w }}; color:{{ d.fg }};">{{ d.name }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e; margin-left:auto;">{{ d.rowsShort }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:1; min-width:0; padding:28px 32px; display:flex; flex-direction:column; gap:20px; overflow:hidden;">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px;">
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#8b939e;"><span>Dane</span><span style="color:#c3c9d0;">/</span><span style="color:#14171c; font-weight:500;">Wszystkie zbiory</span></div>
+                <div style="font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#14171c;">Zbiory danych klientów</div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; font-size:13px; font-weight:500; color:#33393f;">Ostatnio używane</div>
+                <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #d7dbe0; border-radius:3px; background:#ffffff; font-size:13px; font-weight:500; color:#33393f;">Moje eksporty</div>
+              </div>
+            </div>
+            <div style="background:#ffffff; border:1px solid #e2e5e9; border-radius:4px; overflow:hidden;">
+              <div style="display:flex; align-items:center; height:40px; background:#fafbfb; border-bottom:1px solid #e2e5e9; padding:0 18px;">
+                <span style="width:290px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Zbiór</span>
+                <span style="width:190px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Klient</span>
+                <span style="width:110px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Wiersze</span>
+                <span style="width:100px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Kolumny</span>
+                <span style="width:190px; padding-left:24px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Uprawnienia</span>
+                <span style="flex:1; padding-left:24px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Zapisane widoki</span>
+                <span style="width:150px;"></span>
+              </div>
+              <sc-for list="{{ dsRowsL }}" as="d" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; min-height:76px; border-bottom:1px solid #eef0f3; padding:13px 18px;">
+                  <div style="width:290px; display:flex; flex-direction:column; gap:3px; padding-right:16px;">
+                    <span style="font-size:15px; font-weight:600; color:#14171c;">{{ d.name }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">{{ d.table }}</span>
+                  </div>
+                  <div style="width:190px; display:flex; flex-direction:column; gap:2px;">
+                    <span style="font-size:13px; font-weight:500; color:#33393f;">{{ d.client }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">{{ d.code }}</span>
+                  </div>
+                  <span style="width:110px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#14171c;">{{ d.rows }}</span>
+                  <span style="width:100px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#14171c;">{{ d.cols }}</span>
+                  <div style="width:190px; padding-left:24px; display:flex; gap:6px; flex-wrap:wrap;">
+                    <sc-for list="{{ d.permsL }}" as="p" hint-placeholder-count="2">
+                      <span style="display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:2px; border:1px solid {{ p.bd }}; background:{{ p.bg }}; color:{{ p.fg }}; font-size:11px; font-weight:500;">{{ p.label }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="flex:1; padding-left:24px; display:flex; gap:6px; flex-wrap:wrap;">
+                    <sc-for list="{{ d.views }}" as="v" hint-placeholder-count="2">
+                      <span style="display:inline-flex; align-items:center; height:24px; padding:0 9px; border-radius:2px; background:#f2f4f5; color:#33393f; font-size:12px;">{{ v }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="width:150px; display:flex; justify-content:flex-end;">
+                    <span style="height:32px; display:flex; align-items:center; padding:0 14px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Otwórz arkusz</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">Sterowanie i stany brzegowe</div>
+      <div style="display:flex; gap:18px; align-items:flex-start;">
+        <div style="width:620px; height:740px; flex:0 0 auto; border:1px solid #1e242d; background:#ffffff; overflow:hidden; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif;">
+          <div style="height:36px; flex:0 0 36px; display:flex; align-items:center; background:#f7f8f9; border-bottom:1px solid #d7dbe0;">
+            <div style="width:200px; padding:0 12px; display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">ID przejazdu</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div>
+            <div style="width:120px; padding:0 12px; display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#33393f;">Nr rej.</span><span style="font-size:9px; color:#a6adb6; margin-left:auto;">▾</span></div>
+            <div style="flex:1; padding:0 12px; display:flex; align-items:center; gap:6px; background:#fdf3ea; box-shadow:inset 0 -1px 0 #a85a0d;"><span style="font-size:12px; font-weight:600; color:#8a4409;">Vmax (km/h)</span><span style="font-size:9px; color:#a85a0d; margin-left:auto;">▾</span></div>
+          </div>
+          <div style="flex:1; min-height:0; overflow:hidden; position:relative;">
+            <sc-for list="{{ ghostRows }}" as="g" hint-placeholder-count="20">
+              <div style="height:32px; border-bottom:1px solid #f0f2f4; display:flex; align-items:center;">
+                <span style="width:200px; padding:0 12px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#d3d8dd;">{{ g }}</span>
+              </div>
+            </sc-for>
+            <div style="position:absolute; top:6px; left:308px; width:298px; border:1px solid #d7dbe0; border-radius:4px; background:#ffffff; box-shadow:0 16px 40px rgba(20,23,28,0.16); overflow:hidden;">
+              <div style="padding:11px 13px; border-bottom:1px solid #eef0f3; display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:13px; font-weight:600; color:#14171c;">Vmax (km/h)</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">max_speed_kph · numeric · 1 274 niepustych</span>
+              </div>
+              <div style="padding:5px 0;">
+                <div style="height:31px; display:flex; align-items:center; gap:9px; padding:0 13px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e; width:12px;">↑</span><span style="font-size:12px; color:#14171c;">Sortuj rosnąco</span></div>
+                <div style="height:31px; display:flex; align-items:center; gap:9px; padding:0 13px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e; width:12px;">↓</span><span style="font-size:12px; color:#14171c;">Sortuj malejąco</span></div>
+              </div>
+              <div style="border-top:1px solid #eef0f3; padding:11px 13px; display:flex; flex-direction:column; gap:9px;">
+                <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                  <sc-for list="{{ numOpsL }}" as="o" hint-placeholder-count="7">
+                    <span style="height:24px; min-width:26px; display:flex; align-items:center; justify-content:center; padding:0 7px; border-radius:2px; background:{{ o.bg }}; color:{{ o.fg }}; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:{{ o.w }};">{{ o.label }}</span>
+                  </sc-for>
+                </div>
+                <div style="height:30px; border:1px solid #a85a0d; border-radius:3px; background:#ffffff; display:flex; align-items:center; padding:0 10px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#14171c;">90</span></div>
+              </div>
+              <div style="border-top:1px solid #eef0f3; padding:11px 13px; display:flex; flex-direction:column; gap:9px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:#8b939e;">Rozkład wartości</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">min 0 · max 137</span>
+                </div>
+                <div style="display:flex; align-items:flex-end; gap:3px; height:52px;">
+                  <sc-for list="{{ histoL }}" as="h" hint-placeholder-count="14">
+                    <span style="flex:1; height:{{ h.h }}; background:{{ h.c }}; border-radius:1px;"></span>
+                  </sc-for>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#a6adb6;"><span>0</span><span style="color:#a85a0d;">90</span><span>137</span></div>
+              </div>
+              <div style="border-top:1px solid #eef0f3; padding:5px 0;">
+                <div style="height:29px; display:flex; align-items:center; padding:0 13px;"><span style="font-size:12px; color:#33393f;">Przypnij kolumnę po lewej</span></div>
+                <div style="height:29px; display:flex; align-items:center; padding:0 13px;"><span style="font-size:12px; color:#33393f;">Ukryj kolumnę</span></div>
+              </div>
+              <div style="border-top:1px solid #eef0f3; padding:10px 13px; display:flex; align-items:center; gap:8px;">
+                <span style="height:28px; display:flex; align-items:center; padding:0 12px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Zastosuj</span>
+                <span style="height:28px; display:flex; align-items:center; padding:0 12px; border-radius:3px; border:1px solid #d7dbe0; color:#33393f; font-size:12px;">Wyczyść</span>
+              </div>
+            </div>
+          </div>
+          <div style="height:28px; flex:0 0 28px; display:flex; align-items:center; padding:0 13px; border-top:1px solid #e2e5e9; background:#fafbfb;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">Menu kolumny liczbowej — próg widać przed zastosowaniem.</span></div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div style="width:711px; height:360px; flex:0 0 auto; border:1px solid #1e242d; background:#ffffff; display:flex; flex-direction:column; overflow:hidden; font-family:'IBM Plex Sans',sans-serif;">
+            <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; gap:10px; padding:0 14px; background:#fafbfb; border-bottom:1px solid #e2e5e9;">
+              <div style="height:26px; display:flex; align-items:center; gap:7px; padding:0 10px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Filtry <span style="display:inline-flex; align-items:center; justify-content:center; min-width:15px; height:15px; border-radius:2px; background:#ff7a18; color:#1a0c02; font-family:'IBM Plex Mono',monospace; font-size:10px;">2</span></div>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#5c646f;">0 z 48 213 wierszy</span>
+            </div>
+            <div style="height:34px; flex:0 0 34px; display:flex; align-items:center; background:#f7f8f9; border-bottom:1px solid #d7dbe0;">
+              <span style="width:196px; padding:0 12px; font-size:12px; font-weight:600; color:#33393f;">ID przejazdu</span>
+              <span style="width:120px; padding:0 12px; font-size:12px; font-weight:600; color:#33393f;">Nr rej.</span>
+              <span style="width:160px; padding:0 12px; font-size:12px; font-weight:600; color:#33393f;">Kierowca</span>
+              <span style="padding:0 12px; font-size:12px; font-weight:600; color:#33393f;">Start (UTC)</span>
+            </div>
+            <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px; padding:0 60px; text-align:center;">
+              <span style="font-size:15px; font-weight:600; color:#14171c;">Brak wierszy dla aktywnych filtrów</span>
+              <span style="font-size:12px; color:#5c646f; line-height:1.55; max-width:56ch;">Zbiór ma 48 213 wierszy. Filtr <span style="font-family:'IBM Plex Mono',monospace; color:#14171c;">Depot = KRK-02</span> zawęża wynik do zera — bez niego zobaczysz 1 274 wiersze.</span>
+              <div style="display:flex; gap:8px;">
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Usuń Depot = KRK-02</span>
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #d7dbe0; color:#33393f; font-size:12px;">Wyczyść wszystkie</span>
+              </div>
+            </div>
+          </div>
+          <div style="width:711px; height:362px; flex:0 0 auto; border:1px solid #1e242d; background:#ffffff; display:flex; flex-direction:column; overflow:hidden; font-family:'IBM Plex Sans',sans-serif;">
+            <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; gap:10px; padding:0 14px; background:#ffffff; border-bottom:1px solid #e2e5e9;">
+              <span style="width:4px; height:20px; border-radius:1px; background:#ff7a18;"></span>
+              <span style="font-size:14px; font-weight:600; color:#14171c;">Acme Logistics</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#5c646f; background:#f0f2f4; padding:2px 6px; border-radius:2px;">ACME00001</span>
+              <span style="font-size:13px; color:#33393f;">Przejazdy klienta</span>
+            </div>
+            <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px; padding:0 56px; text-align:center;">
+              <span style="display:flex; align-items:center; height:22px; padding:0 8px; border-radius:2px; background:#fdeceb; border:1px solid #f3c9c6; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; color:#9e2c26;">BŁĄD ŹRÓDŁA DANYCH</span>
+              <span style="font-size:15px; font-weight:600; color:#14171c;">Nie udało się odczytać zbioru</span>
+              <span style="font-size:12px; color:#5c646f; line-height:1.55; max-width:58ch;">Zapytanie przekroczyło limit 15 s po stronie bazy klienta. Uprawnienia i konfiguracja zbioru są poprawne — problem jest po stronie połączenia.</span>
+              <div style="display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#8b939e;">
+                <span style="border:1px solid #e2e5e9; border-radius:2px; padding:2px 6px;">17.08.2026 20:04:11</span>
+                <span style="border:1px solid #e2e5e9; border-radius:2px; padding:2px 6px;">ref 7f0c…a41b</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Ponów</span>
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #d7dbe0; color:#33393f; font-size:12px;">Zawęź filtrami</span>
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #d7dbe0; color:#33393f; font-size:12px;">Skopiuj referencję</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:400px; height:740px; flex:0 0 auto; border:1px solid #1e242d; background:#ffffff; overflow:hidden; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif;">
+          <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; background:#fafbfb; border-bottom:1px solid #e2e5e9;">
+            <span style="font-size:13px; font-weight:600; color:#14171c;">Kolumny</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#8b939e;">12 z 42</span>
+          </div>
+          <div style="padding:12px 14px; display:flex; flex-direction:column; gap:9px; border-bottom:1px solid #eef0f3;">
+            <div style="height:32px; border:1px solid #d7dbe0; border-radius:3px; background:#fbfcfc; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#8b939e; font-size:12px;">⌕</span><span style="font-size:12px; color:#8b939e;">Znajdź kolumnę</span></div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span style="height:26px; display:flex; align-items:center; padding:0 10px; border-radius:2px; background:#eef0f3; color:#14171c; font-size:12px; font-weight:600;">Wszystkie</span>
+              <span style="height:26px; display:flex; align-items:center; padding:0 10px; border-radius:2px; color:#5c646f; font-size:12px;">Widoczne</span>
+              <span style="margin-left:auto; font-size:12px; color:#a85a0d;">Zestawy ▾</span>
+            </div>
+          </div>
+          <div style="flex:1; min-height:0; overflow:hidden;">
+            <sc-for list="{{ colList }}" as="c" hint-placeholder-count="16">
+              <div style="height:34px; display:flex; align-items:center; gap:9px; padding:0 14px; border-bottom:1px solid #f4f6f7;">
+                <span style="color:#c3c9d0; font-size:11px;">⠿</span>
+                <span style="display:inline-block; width:12px; height:12px; border:1px solid #b9c0c9; border-radius:2px; background:{{ c.onL }};"></span>
+                <span style="font-size:12px; color:{{ c.fgL }};">{{ c.label }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:#a6adb6; border:1px solid #e2e5e9; border-radius:2px; padding:1px 4px;">{{ c.type }}</span>
+                <span style="margin-left:auto; font-size:11px; color:#a6adb6;">{{ c.pin }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; gap:8px; padding:0 14px; border-top:1px solid #e2e5e9; background:#fafbfb;">
+            <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#14171c; color:#ffffff; font-size:12px; font-weight:600;">Zastosuj</span>
+            <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #d7dbe0; color:#33393f; font-size:12px;">Zapisz jako zestaw</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="2b" style="display:flex; flex-direction:column; gap:20px; width:1920px;">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; font-weight:600; padding:5px 10px; border-radius:3px; background:#ff8a33; color:#1a0c02; letter-spacing:0.04em;">2b</span>
+        <span style="font-size:24px; font-weight:600; color:#f4f6f8;">Motyw ciemny</span>
+        <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#7d8794;">prefers-color-scheme: dark · identyczny układ, wyłącznie inna warstwa kolorów</span>
+      </div>
+
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">Arkusz wierszy — 1920 × 1080</div>
+      <div style="width:1920px; height:1080px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#0f1215; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#eef1f4;">
+        <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#0a0c0f; border-bottom:1px solid #262b33;">
+          <div style="display:flex; align-items:center; gap:9px;">
+            <div style="width:6px; height:18px; border-radius:1px; background:#ff8a33;"></div>
+            <span style="font-size:14px; font-weight:600; color:#eef1f4;">Log Platform</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:2px; height:56px;">
+            <sc-for list="{{ navD }}" as="n" hint-placeholder-count="5">
+              <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+            </sc-for>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+            <div style="width:340px; height:32px; border-radius:3px; background:#1b1f25; border:1px solid #262b33; display:flex; align-items:center; gap:9px; padding:0 10px;">
+              <span style="color:#737c87; font-size:13px;">⌕</span><span style="font-size:13px; color:#737c87;">Szukaj wszędzie</span>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5f6873; border:1px solid #313841; border-radius:2px; padding:1px 5px;">⌘K</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:2px; height:26px; padding:2px; border-radius:3px; background:#1b1f25;">
+              <span style="height:22px; display:flex; align-items:center; padding:0 8px; border-radius:2px; background:#eef1f4; color:#0f1215; font-family:'IBM Plex Mono',monospace; font-size:10px; font-weight:600;">AUTO</span>
+              <span style="height:22px; display:flex; align-items:center; padding:0 7px; border-radius:2px; color:#737c87; font-family:'IBM Plex Mono',monospace; font-size:10px;">☀</span>
+              <span style="height:22px; display:flex; align-items:center; padding:0 7px; border-radius:2px; color:#737c87; font-family:'IBM Plex Mono',monospace; font-size:10px;">☾</span>
+            </div>
+            <span style="font-size:12px; color:#99a1ab;">Anna Kowalska</span>
+            <div style="width:28px; height:28px; border-radius:3px; background:#262b33; color:#c5ccd4; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+          </div>
+        </div>
+
+        <div style="height:64px; flex:0 0 64px; display:flex; align-items:center; gap:16px; padding:0 28px; background:#16191e; border-bottom:1px solid #262b33;">
+          <span style="width:4px; height:26px; border-radius:1px; background:#ff8a33;"></span>
+          <div style="display:flex; flex-direction:column; gap:1px;">
+            <div style="display:flex; align-items:center; gap:8px;">
+              <span style="font-size:17px; font-weight:600; color:#eef1f4; letter-spacing:-0.01em;">Acme Logistics</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#c5ccd4; background:#242a32; padding:2px 6px; border-radius:2px;">ACME00001</span>
+              <span style="color:#5f6873;">·</span>
+              <span style="font-size:15px; font-weight:500; color:#c5ccd4;">Przejazdy klienta</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">client_trips_normalized</span>
+              <span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:2px; border:1px solid #313841; font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.06em; color:#99a1ab;">TYLKO ODCZYT</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">42 zatwierdzone kolumny</span>
+            </div>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:8px;">
+            <div style="display:flex; align-items:center; gap:8px; height:34px; padding:0 12px; border:1px solid #313841; border-radius:3px; background:#1b1f25;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Widok</span>
+              <span style="font-size:13px; font-weight:600; color:#eef1f4;">Niekompletne przejazdy</span>
+              <span style="font-size:9px; color:#737c87;">▾</span>
+            </div>
+            <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #313841; border-radius:3px; background:#1b1f25; font-size:13px; font-weight:500; color:#c5ccd4;">Zapisz zmiany</div>
+            <div style="height:34px; display:flex; align-items:center; padding:0 14px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:13px; font-weight:600;">Eksport</div>
+          </div>
+        </div>
+
+        <div style="flex:1; display:flex; min-height:0;">
+          <div style="flex:1; min-width:0; display:flex; flex-direction:column; background:#16191e;">
+            <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; gap:10px; padding:0 20px; border-bottom:1px solid #262b33; background:#1b1f25;">
+              <div style="width:300px; height:32px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; gap:9px; padding:0 10px;"><span style="color:#737c87; font-size:12px;">⌕</span><span style="font-size:12px; color:#737c87;">Szukaj w 16 kolumnach tekstowych</span></div>
+              <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #eef1f4; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Filtry <span style="display:inline-flex; align-items:center; justify-content:center; min-width:16px; height:16px; border-radius:2px; background:#ff8a33; color:#1a0c02; font-family:'IBM Plex Mono',monospace; font-size:10px;">3</span></div>
+              <div style="height:32px; display:flex; align-items:center; gap:8px; padding:0 11px; border:1px solid #313841; border-radius:3px; background:#16191e; color:#c5ccd4; font-size:12px; font-weight:500;">Kolumny <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#737c87;">12/42</span></div>
+              <div style="height:32px; display:flex; align-items:center; gap:2px; padding:2px; border:1px solid #313841; border-radius:3px; background:#16191e;">
+                <span style="height:26px; display:flex; align-items:center; padding:0 9px; border-radius:2px; background:#2a3038; color:#eef1f4; font-size:12px; font-weight:600;">Zwarta</span>
+                <span style="height:26px; display:flex; align-items:center; padding:0 9px; border-radius:2px; color:#99a1ab; font-size:12px;">Wygodna</span>
+              </div>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#99a1ab;">1 274 z 48 213 wierszy · sortowanie Start (UTC) ↓</span>
+            </div>
+
+            <div style="flex:1; min-height:0; overflow:hidden; position:relative;">
+              <div style="position:absolute; top:0; right:0; bottom:0; width:30px; pointer-events:none; z-index:4; background:linear-gradient(90deg, rgba(22,25,30,0), rgba(22,25,30,0.92));"></div>
+              <table style="border-collapse:separate; border-spacing:0; width:1676px; table-layout:fixed;">
+                <thead>
+                  <tr>
+                    <th style="width:30px; padding:0 0 0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; position:sticky; left:0; z-index:3; text-align:left;"><span style="display:inline-block; width:12px; height:12px; border:1px solid #3e4650; border-radius:2px;"></span></th>
+                    <th style="width:170px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; border-right:1px solid #262b33; position:sticky; left:30px; z-index:3; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">ID przejazdu</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                    <th style="width:104px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Nr rej.</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                    <th style="width:104px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">ID kierowcy</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                    <th style="width:150px; padding:0 12px; height:36px; background:#2a1d10; border-bottom:1px solid #313841; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#ffbe86;">Kierowca</span><span style="font-size:9px; color:#ffab63;">≡</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                    <th style="width:140px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#eef1f4;">Start (UTC)</span><span style="font-size:10px; color:#ffab63;">↓</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                    <th style="width:140px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Koniec (UTC)</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                    <th style="width:88px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#5f6873;">▾</span><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Czas (s)</span></div></th>
+                    <th style="width:100px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#5f6873;">▾</span><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Dystans (m)</span></div></th>
+                    <th style="width:76px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#5f6873;">▾</span><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Vśr</span></div></th>
+                    <th style="width:76px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:right;"><div style="display:flex; align-items:center; gap:6px; justify-content:flex-end;"><span style="font-size:9px; color:#5f6873;">▾</span><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Vmax</span></div></th>
+                    <th style="width:98px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:center;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Kompletny</span></th>
+                    <th style="width:400px; padding:0 12px; height:36px; background:#1b1f25; border-bottom:1px solid #313841; text-align:left;"><div style="display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Adres startu</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <sc-for list="{{ rowsD }}" as="r" hint-placeholder-count="22">
+                    <tr>
+                      <td style="padding:0 0 0 12px; height:32px; border-bottom:1px solid #1f242b; position:sticky; left:0; z-index:2; background:#16191e;"><span style="display:inline-block; width:12px; height:12px; border:1px solid #3e4650; border-radius:2px;"></span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; border-right:1px solid #262b33; position:sticky; left:30px; z-index:2; background:#16191e; overflow:hidden;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#99a1ab; white-space:nowrap;">{{ r.id }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">{{ r.reg }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#737c87;">{{ r.drvId }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; background:#1a1712;"><span style="font-size:12px; color:#eef1f4; white-space:nowrap;">{{ r.drv }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#c5ccd4; white-space:nowrap;">{{ r.start }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#737c87; white-space:nowrap;">{{ r.end }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">{{ r.dur }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">{{ r.dist }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">{{ r.vavg }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; text-align:right;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:{{ r.vmaxColor }};">{{ r.vmax }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; text-align:center;"><span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:2px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.04em; background:{{ r.okBg }}; color:{{ r.okFg }};">{{ r.ok }}</span></td>
+                      <td style="padding:0 12px; height:32px; border-bottom:1px solid #1f242b; overflow:hidden;"><span style="font-size:12px; color:#99a1ab; white-space:nowrap;">{{ r.addr }}</span></td>
+                    </tr>
+                  </sc-for>
+                </tbody>
+              </table>
+            </div>
+
+            <div style="height:44px; flex:0 0 44px; display:flex; align-items:center; gap:14px; padding:0 20px; border-top:1px solid #262b33; background:#1b1f25;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#99a1ab;">1–100 z 1 274</span>
+              <div style="display:flex; align-items:center; gap:3px;">
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #313841; border-radius:2px; color:#4b535d; font-size:11px;">‹</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border-radius:2px; background:#eef1f4; color:#0f1215; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600;">1</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #313841; border-radius:2px; color:#c5ccd4; font-family:'IBM Plex Mono',monospace; font-size:11px;">2</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #313841; border-radius:2px; color:#c5ccd4; font-family:'IBM Plex Mono',monospace; font-size:11px;">3</span>
+                <span style="width:26px; height:26px; display:flex; align-items:center; justify-content:center; border:1px solid #313841; border-radius:2px; color:#c5ccd4; font-size:11px;">›</span>
+              </div>
+              <span style="width:1px; height:16px; background:#262b33;"></span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">wierszy na stronie</span>
+              <div style="display:flex; align-items:center; gap:2px;">
+                <sc-for list="{{ pageSizesD }}" as="s" hint-placeholder-count="5">
+                  <span style="height:24px; display:flex; align-items:center; padding:0 9px; border-radius:2px; background:{{ s.bg }}; color:{{ s.fg }}; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:{{ s.w }};">{{ s.label }}</span>
+                </sc-for>
+              </div>
+              <span style="margin-left:auto; font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">zaznacz zakres i ⌘C, aby skopiować do arkusza</span>
+            </div>
+          </div>
+
+          <div style="width:352px; flex:0 0 352px; background:#16191e; border-left:1px solid #262b33; display:flex; flex-direction:column;">
+            <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; justify-content:space-between; padding:0 18px; border-bottom:1px solid #262b33; background:#1b1f25;">
+              <span style="font-size:13px; font-weight:600; color:#eef1f4;">Filtry</span>
+              <span style="font-size:12px; color:#ffab63; font-weight:500;">Wyczyść wszystkie</span>
+            </div>
+            <div style="padding:14px 18px; border-bottom:1px solid #21262d; display:flex; flex-direction:column; gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#737c87;">Aktywne — 3</span>
+              <sc-for list="{{ chips }}" as="ch" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; gap:8px; min-height:32px; padding:5px 8px 5px 10px; border-radius:3px; background:#1b1f25; border-left:2px solid #ff8a33;">
+                  <div style="display:flex; flex-direction:column; gap:1px; min-width:0;">
+                    <span style="font-size:12px; font-weight:600; color:#eef1f4;">{{ ch.col }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#99a1ab; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">{{ ch.op }} {{ ch.val }}</span>
+                  </div>
+                  <span style="margin-left:auto; width:18px; height:18px; border-radius:2px; background:#2a3038; color:#99a1ab; font-size:11px; display:flex; align-items:center; justify-content:center;">×</span>
+                </div>
+              </sc-for>
+            </div>
+            <div style="padding:14px 18px; border-bottom:1px solid #21262d; display:flex; flex-direction:column; gap:9px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#737c87;">Dodaj filtr</span>
+              <div style="height:32px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#737c87; font-size:12px;">⌕</span><span style="font-size:12px; color:#737c87;">Znajdź kolumnę spośród 42</span></div>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <sc-for list="{{ suggestCols }}" as="s" hint-placeholder-count="6">
+                  <span style="display:inline-flex; align-items:center; height:26px; padding:0 9px; border:1px solid #313841; border-radius:2px; background:#1b1f25; color:#c5ccd4; font-size:12px;">{{ s }}</span>
+                </sc-for>
+              </div>
+            </div>
+            <div style="padding:14px 18px; display:flex; flex-direction:column; gap:10px;">
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#737c87;">Zakres daty — Start (UTC)</span>
+              <div style="display:flex; flex-wrap:wrap; gap:6px;">
+                <sc-for list="{{ presetsD }}" as="p" hint-placeholder-count="6">
+                  <span style="display:inline-flex; align-items:center; height:26px; padding:0 9px; border:1px solid {{ p.bd }}; border-radius:2px; background:{{ p.bg }}; color:{{ p.fg }}; font-size:12px; font-weight:{{ p.w }};">{{ p.label }}</span>
+                </sc-for>
+              </div>
+              <div style="display:flex; gap:8px; margin-top:2px;">
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;"><span style="font-size:11px; color:#737c87;">Od</span><div style="height:32px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; padding:0 9px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">01.07.2026</span></div></div>
+                <div style="flex:1; display:flex; flex-direction:column; gap:4px;"><span style="font-size:11px; color:#737c87;">Do</span><div style="height:32px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; padding:0 9px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">31.07.2026</span></div></div>
+              </div>
+            </div>
+            <div style="margin-top:auto; padding:14px 18px; border-top:1px solid #262b33; background:#1b1f25; display:flex; flex-direction:column; gap:8px;">
+              <div style="display:flex; gap:8px;">
+                <span style="flex:1; height:32px; display:flex; align-items:center; justify-content:center; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Zastosuj</span>
+                <span style="height:32px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #313841; background:#16191e; color:#c5ccd4; font-size:12px;">Zapisz jako widok</span>
+              </div>
+              <span style="font-size:11px; color:#737c87; line-height:1.5;">Panel można przypiąć lub zwinąć. Zwinięty pozostawia tylko przycisk „Filtry 3” w pasku narzędzi.</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">Katalog zbiorów — 1920 × 700 (wycinek)</div>
+      <div style="width:1920px; height:700px; overflow:hidden; flex:0 0 auto; border:1px solid #1e242d; background:#0f1215; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif; color:#eef1f4;">
+        <div style="height:56px; flex:0 0 56px; display:flex; align-items:center; gap:26px; padding:0 24px; background:#0a0c0f; border-bottom:1px solid #262b33;">
+          <div style="display:flex; align-items:center; gap:9px;">
+            <div style="width:6px; height:18px; border-radius:1px; background:#ff8a33;"></div>
+            <span style="font-size:14px; font-weight:600; color:#eef1f4;">Log Platform</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:2px; height:56px;">
+            <sc-for list="{{ navD }}" as="n" hint-placeholder-count="5">
+              <div style="height:56px; display:flex; align-items:center; padding:0 14px; font-size:13px; font-weight:{{ n.w }}; color:{{ n.fg }}; box-shadow:{{ n.line }};">{{ n.label }}</div>
+            </sc-for>
+          </div>
+          <div style="margin-left:auto; display:flex; align-items:center; gap:14px;">
+            <div style="width:340px; height:32px; border-radius:3px; background:#1b1f25; border:1px solid #262b33; display:flex; align-items:center; gap:9px; padding:0 10px;"><span style="color:#737c87; font-size:13px;">⌕</span><span style="font-size:13px; color:#737c87;">Szukaj wszędzie</span></div>
+            <span style="font-size:12px; color:#99a1ab;">Anna Kowalska</span>
+            <div style="width:28px; height:28px; border-radius:3px; background:#262b33; color:#c5ccd4; font-size:11px; font-weight:600; display:flex; align-items:center; justify-content:center;">AK</div>
+          </div>
+        </div>
+        <div style="flex:1; display:flex; min-height:0;">
+          <div style="width:288px; flex:0 0 288px; background:#16191e; border-right:1px solid #262b33; display:flex; flex-direction:column;">
+            <div style="padding:18px 20px 14px; border-bottom:1px solid #21262d; display:flex; flex-direction:column; gap:12px;">
+              <div style="font-size:15px; font-weight:600; color:#eef1f4;">Zbiory danych</div>
+              <div style="height:32px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#737c87; font-size:12px;">⌕</span><span style="font-size:12px; color:#737c87;">Filtruj</span></div>
+            </div>
+            <div style="flex:1; padding:12px;">
+              <sc-for list="{{ clientsD }}" as="cl" hint-placeholder-count="2">
+                <div style="display:flex; flex-direction:column; gap:2px; margin-bottom:16px;">
+                  <div style="display:flex; align-items:center; gap:7px; padding:4px 8px;">
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.12em; text-transform:uppercase; color:#737c87;">{{ cl.name }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:#5f6873; margin-left:auto;">{{ cl.code }}</span>
+                  </div>
+                  <sc-for list="{{ cl.datasets }}" as="d" hint-placeholder-count="2">
+                    <div style="display:flex; align-items:center; gap:9px; height:36px; padding:0 10px; border-radius:3px; background:{{ d.bg }}; box-shadow:{{ d.mark }};">
+                      <span style="font-size:13px; font-weight:{{ d.w }}; color:{{ d.fg }};">{{ d.name }}</span>
+                      <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87; margin-left:auto;">{{ d.rowsShort }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="flex:1; min-width:0; padding:28px 32px; display:flex; flex-direction:column; gap:20px; overflow:hidden;">
+            <div style="display:flex; align-items:flex-end; justify-content:space-between; gap:24px;">
+              <div style="display:flex; flex-direction:column; gap:6px;">
+                <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:#737c87;"><span>Dane</span><span style="color:#4b535d;">/</span><span style="color:#eef1f4; font-weight:500;">Wszystkie zbiory</span></div>
+                <div style="font-size:28px; font-weight:600; letter-spacing:-0.02em; color:#eef1f4;">Zbiory danych klientów</div>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #313841; border-radius:3px; background:#16191e; font-size:13px; font-weight:500; color:#c5ccd4;">Ostatnio używane</div>
+                <div style="height:34px; display:flex; align-items:center; padding:0 13px; border:1px solid #313841; border-radius:3px; background:#16191e; font-size:13px; font-weight:500; color:#c5ccd4;">Moje eksporty</div>
+              </div>
+            </div>
+            <div style="background:#16191e; border:1px solid #262b33; border-radius:4px; overflow:hidden;">
+              <div style="display:flex; align-items:center; height:40px; background:#1b1f25; border-bottom:1px solid #262b33; padding:0 18px;">
+                <span style="width:290px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Zbiór</span>
+                <span style="width:190px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Klient</span>
+                <span style="width:110px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Wiersze</span>
+                <span style="width:100px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Kolumny</span>
+                <span style="width:190px; padding-left:24px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Uprawnienia</span>
+                <span style="flex:1; padding-left:24px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Zapisane widoki</span>
+                <span style="width:150px;"></span>
+              </div>
+              <sc-for list="{{ dsRowsD }}" as="d" hint-placeholder-count="3">
+                <div style="display:flex; align-items:center; min-height:76px; border-bottom:1px solid #21262d; padding:13px 18px;">
+                  <div style="width:290px; display:flex; flex-direction:column; gap:3px; padding-right:16px;">
+                    <span style="font-size:15px; font-weight:600; color:#eef1f4;">{{ d.name }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">{{ d.table }}</span>
+                  </div>
+                  <div style="width:190px; display:flex; flex-direction:column; gap:2px;">
+                    <span style="font-size:13px; font-weight:500; color:#c5ccd4;">{{ d.client }}</span>
+                    <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">{{ d.code }}</span>
+                  </div>
+                  <span style="width:110px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#eef1f4;">{{ d.rows }}</span>
+                  <span style="width:100px; text-align:right; font-family:'IBM Plex Mono',monospace; font-size:14px; color:#eef1f4;">{{ d.cols }}</span>
+                  <div style="width:190px; padding-left:24px; display:flex; gap:6px; flex-wrap:wrap;">
+                    <sc-for list="{{ d.permsD }}" as="p" hint-placeholder-count="2">
+                      <span style="display:inline-flex; align-items:center; height:22px; padding:0 8px; border-radius:2px; border:1px solid {{ p.bd }}; background:{{ p.bg }}; color:{{ p.fg }}; font-size:11px; font-weight:500;">{{ p.label }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="flex:1; padding-left:24px; display:flex; gap:6px; flex-wrap:wrap;">
+                    <sc-for list="{{ d.views }}" as="v" hint-placeholder-count="2">
+                      <span style="display:inline-flex; align-items:center; height:24px; padding:0 9px; border-radius:2px; background:#242a32; color:#c5ccd4; font-size:12px;">{{ v }}</span>
+                    </sc-for>
+                  </div>
+                  <div style="width:150px; display:flex; justify-content:flex-end;">
+                    <span style="height:32px; display:flex; align-items:center; padding:0 14px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Otwórz arkusz</span>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.12em; text-transform:uppercase; color:#5d6570;">Sterowanie i stany brzegowe</div>
+      <div style="display:flex; gap:18px; align-items:flex-start;">
+        <div style="width:620px; height:740px; flex:0 0 auto; border:1px solid #1e242d; background:#16191e; overflow:hidden; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif;">
+          <div style="height:36px; flex:0 0 36px; display:flex; align-items:center; background:#1b1f25; border-bottom:1px solid #313841;">
+            <div style="width:200px; padding:0 12px; display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">ID przejazdu</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div>
+            <div style="width:120px; padding:0 12px; display:flex; align-items:center; gap:6px;"><span style="font-size:12px; font-weight:600; color:#c5ccd4;">Nr rej.</span><span style="font-size:9px; color:#5f6873; margin-left:auto;">▾</span></div>
+            <div style="flex:1; padding:0 12px; display:flex; align-items:center; gap:6px; background:#2a1d10; box-shadow:inset 0 -1px 0 #ff8a33;"><span style="font-size:12px; font-weight:600; color:#ffbe86;">Vmax (km/h)</span><span style="font-size:9px; color:#ffab63; margin-left:auto;">▾</span></div>
+          </div>
+          <div style="flex:1; min-height:0; overflow:hidden; position:relative;">
+            <sc-for list="{{ ghostRows }}" as="g" hint-placeholder-count="20">
+              <div style="height:32px; border-bottom:1px solid #1f242b; display:flex; align-items:center;">
+                <span style="width:200px; padding:0 12px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#2f353d;">{{ g }}</span>
+              </div>
+            </sc-for>
+            <div style="position:absolute; top:6px; left:308px; width:298px; border:1px solid #313841; border-radius:4px; background:#1b1f25; box-shadow:0 16px 40px rgba(0,0,0,0.55); overflow:hidden;">
+              <div style="padding:11px 13px; border-bottom:1px solid #262b33; display:flex; flex-direction:column; gap:2px;">
+                <span style="font-size:13px; font-weight:600; color:#eef1f4;">Vmax (km/h)</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#737c87;">max_speed_kph · numeric · 1 274 niepustych</span>
+              </div>
+              <div style="padding:5px 0;">
+                <div style="height:31px; display:flex; align-items:center; gap:9px; padding:0 13px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87; width:12px;">↑</span><span style="font-size:12px; color:#eef1f4;">Sortuj rosnąco</span></div>
+                <div style="height:31px; display:flex; align-items:center; gap:9px; padding:0 13px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87; width:12px;">↓</span><span style="font-size:12px; color:#eef1f4;">Sortuj malejąco</span></div>
+              </div>
+              <div style="border-top:1px solid #262b33; padding:11px 13px; display:flex; flex-direction:column; gap:9px;">
+                <div style="display:flex; align-items:center; gap:4px; flex-wrap:wrap;">
+                  <sc-for list="{{ numOpsD }}" as="o" hint-placeholder-count="7">
+                    <span style="height:24px; min-width:26px; display:flex; align-items:center; justify-content:center; padding:0 7px; border-radius:2px; background:{{ o.bg }}; color:{{ o.fg }}; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:{{ o.w }};">{{ o.label }}</span>
+                  </sc-for>
+                </div>
+                <div style="height:30px; border:1px solid #ff8a33; border-radius:3px; background:#0f1215; display:flex; align-items:center; padding:0 10px;"><span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#eef1f4;">90</span></div>
+              </div>
+              <div style="border-top:1px solid #262b33; padding:11px 13px; display:flex; flex-direction:column; gap:9px;">
+                <div style="display:flex; align-items:center; justify-content:space-between;">
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; letter-spacing:0.1em; text-transform:uppercase; color:#737c87;">Rozkład wartości</span>
+                  <span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#737c87;">min 0 · max 137</span>
+                </div>
+                <div style="display:flex; align-items:flex-end; gap:3px; height:52px;">
+                  <sc-for list="{{ histoD }}" as="h" hint-placeholder-count="14">
+                    <span style="flex:1; height:{{ h.h }}; background:{{ h.c }}; border-radius:1px;"></span>
+                  </sc-for>
+                </div>
+                <div style="display:flex; justify-content:space-between; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#5f6873;"><span>0</span><span style="color:#ffab63;">90</span><span>137</span></div>
+              </div>
+              <div style="border-top:1px solid #262b33; padding:5px 0;">
+                <div style="height:29px; display:flex; align-items:center; padding:0 13px;"><span style="font-size:12px; color:#c5ccd4;">Przypnij kolumnę po lewej</span></div>
+                <div style="height:29px; display:flex; align-items:center; padding:0 13px;"><span style="font-size:12px; color:#c5ccd4;">Ukryj kolumnę</span></div>
+              </div>
+              <div style="border-top:1px solid #262b33; padding:10px 13px; display:flex; align-items:center; gap:8px;">
+                <span style="height:28px; display:flex; align-items:center; padding:0 12px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Zastosuj</span>
+                <span style="height:28px; display:flex; align-items:center; padding:0 12px; border-radius:3px; border:1px solid #313841; color:#c5ccd4; font-size:12px;">Wyczyść</span>
+              </div>
+            </div>
+          </div>
+          <div style="height:28px; flex:0 0 28px; display:flex; align-items:center; padding:0 13px; border-top:1px solid #262b33; background:#1b1f25;"><span style="font-family:'IBM Plex Mono',monospace; font-size:10px; color:#737c87;">Menu kolumny liczbowej — próg widać przed zastosowaniem.</span></div>
+        </div>
+
+        <div style="display:flex; flex-direction:column; gap:18px;">
+          <div style="width:711px; height:360px; flex:0 0 auto; border:1px solid #1e242d; background:#16191e; display:flex; flex-direction:column; overflow:hidden; font-family:'IBM Plex Sans',sans-serif;">
+            <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; gap:10px; padding:0 14px; background:#1b1f25; border-bottom:1px solid #262b33;">
+              <div style="height:26px; display:flex; align-items:center; gap:7px; padding:0 10px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Filtry <span style="display:inline-flex; align-items:center; justify-content:center; min-width:15px; height:15px; border-radius:2px; background:#ff8a33; color:#1a0c02; font-family:'IBM Plex Mono',monospace; font-size:10px;">2</span></div>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#99a1ab;">0 z 48 213 wierszy</span>
+            </div>
+            <div style="height:34px; flex:0 0 34px; display:flex; align-items:center; background:#1b1f25; border-bottom:1px solid #313841;">
+              <span style="width:196px; padding:0 12px; font-size:12px; font-weight:600; color:#c5ccd4;">ID przejazdu</span>
+              <span style="width:120px; padding:0 12px; font-size:12px; font-weight:600; color:#c5ccd4;">Nr rej.</span>
+              <span style="width:160px; padding:0 12px; font-size:12px; font-weight:600; color:#c5ccd4;">Kierowca</span>
+              <span style="padding:0 12px; font-size:12px; font-weight:600; color:#c5ccd4;">Start (UTC)</span>
+            </div>
+            <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px; padding:0 60px; text-align:center;">
+              <span style="font-size:15px; font-weight:600; color:#eef1f4;">Brak wierszy dla aktywnych filtrów</span>
+              <span style="font-size:12px; color:#99a1ab; line-height:1.55; max-width:56ch;">Zbiór ma 48 213 wierszy. Filtr <span style="font-family:'IBM Plex Mono',monospace; color:#eef1f4;">Depot = KRK-02</span> zawęża wynik do zera — bez niego zobaczysz 1 274 wiersze.</span>
+              <div style="display:flex; gap:8px;">
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Usuń Depot = KRK-02</span>
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #313841; color:#c5ccd4; font-size:12px;">Wyczyść wszystkie</span>
+              </div>
+            </div>
+          </div>
+          <div style="width:711px; height:362px; flex:0 0 auto; border:1px solid #1e242d; background:#16191e; display:flex; flex-direction:column; overflow:hidden; font-family:'IBM Plex Sans',sans-serif;">
+            <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; gap:10px; padding:0 14px; background:#16191e; border-bottom:1px solid #262b33;">
+              <span style="width:4px; height:20px; border-radius:1px; background:#ff8a33;"></span>
+              <span style="font-size:14px; font-weight:600; color:#eef1f4;">Acme Logistics</span>
+              <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#c5ccd4; background:#242a32; padding:2px 6px; border-radius:2px;">ACME00001</span>
+              <span style="font-size:13px; color:#c5ccd4;">Przejazdy klienta</span>
+            </div>
+            <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px; padding:0 56px; text-align:center;">
+              <span style="display:flex; align-items:center; height:22px; padding:0 8px; border-radius:2px; background:#2a1615; border:1px solid #4a2422; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.06em; color:#ff9b96;">BŁĄD ŹRÓDŁA DANYCH</span>
+              <span style="font-size:15px; font-weight:600; color:#eef1f4;">Nie udało się odczytać zbioru</span>
+              <span style="font-size:12px; color:#99a1ab; line-height:1.55; max-width:58ch;">Zapytanie przekroczyło limit 15 s po stronie bazy klienta. Uprawnienia i konfiguracja zbioru są poprawne — problem jest po stronie połączenia.</span>
+              <div style="display:flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:10px; color:#737c87;">
+                <span style="border:1px solid #262b33; border-radius:2px; padding:2px 6px;">17.08.2026 20:04:11</span>
+                <span style="border:1px solid #262b33; border-radius:2px; padding:2px 6px;">ref 7f0c…a41b</span>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Ponów</span>
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #313841; color:#c5ccd4; font-size:12px;">Zawęź filtrami</span>
+                <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #313841; color:#c5ccd4; font-size:12px;">Skopiuj referencję</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="width:400px; height:740px; flex:0 0 auto; border:1px solid #1e242d; background:#16191e; overflow:hidden; display:flex; flex-direction:column; font-family:'IBM Plex Sans',sans-serif;">
+          <div style="height:40px; flex:0 0 40px; display:flex; align-items:center; justify-content:space-between; padding:0 14px; background:#1b1f25; border-bottom:1px solid #262b33;">
+            <span style="font-size:13px; font-weight:600; color:#eef1f4;">Kolumny</span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:11px; color:#737c87;">12 z 42</span>
+          </div>
+          <div style="padding:12px 14px; display:flex; flex-direction:column; gap:9px; border-bottom:1px solid #21262d;">
+            <div style="height:32px; border:1px solid #313841; border-radius:3px; background:#0f1215; display:flex; align-items:center; padding:0 10px; gap:8px;"><span style="color:#737c87; font-size:12px;">⌕</span><span style="font-size:12px; color:#737c87;">Znajdź kolumnę</span></div>
+            <div style="display:flex; gap:6px; align-items:center;">
+              <span style="height:26px; display:flex; align-items:center; padding:0 10px; border-radius:2px; background:#2a3038; color:#eef1f4; font-size:12px; font-weight:600;">Wszystkie</span>
+              <span style="height:26px; display:flex; align-items:center; padding:0 10px; border-radius:2px; color:#99a1ab; font-size:12px;">Widoczne</span>
+              <span style="margin-left:auto; font-size:12px; color:#ffab63;">Zestawy ▾</span>
+            </div>
+          </div>
+          <div style="flex:1; min-height:0; overflow:hidden;">
+            <sc-for list="{{ colList }}" as="c" hint-placeholder-count="16">
+              <div style="height:34px; display:flex; align-items:center; gap:9px; padding:0 14px; border-bottom:1px solid #1f242b;">
+                <span style="color:#3e4650; font-size:11px;">⠿</span>
+                <span style="display:inline-block; width:12px; height:12px; border:1px solid #3e4650; border-radius:2px; background:{{ c.onD }};"></span>
+                <span style="font-size:12px; color:{{ c.fgD }};">{{ c.label }}</span>
+                <span style="font-family:'IBM Plex Mono',monospace; font-size:9px; color:#5f6873; border:1px solid #262b33; border-radius:2px; padding:1px 4px;">{{ c.type }}</span>
+                <span style="margin-left:auto; font-size:11px; color:#5f6873;">{{ c.pin }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="height:48px; flex:0 0 48px; display:flex; align-items:center; gap:8px; padding:0 14px; border-top:1px solid #262b33; background:#1b1f25;">
+            <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; background:#eef1f4; color:#0f1215; font-size:12px; font-weight:600;">Zastosuj</span>
+            <span style="height:30px; display:flex; align-items:center; padding:0 13px; border-radius:3px; border:1px solid #313841; color:#c5ccd4; font-size:12px;">Zapisz jako zestaw</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:18px; border-top:1px solid #1e242d; padding-top:36px; width:1400px;">
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.14em; text-transform:uppercase; color:#6b7480;">Mapa tokenów — jasny ↔ ciemny</div>
+    <div style="flex:0 0 auto; border:1px solid #1e242d; border-radius:4px; overflow:hidden;">
+      <div style="display:flex; align-items:center; height:36px; background:#101318; border-bottom:1px solid #1e242d; padding:0 16px;">
+        <span style="width:210px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7480;">Token</span>
+        <span style="width:172px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7480;">Jasny</span>
+        <span style="width:172px; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7480;">Ciemny</span>
+        <span style="flex:1; font-family:'IBM Plex Mono',monospace; font-size:10px; letter-spacing:0.1em; text-transform:uppercase; color:#6b7480;">Zastosowanie</span>
+      </div>
+      <sc-for list="{{ tokens }}" as="t" hint-placeholder-count="18">
+        <div style="display:flex; align-items:center; min-height:38px; border-bottom:1px solid #161b22; padding:6px 16px; background:#0c0f14;">
+          <span style="width:210px; font-family:'IBM Plex Mono',monospace; font-size:12px; color:#c3cad6;">{{ t.name }}</span>
+          <span style="width:172px; display:flex; align-items:center; gap:9px; flex:0 0 172px;">
+            <span style="width:15px; height:15px; border-radius:2px; border:1px solid #2a323d; background:{{ t.l }};"></span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8d96a2;">{{ t.l }}</span>
+          </span>
+          <span style="width:172px; display:flex; align-items:center; gap:9px; flex:0 0 172px;">
+            <span style="width:15px; height:15px; border-radius:2px; border:1px solid #2a323d; background:{{ t.d }};"></span>
+            <span style="font-family:'IBM Plex Mono',monospace; font-size:12px; color:#8d96a2;">{{ t.d }}</span>
+          </span>
+          <span style="flex:1; font-size:12px; color:#7d8794;">{{ t.use }}</span>
+        </div>
+      </sc-for>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:26px; margin-top:10px;">
+      <sc-for list="{{ notes }}" as="n" hint-placeholder-count="3">
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div style="font-size:14px; font-weight:600; color:#f4f6f8;">{{ n.t }}</div>
+          <div style="font-size:13px; line-height:1.6; color:#8d96a2;">{{ n.b }}</div>
+        </div>
+      </sc-for>
+    </div>
+    <div style="font-size:13px; line-height:1.65; color:#7d8794; max-width:100ch; margin-top:6px;">Porównanie: <a href="#2a">2a</a> jasny · <a href="#2b">2b</a> ciemny. Wcześniejsze kierunki zostają w pliku „Log Platform — Kierunki v1” bez zmian.</div>
+  </div>
+</section>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:4000,&quot;height&quot;:2600}}">
+class Component extends DCLogic {
+  renderVals() {
+    const principles = [
+      "Identyczny układ i gęstość w obu motywach",
+      "Motyw z systemu + nadpisanie Auto / ☀ / ☾ w pasku konta",
+      "Alpha wyłącznie jako akcent stanu, nigdy jako tło bloku",
+      "Kontrast tekstu podstawowego ≥ 7:1 w obu motywach"
+    ];
+
+    const mkNav = (fgActive, fgIdle, fgQuiet, line) => ([
+      { label: "Raporty", w: "400", fg: fgIdle, line: "none" },
+      { label: "Dane", w: "600", fg: fgActive, line: line },
+      { label: "Analizy", w: "400", fg: fgIdle, line: "none" },
+      { label: "Artefakty", w: "400", fg: fgQuiet, line: "none" },
+      { label: "Administracja", w: "400", fg: fgQuiet, line: "none" }
+    ]);
+    const navL = mkNav("#ffffff", "#b9c0c9", "#8b939e", "inset 0 -2px 0 #ff7a18");
+    const navD = mkNav("#eef1f4", "#99a1ab", "#737c87", "inset 0 -2px 0 #ff8a33");
+
+    const chips = [
+      { col: "Kierowca", op: "zawiera", val: "Kowal" },
+      { col: "Start (UTC)", op: "od–do", val: "01.07 – 31.07.2026" },
+      { col: "Kompletny", op: "=", val: "nie" }
+    ];
+
+    const suggestCols = ["Depot", "Kompletny", "Vmax (km/h)", "Klasyfikacja", "Centrum kosztów", "Zdarzenia scoringowe"];
+
+    const mkSizes = (onBg, onFg, offFg) => ["25", "50", "100", "200", "500"].map((label) => ({
+      label,
+      bg: label === "100" ? onBg : "transparent",
+      fg: label === "100" ? onFg : offFg,
+      w: label === "100" ? "600" : "400"
+    }));
+    const pageSizesL = mkSizes("#eef0f3", "#14171c", "#5c646f");
+    const pageSizesD = mkSizes("#2a3038", "#eef1f4", "#99a1ab");
+
+    const presetLabels = ["Dziś", "Wczoraj", "7 dni", "30 dni", "Lipiec 2026", "Poprzedni miesiąc"];
+    const presetsL = presetLabels.map((label) => label === "Lipiec 2026"
+      ? { label, bd: "#a85a0d", bg: "#fdf3ea", fg: "#8a4409", w: "600" }
+      : { label, bd: "#d7dbe0", bg: "#ffffff", fg: "#33393f", w: "400" });
+    const presetsD = presetLabels.map((label) => label === "Lipiec 2026"
+      ? { label, bd: "#ff8a33", bg: "#2a1d10", fg: "#ffbe86", w: "600" }
+      : { label, bd: "#313841", bg: "#1b1f25", fg: "#c5ccd4", w: "400" });
+
+    const opLabels = ["=", "≠", ">", "≥", "<", "≤", "od–do"];
+    const numOpsL = opLabels.map((label) => label === "≥"
+      ? { label, bg: "#eef0f3", fg: "#14171c", w: "600" }
+      : { label, bg: "transparent", fg: "#5c646f", w: "400" });
+    const numOpsD = opLabels.map((label) => label === "≥"
+      ? { label, bg: "#2a3038", fg: "#eef1f4", w: "600" }
+      : { label, bg: "transparent", fg: "#99a1ab", w: "400" });
+
+    const histoRaw = [4, 9, 16, 28, 41, 52, 47, 38, 26, 17, 11, 6, 3, 1];
+    const histoL = histoRaw.map((v, i) => ({ h: Math.round((v / 52) * 52) + "px", c: i >= 8 ? "#a85a0d" : "#d7dbe0" }));
+    const histoD = histoRaw.map((v, i) => ({ h: Math.round((v / 52) * 52) + "px", c: i >= 8 ? "#ff8a33" : "#2f353d" }));
+
+    const colDefs = [
+      ["ID przejazdu", "text", "przypięta", true],
+      ["Nr rejestracyjny", "text", "", true],
+      ["ID kierowcy", "text", "", true],
+      ["Kierowca", "text", "", true],
+      ["Start (UTC)", "ts", "", true],
+      ["Koniec (UTC)", "ts", "", true],
+      ["Start (lokalny)", "ts", "", false],
+      ["Koniec (lokalny)", "ts", "", false],
+      ["Czas (s)", "num", "", true],
+      ["Dystans (m)", "num", "", true],
+      ["Vśr (km/h)", "num", "", true],
+      ["Vmax (km/h)", "num", "", true],
+      ["Kompletny", "bool", "", true],
+      ["Adres startu", "text", "", true],
+      ["Adres końca", "text", "", false],
+      ["Hamowania", "num", "", false]
+    ];
+    const colList = colDefs.map(([label, type, pin, on]) => ({
+      label, type, pin,
+      onL: on ? "#14171c" : "transparent",
+      onD: on ? "#eef1f4" : "transparent",
+      fgL: on ? "#14171c" : "#8b939e",
+      fgD: on ? "#eef1f4" : "#737c87"
+    }));
+
+    const dsBase = [
+      { name: "Przejazdy klienta", table: "acme.client_trips_normalized", rows: "48 213", rowsShort: "48,2 tys.", cols: "42", client: "Acme Logistics", code: "ACME00001", filter: true, exp: true, views: ["Niekompletne przejazdy", "Ostatni tydzień"] },
+      { name: "Przejazdy klienta", table: "nordic.client_trips_normalized", rows: "31 907", rowsShort: "31,9 tys.", cols: "36", client: "Nordic Freight", code: "NORDC00016", filter: true, exp: false, views: ["Depot WAW"] },
+      { name: "Raport 207", table: "nordic.report_207_speed", rows: "4 118", rowsShort: "4,1 tys.", cols: "15", client: "Nordic Freight", code: "NORDC00016", filter: false, exp: true, views: ["brak"] }
+    ];
+
+    const onL = { bg: "#f0f8f3", bd: "#c6e3d3", fg: "#1f6b45" };
+    const offL = { bg: "#f7f8f9", bd: "#e2e5e9", fg: "#8b939e" };
+    const onD = { bg: "#14241c", bd: "#22432f", fg: "#6fd3a0" };
+    const offD = { bg: "#1b1f25", bd: "#262b33", fg: "#737c87" };
+
+    const dsRowsL = dsBase.map((d) => ({ ...d, permsL: [
+      { label: d.filter ? "Filtrowanie" : "Bez filtrów", ...(d.filter ? onL : offL) },
+      { label: d.exp ? "Eksport" : "Tylko podgląd", ...(d.exp ? onL : offL) }
+    ] }));
+    const dsRowsD = dsBase.map((d) => ({ ...d, permsD: [
+      { label: d.filter ? "Filtrowanie" : "Bez filtrów", ...(d.filter ? onD : offD) },
+      { label: d.exp ? "Eksport" : "Tylko podgląd", ...(d.exp ? onD : offD) }
+    ] }));
+
+    const clientsL = [
+      { name: "Acme Logistics", code: "ACME00001", datasets: [{ ...dsBase[0], bg: "#f7f8f9", mark: "inset 2px 0 0 #ff7a18", w: "600", fg: "#14171c" }] },
+      { name: "Nordic Freight", code: "NORDC00016", datasets: [{ ...dsBase[1], bg: "transparent", mark: "none", w: "400", fg: "#33393f" }, { ...dsBase[2], bg: "transparent", mark: "none", w: "400", fg: "#33393f" }] }
+    ];
+    const clientsD = [
+      { name: "Acme Logistics", code: "ACME00001", datasets: [{ ...dsBase[0], bg: "#1b1f25", mark: "inset 2px 0 0 #ff8a33", w: "600", fg: "#eef1f4" }] },
+      { name: "Nordic Freight", code: "NORDC00016", datasets: [{ ...dsBase[1], bg: "transparent", mark: "none", w: "400", fg: "#c5ccd4" }, { ...dsBase[2], bg: "transparent", mark: "none", w: "400", fg: "#c5ccd4" }] }
+    ];
+
+    const surnames = ["Kowalska Anna", "Kowalski Marek", "Kowalczyk Ewa", "Kowal Piotr", "Kowalska Zofia", "Kowalski Tomasz"];
+    const streets = ["Grójecka 128, Warszawa", "Puławska 42, Warszawa", "Wołoska 9, Warszawa", "Modlińska 310, Warszawa", "Marywilska 44, Warszawa", "Połczyńska 121, Warszawa"];
+    const letters = "ABCDEFGHJKLMNPRSTUWXY".split("");
+    const fmt = (n) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, "\u00a0");
+
+    const rowsL = [];
+    const rowsD = [];
+    for (let i = 0; i < 24; i++) {
+      const day = String(3 + (i % 26)).padStart(2, "0");
+      const hh = String(6 + (i % 12)).padStart(2, "0");
+      const mm = String((i * 7) % 60).padStart(2, "0");
+      const vmax = 62 + ((i * 13) % 76);
+      const ok = i % 5 === 3 ? "NIE" : "TAK";
+      const base = {
+        id: "7f" + String(i).padStart(2, "0") + "c4e1…" + String(1000 + i * 7),
+        reg: "WX " + String(1000 + i * 7) + " " + letters[i % letters.length],
+        drvId: "DRV-4" + String(200 + i),
+        drv: i % 9 === 4 ? "—" : surnames[i % surnames.length],
+        start: "2026-07-" + day + " " + hh + ":" + mm,
+        end: "2026-07-" + day + " " + String(Number(hh) + 1).padStart(2, "0") + ":" + mm,
+        dur: fmt(3120 + i * 137),
+        dist: fmt(4820 + i * 913),
+        vavg: String(38 + (i % 21)),
+        vmax: String(vmax),
+        ok,
+        addr: streets[i % streets.length]
+      };
+      rowsL.push({ ...base,
+        vmaxColor: vmax >= 110 ? "#9e2c26" : "#14171c",
+        okBg: ok === "TAK" ? "#f0f8f3" : "#fdf6e6",
+        okFg: ok === "TAK" ? "#1f6b45" : "#8a5b09"
+      });
+      rowsD.push({ ...base,
+        vmaxColor: vmax >= 110 ? "#ff9b96" : "#eef1f4",
+        okBg: ok === "TAK" ? "#14241c" : "#2a2211",
+        okFg: ok === "TAK" ? "#6fd3a0" : "#e8c37a"
+      });
+    }
+
+    const ghostRows = [];
+    for (let i = 0; i < 20; i++) ghostRows.push("7f" + String(i).padStart(2, "0") + "c4e1…" + String(1000 + i * 7));
+
+    const tokens = [
+      { name: "surface/page", l: "#f4f6f7", d: "#0f1215", use: "tło obszaru roboczego pod panelami" },
+      { name: "surface/raised", l: "#ffffff", d: "#16191e", use: "tabela, panele, karty, listy" },
+      { name: "surface/subtle", l: "#fafbfb", d: "#1b1f25", use: "pasek narzędzi, stopka, nagłówek panelu" },
+      { name: "surface/header-cell", l: "#f7f8f9", d: "#1b1f25", use: "komórki nagłówka tabeli" },
+      { name: "surface/appbar", l: "#14171c", d: "#0a0c0f", use: "górny pasek z nawigacją globalną" },
+      { name: "border/default", l: "#e2e5e9", d: "#262b33", use: "granice paneli i sekcji" },
+      { name: "border/strong", l: "#d7dbe0", d: "#313841", use: "obramowania kontrolek, dolna krawędź nagłówka" },
+      { name: "border/row", l: "#f0f2f4", d: "#1f242b", use: "linie między wierszami" },
+      { name: "text/primary", l: "#14171c", d: "#eef1f4", use: "wartości, nagłówki, etykiety aktywne" },
+      { name: "text/secondary", l: "#33393f", d: "#c5ccd4", use: "nagłówki kolumn, tekst drugorzędny" },
+      { name: "text/muted", l: "#5c646f", d: "#99a1ab", use: "metadane, opisy, liczniki" },
+      { name: "text/faint", l: "#8b939e", d: "#737c87", use: "podpisy sekcji, placeholdery" },
+      { name: "accent/base", l: "#ff7a18", d: "#ff8a33", use: "znacznik aktywnej nawigacji, licznik filtrów, kreska kontekstu" },
+      { name: "accent/on-surface", l: "#a85a0d", d: "#ffab63", use: "tekst i ikony akcentowe na tle panelu" },
+      { name: "accent/tint", l: "#fdf3ea", d: "#2a1d10", use: "tło filtrowanej kolumny i wybranego presetu" },
+      { name: "action/primary-bg", l: "#14171c", d: "#eef1f4", use: "przycisk główny — najmocniejszy neutral, nie alpha" },
+      { name: "state/positive", l: "#1f6b45 / #f0f8f3", d: "#6fd3a0 / #14241c", use: "plakietka TAK, uprawnienie włączone" },
+      { name: "state/negative", l: "#9e2c26 / #fdeceb", d: "#ff9b96 / #2a1615", use: "błąd źródła danych, wartość poza normą" }
+    ];
+
+    const notes = [
+      { t: "Dlaczego przycisk główny nie jest alpha", b: "W obu motywach akcja główna to najmocniejszy neutral (grafit na jasnym, jasny na ciemnym). Alpha zostaje zarezerwowany dla stanu: aktywna nawigacja, liczba filtrów, filtrowana kolumna, wybrany okres. Gdyby alpha był też przyciskiem, przestałby cokolwiek znaczyć." },
+      { t: "Wykrywanie i nadpisanie", b: "Domyślnie motyw idzie za ustawieniem systemu. Segment Auto / ☀ / ☾ w pasku konta nadpisuje go i zapisuje wybór per konto, więc jest spójny między przeglądarkami. Zmiana nie przeładowuje widoku ani nie gubi filtrów." },
+      { t: "Czego nie zmieniamy między motywami", b: "Wysokość wiersza 32 px, wysokość kontrolek 32/34 px, promienie 2–4 px, odstępy, szerokość panelu filtrów 352 px, szerokość listy zbiorów 288 px, przypięte dwie pierwsze kolumny i wyrównanie liczb do prawej. Zmienia się wyłącznie kolor." }
+    ];
+
+    return { principles, navL, navD, chips, suggestCols, pageSizesL, pageSizesD, presetsL, presetsD, numOpsL, numOpsD, histoL, histoD, colList, dsRowsL, dsRowsD, clientsL, clientsD, rowsL, rowsD, ghostRows, tokens, notes };
+  }
+}
+
+</script>
+</body>
+</html>

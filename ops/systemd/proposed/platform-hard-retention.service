@@ -1,0 +1,82 @@
+[Unit]
+# Global 13-calendar-month hard-retention sweep.
+#
+# Enforces the owner's platform-wide retention ceiling on every store the
+# shorter lifecycles do not reach: previously unbounded platform-database
+# history, every registered client business table regardless of whether a
+# per-client retention policy is enabled, and the repository-controlled
+# filesystem roots. The horizon is NOT configured here — it comes from
+# ops/retention_registry.py, so this unit carries no retention number at all.
+#
+# ORDERING. Deliberately after both the nightly backup (03:00) and the platform
+# prune (03:30). The sweep takes the same shared, non-blocking backup lock the
+# prune takes, so a backup still running simply makes it skip the window rather
+# than deleting rows out from under a pg_dump — but not colliding in the first
+# place is cheaper than being refused.
+#
+# ONE ExecStart, ON PURPOSE. The artifact/MinIO ceiling pass runs through
+# `api/platform_prune.py --hard-ceiling`, but it is invoked from inside
+# `ops.hard_retention` rather than as a second ExecStart line. A second line
+# would couple the two: an object-store outage in the artifact pass would abort
+# the unit and the entire row sweep would never run. As an in-process sweep it
+# gets the same per-store isolation everything else does — its own defect code
+# and its own ledger row.
+#
+# REHEARSAL FIRST. ExecStart below runs with --execute. Before enabling the
+# timer, run the same command WITHOUT --execute and read the plan: the first
+# execution against a database that has never been swept can be large, and
+# `defects` in the JSON output names every store that needs an operator action
+# (a missing GRANT, an unresolvable retention anchor) before it can be governed.
+Description=Global 13-calendar-month platform hard-retention sweep
+After=network-online.target docker.service postgresql.service log-platform-prune.service
+Wants=network-online.target
+OnFailure=log-platform-unit-failure@%n.service
+
+[Service]
+Type=oneshot
+User=logplatform
+Group=logplatform
+WorkingDirectory=/opt/log-platform
+UMask=0077
+Environment=PYTHONPATH=/opt/log-platform
+EnvironmentFile=/etc/log-platform-host.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+ExecStart=/opt/log-platform/.venv/bin/python /opt/log-platform/ops/run_with_environment_identity.py -- /opt/log-platform/.venv/bin/python -m ops.hard_retention --execute
+# Long enough for a first sweep of the multi-million-row Workflow B report
+# tables, which delete in committed batches and therefore resume rather than
+# roll back if this is ever hit.
+TimeoutStartSec=6h
+Restart=no
+NoNewPrivileges=true
+PrivateTmp=false
+ProtectSystem=full
+ProtectHome=false
+# The backup lock file, the Workflow B report roots and the stage-2 scratch
+# directory. PrivateTmp is deliberately OFF: /tmp/log-platform-stage2 is a
+# governed retention root and a private /tmp would hide it.
+ReadWritePaths=/opt/log-platform/backups
+ReadWritePaths=/home/logplatform/reports-data
+ReadWritePaths=/tmp/log-platform-stage2
+
+# Deliberately NO [Install] section, and this file used to have one.
+#
+# `WantedBy=multi-user.target` on a timer-driven oneshot means the job ALSO runs
+# at every boot, entirely outside its calendar. For a unit whose ExecStart
+# carries `--execute` against every client business database, every governed
+# filesystem root and the Cloudflare stores, that is a destructive sweep on
+# every boot — the same class of unscheduled execution the `Requires=` in the
+# paired timer produced on 2026-08-29, arriving by the other door.
+#
+# The repository already held this invariant: backup-retention.service states it
+# in exactly these terms and `test_timer_driven_services_cannot_be_enabled_
+# standalone` enforced it — but from a hand-maintained tuple that nobody
+# extended when this file was written, so the newest and most destructive
+# timer-driven service was the one it did not cover. That test now derives its
+# subject from the timers on disk.
+#
+# With no [Install], `systemctl enable platform-hard-retention.service` fails
+# loudly instead of silently wiring a boot activation. Enable the .timer; run
+# the .service by hand with `systemctl start` only when a one-off execution is
+# explicitly intended. The service was disabled on the host, so nothing about
+# the running configuration changes — what changes is that it can no longer be
+# enabled by accident.

@@ -1,0 +1,2473 @@
+/* Log Platform — Database Explorer data sheet (DB-003 / DB-004).
+ *
+ * Source of truth: design-handoffs/log-platform/approved/v1.0/
+ * log-platform-approved-design-handoff/TABLE_AND_DATA_GRID_SPEC.md
+ *
+ * The defining structural requirement: the table is the primary working
+ * surface. Below the 56 px app bar and the 64 px context bar sit a 48 px
+ * toolbar, then the table — whose header row is sticky to the table viewport —
+ * then a 44 px footer. Nothing scrolls above the table.
+ *
+ * Loaded only by the Database Explorer row sheet, via `page_asset_tags`.
+ */
+
+/* ==========================================================================
+   Sheet frame
+   ========================================================================== */
+
+/* The sheet owns the remaining viewport height so the table body — not the
+   document — is what scrolls. 100dvh follows mobile browser chrome; the vh
+   value before it is the fallback for engines without dvh. */
+.db-sheet {
+  --db-row-height: var(--lp-height-row-compact);
+  --db-chrome: calc(
+    var(--lp-height-appbar) + var(--lp-height-context-bar) + var(--lp-height-toolbar) + var(--lp-height-footer)
+  );
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--lp-height-appbar) - var(--lp-height-context-bar));
+  height: calc(100dvh - var(--lp-height-appbar) - var(--lp-height-context-bar));
+  min-height: 0;
+}
+
+/* Comfortable is the same layout at a taller row (SH-10 / grid spec §1.6):
+   only the row height changes, never the frame. */
+.db-sheet[data-density="comfortable"] { --db-row-height: var(--lp-height-row-comfortable); }
+
+/* ==========================================================================
+   Toolbar (48 px)
+   ========================================================================== */
+
+.db-toolbar {
+  flex: 0 0 auto;
+  min-height: var(--lp-height-toolbar);
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-5);
+  padding: 0 var(--lp-work-padding-x);
+  background: var(--lp-surface-subtle);
+  border-bottom: 1px solid var(--lp-border-default);
+  flex-wrap: wrap;
+}
+
+.db-toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+}
+
+.db-toolbar-spacer { flex: 1 1 auto; }
+
+.db-toolbar-search { display: flex; align-items: center; gap: var(--lp-space-3); }
+
+.db-toolbar-search input {
+  width: 280px;
+  max-width: 100%;
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-field);
+  color: var(--lp-text-primary);
+  font: inherit;
+  font-size: 12px;
+}
+
+.db-toolbar-search input::placeholder { color: var(--lp-text-faint); }
+
+.db-tool-button {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.db-tool-button:hover { border-color: var(--lp-text-muted); color: var(--lp-text-primary); }
+
+/* Filter count badge — accent/base fill with the approved on-accent text. */
+.db-count-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 var(--lp-space-2);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-accent-base);
+  color: var(--lp-action-accent-fg-on-accent);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+/* ---------- Density segmented control ---------- */
+
+.db-density {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-1);
+  height: var(--lp-height-control-sm);
+  padding: var(--lp-space-1);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-raised);
+}
+
+.db-density-option {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-segment);
+  padding: 0 var(--lp-space-5);
+  border: 0;
+  border-radius: var(--lp-radius-sm);
+  background: transparent;
+  color: var(--lp-text-muted);
+  font: inherit;
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.db-density-option[aria-pressed="true"],
+.db-density-option[aria-current] {
+  background: var(--lp-action-segment-on);
+  color: var(--lp-text-primary);
+}
+
+/* ---------- Result counter and sort summary ---------- */
+
+.db-counter {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+.db-counter strong {
+  color: var(--lp-text-primary);
+  font-weight: var(--lp-weight-semibold);
+}
+
+/* Stands in for the dataset total when the secondary count could not run. The
+   dotted underline marks it as an explanation-carrying value rather than a
+   number, so it does not read as data. */
+.db-counter-unknown {
+  color: var(--lp-text-muted);
+  border-bottom: 1px dotted var(--lp-border-strong);
+  cursor: help;
+}
+
+.db-sort-summary {
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+/* ==========================================================================
+   Table viewport
+   ========================================================================== */
+
+/* The single scroll container: the body scrolls here, the header sticks to its
+   top, and the shell itself never scrolls horizontally (grid spec §1.4). */
+.db-table-scroll {
+  position: relative;
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  background: var(--lp-surface-raised);
+}
+
+/* `table-layout: fixed` is what makes explicit widths real (grid spec §1.7):
+   the column widths come from the server-rendered <colgroup> and the declared
+   table width is their sum, so no column is silently squeezed or dropped. The
+   width is set inline per render; `max-content` is only the pre-S5 fallback for
+   a table that somehow arrives without one. */
+.db-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  width: max-content;
+  font-size: 12px;
+}
+
+/* ---------- Header row (36 px, sticky) ---------- */
+
+.db-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  height: var(--lp-height-row-header);
+  padding: 0 var(--lp-space-6);
+  background: var(--lp-surface-header-cell);
+  border-bottom: 1px solid var(--lp-border-strong);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  font-weight: var(--lp-weight-semibold);
+  line-height: 1.15;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.db-table thead th > .db-col-label {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-2);
+}
+
+/* Sorted column: label steps to text/primary and the caret is the second,
+   non-colour signal (the toolbar states the sort in words as the third). */
+.db-table thead th[aria-sort]:not([aria-sort="none"]) { color: var(--lp-text-primary); }
+.db-sort-caret { color: var(--lp-accent-on-surface); font-size: 11px; }
+
+.db-table thead th.db-num,
+.db-table td.db-num { text-align: right; }
+
+.db-table thead th.db-bool,
+.db-table td.db-bool { text-align: center; }
+
+/* ---------- Body ---------- */
+
+/* Fixed row height is what makes vertical scanning work: a row must never grow
+   to fit content, so every cell truncates instead (grid spec §1.6). */
+.db-table tbody td {
+  height: var(--db-row-height);
+  max-height: var(--db-row-height);
+  padding: 0 var(--lp-space-6);
+  border-bottom: 1px solid var(--lp-border-row);
+  color: var(--lp-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* The value element must not carry its own width cap any more: the column's
+   declared width is the cap, and a fixed-layout cell truncates inside it. */
+.db-table tbody td .db-v { max-width: 100%; }
+
+.db-table tbody tr:hover td { background: var(--lp-surface-subtle); }
+
+/* ---------- Sticky first column ---------- */
+
+/* Only the first displayed column is pinned. The approved design also pins a
+   selection checkbox and a configured row identifier; neither exists in this
+   stage, and inventing one would mean exposing an internal key. */
+.db-table th.db-sticky-col,
+.db-table td.db-sticky-col {
+  position: sticky;
+  /* The cumulative offset is rendered inline per column, computed from the
+     widths of the pins before it, so several pinned columns accumulate to the
+     left in pin order without overlapping (grid spec §1.3). `left: 0` is only
+     the single-pin fallback. */
+  left: 0;
+  z-index: 1;
+  /* Sticky cells must paint their own background or the scrolling content
+     shows through them. */
+  background: var(--lp-surface-raised);
+}
+
+/* One edge for the whole pinned region, on its last column: an internal border
+   between two pins would read as a table boundary that is not there. */
+.db-table th.db-pin-edge,
+.db-table td.db-pin-edge { border-right: 1px solid var(--lp-border-default); }
+
+.db-table thead th.db-sticky-col {
+  z-index: 3;
+  background: var(--lp-surface-header-cell);
+}
+
+.db-table tbody tr:hover td.db-sticky-col { background: var(--lp-surface-subtle); }
+
+/* ---------- Right-edge fade ---------- */
+
+/* A required affordance, not decoration: without it a horizontally clipped
+   table reads as a broken artboard (grid spec §1.4). Shown by data-grid.js
+   only while the table actually overflows and is not scrolled to the end. */
+.db-scroll-fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 120ms linear;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0), var(--lp-surface-raised));
+}
+
+.db-table-viewport { position: relative; flex: 1 1 auto; min-height: 0; display: flex; }
+.db-table-viewport[data-overflowing="true"] .db-scroll-fade { opacity: 1; }
+
+/* ==========================================================================
+   Cell value rendering (grid spec §4)
+   ========================================================================== */
+
+.db-v {
+  display: block;
+  max-width: 360px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* `.db-copyable`'s `cursor: copy` lives in `css/grid-selection.css` — see the
+   note at the old selection block below. The copied-flash colour stays here: it
+   is this surface's own feedback, not part of the shared selection layer. */
+.db-copyable.db-copied { color: var(--lp-accent-on-surface); }
+
+/* Mono for identifiers, numbers and timestamps: column-wise digit comparison
+   is the core scanning task. */
+.db-v-uuid,
+.db-v-integer,
+.db-v-decimal,
+.db-v-date,
+.db-v-timestamp { font-family: var(--lp-font-mono); }
+
+.db-v-integer,
+.db-v-decimal { font-variant-numeric: tabular-nums; }
+
+/* Zero is data, not absence: dimmer than a value, but never text/faint. */
+.db-v-zero { color: var(--lp-text-muted); }
+
+/* NULL and empty string are two distinct markers. Collapsing them makes data
+   verification unreliable, which is why this is a hard requirement. */
+.db-v-null,
+.db-v-blank {
+  color: var(--lp-text-faint);
+  font-style: italic;
+}
+
+.db-v-json { font-family: var(--lp-font-mono); color: var(--lp-text-secondary); }
+
+/* Boolean: a badge carrying a word, so the state never rests on colour. */
+.db-badge-bool {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-badge);
+  padding: 0 var(--lp-space-3);
+  border: 1px solid transparent;
+  border-radius: var(--lp-radius-sm);
+  font-size: 11px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-badge-bool.is-true {
+  background: var(--lp-state-positive-bg);
+  border-color: var(--lp-state-positive-border);
+  color: var(--lp-state-positive-fg);
+}
+
+.db-badge-bool.is-false {
+  background: var(--lp-state-warning-bg);
+  border-color: var(--lp-state-warning-border);
+  color: var(--lp-state-warning-fg);
+}
+
+/* ==========================================================================
+   Footer (44 px)
+   ========================================================================== */
+
+.db-footer {
+  flex: 0 0 auto;
+  min-height: var(--lp-height-footer);
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-5);
+  padding: 0 var(--lp-work-padding-x);
+  background: var(--lp-surface-subtle);
+  border-top: 1px solid var(--lp-border-default);
+  flex-wrap: wrap;
+}
+
+.db-pager { display: flex; align-items: center; gap: var(--lp-space-3); }
+
+.db-page-button {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-xs);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.db-page-button:hover { border-color: var(--lp-text-muted); color: var(--lp-text-primary); }
+
+.db-page-indicator {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+.db-page-size { display: flex; align-items: center; gap: var(--lp-space-2); flex-wrap: wrap; }
+.db-page-size-label { font-size: 11px; color: var(--lp-text-muted); }
+
+.db-size {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-xs);
+  padding: 0 var(--lp-space-4);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.db-size[aria-current] {
+  background: var(--lp-action-segment-on);
+  border-color: var(--lp-border-strong);
+  color: var(--lp-text-primary);
+}
+
+/* ==========================================================================
+   Empty and fallback states
+   ========================================================================== */
+
+/* The header stays rendered in every empty state: the user must keep the shape
+   of the data, which is what separates "nothing matched" from "it broke".
+   The state block itself is `.db-state`, below. */
+
+/* --------------------------------------------------------------------------
+   S9 system states (DB-010, DB-011, permission, malformed view)
+
+   One component family: badge, title, body, optional diagnostic trio, actions.
+   They differ in content and action set, never in structure — which is what
+   keeps "nothing matched" visibly different from "the source failed" while
+   both keep the table header above them.
+   -------------------------------------------------------------------------- */
+.db-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lp-space-6);
+  padding: var(--lp-space-14) var(--lp-work-padding-x);
+  text-align: center;
+}
+
+.db-state-title {
+  margin: 0;
+  color: var(--lp-text-primary);
+  font-size: 15px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-state-body {
+  margin: 0;
+  max-width: 58ch;
+  color: var(--lp-text-muted);
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+/* The named constraint reads as an identifier, not as prose. */
+.db-state-filter {
+  font-family: var(--lp-font-mono);
+  color: var(--lp-text-primary);
+}
+
+.db-state-badge {
+  align-self: center;
+}
+
+/* A source failure is the one state that carries the negative palette, and it
+   carries it on the failure-class badge only — a permission fact is never red. */
+.db-state-error .db-state-badge {
+  background: var(--lp-state-negative-bg);
+  border: 1px solid var(--lp-state-negative-border);
+  color: var(--lp-state-negative-fg);
+}
+
+.db-state-diagnostics {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--lp-space-4);
+}
+
+.db-state-diag {
+  padding: var(--lp-space-1) var(--lp-space-3);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-faint);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  user-select: all;
+}
+
+.db-state-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--lp-space-4);
+}
+
+.db-state-action {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-xs);
+  padding: 0 var(--lp-space-7);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font-family: var(--lp-font-sans);
+  font-size: 12px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.db-state-action.primary {
+  border-color: var(--lp-action-primary-bg);
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-state-action:hover { border-color: var(--lp-text-muted); }
+
+.db-state-panel .db-state { padding: var(--lp-space-16) var(--lp-work-padding-x); }
+
+/* --------------------------------------------------------------------------
+   Loading / pending (DB-59)
+
+   Static blocks at the current density and page size. No shimmer anywhere
+   (INTERACTION_SPEC §10), and the block sits over the table area so the height
+   the rows occupied is exactly the height the skeleton occupies.
+   -------------------------------------------------------------------------- */
+.db-skeleton {
+  position: absolute;
+  inset: var(--lp-height-row-header) 0 0 0;
+  overflow: hidden;
+  background: var(--lp-surface-raised);
+  pointer-events: none;
+}
+
+.db-skeleton-row {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-6);
+  height: var(--db-row-height);
+  padding: 0 var(--lp-space-6);
+  border-bottom: 1px solid var(--lp-border-row);
+}
+
+.db-skeleton-cell {
+  height: 10px;
+  min-width: 40px;
+  border-radius: var(--lp-radius-xs);
+  background: var(--lp-surface-inset);
+}
+
+/* The counters state `…` while a query is in flight rather than keeping a
+   number that no longer describes what the user is about to see. */
+[data-db-pending-counter] { visibility: hidden; position: relative; }
+
+[data-db-pending-counter]::after {
+  content: "…";
+  visibility: visible;
+  position: absolute;
+  left: 0;
+  top: 0;
+  color: var(--lp-text-muted);
+}
+
+/* ==========================================================================
+   Dataset catalogue (DB-001 / DB-002)
+   ========================================================================== */
+
+.db-catalogue {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--lp-space-13);
+}
+
+.db-rail {
+  flex: 0 0 var(--lp-width-rail);
+  width: var(--lp-width-rail);
+  padding: var(--lp-space-9) 0;
+  border-right: 1px solid var(--lp-border-default);
+  background: var(--lp-surface-raised);
+}
+
+.db-rail-heading {
+  margin: 0 0 var(--lp-space-6);
+  padding: 0 var(--lp-space-10);
+  color: var(--lp-text-primary);
+  font-size: 15px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-rail-group { margin-bottom: var(--lp-space-8); }
+
+.db-rail-client {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  margin: 0;
+  padding: var(--lp-space-2) var(--lp-space-10);
+  font-family: var(--lp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lp-text-faint);
+}
+
+.db-rail-client-code { margin-left: auto; }
+
+.db-rail-list { list-style: none; margin: 0; padding: 0 var(--lp-space-6); }
+
+.db-rail-item {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-5);
+  height: 36px;
+  padding: 0 var(--lp-space-5);
+  border-radius: var(--lp-radius-md);
+  color: var(--lp-text-secondary);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.db-rail-item:hover { background: var(--lp-surface-inset); color: var(--lp-text-primary); }
+
+.db-rail-item[aria-current] {
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-rail-count {
+  margin-left: auto;
+  color: var(--lp-text-faint);
+  font-size: 11px;
+}
+
+.db-cat-main { flex: 1; min-width: 0; }
+
+.db-cat-table-wrap {
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+  overflow: hidden;
+}
+
+.db-cat-table { width: 100%; border-collapse: collapse; }
+
+.db-cat-table thead th {
+  height: 40px;
+  padding: 0 var(--lp-space-9);
+  border-bottom: 1px solid var(--lp-border-default);
+  background: var(--lp-surface-subtle);
+  color: var(--lp-text-faint);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  font-weight: var(--lp-weight-regular);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-align: left;
+}
+
+.db-cat-table tbody td {
+  padding: var(--lp-space-6) var(--lp-space-9);
+  border-bottom: 1px solid var(--lp-border-row);
+  vertical-align: middle;
+  font-size: 13px;
+  color: var(--lp-text-secondary);
+}
+
+.db-cat-table tbody tr:last-child td { border-bottom: 0; }
+.db-cat-table tbody tr:hover { background: var(--lp-surface-subtle); }
+
+.db-cat-name {
+  display: block;
+  color: var(--lp-text-primary);
+  font-size: 15px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-cat-desc {
+  display: block;
+  margin-top: var(--lp-space-1);
+  color: var(--lp-text-faint);
+  font-size: 11px;
+}
+
+.db-cat-client-name { display: block; font-weight: var(--lp-weight-medium); }
+
+.db-cat-client-code {
+  display: block;
+  color: var(--lp-text-faint);
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+}
+
+.db-cat-num, .db-cat-table thead th.db-cat-num { text-align: right; }
+
+.db-cat-table tbody td.db-cat-num {
+  font-family: var(--lp-font-mono);
+  font-size: 14px;
+  color: var(--lp-text-primary);
+}
+
+.db-cat-perms { display: table-cell; }
+
+/* A withheld permission is a configuration fact: neutral, never negative, and
+   never a disabled control (PBC 2.1). */
+.db-perm {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  margin-right: var(--lp-space-3);
+  padding: 0 var(--lp-space-4);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-faint);
+  font-size: 11px;
+  font-weight: var(--lp-weight-medium);
+}
+
+.db-perm-granted {
+  border-color: var(--lp-accent-on-surface);
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+}
+
+.db-cat-action { text-align: right; white-space: nowrap; }
+
+.db-cat-open {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-7);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  font-size: 12px;
+  font-weight: var(--lp-weight-semibold);
+  text-decoration: none;
+}
+
+.db-cat-rules { margin-top: var(--lp-space-12); }
+
+/* ==========================================================================
+   Demoted controls below the sheet
+   ========================================================================== */
+
+/* The pre-redesign filter form and export notes still work, but they no longer
+   sit between the user and the data. They are collapsed below the sheet until
+   the column-menu filter system replaces them in a later stage. */
+.db-secondary {
+  border-top: 1px solid var(--lp-border-default);
+  background: var(--lp-surface-page);
+  padding: 0 var(--lp-work-padding-x) var(--lp-space-12);
+}
+
+.db-secondary > details { border-bottom: 1px solid var(--lp-border-default); }
+
+.db-secondary > details > summary {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-height: var(--lp-height-toolbar);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+  cursor: pointer;
+  list-style: none;
+}
+
+.db-secondary > details > summary::-webkit-details-marker { display: none; }
+.db-secondary > details > summary::before { content: "▸"; color: var(--lp-text-muted); }
+.db-secondary > details[open] > summary::before { content: "▾"; }
+.db-secondary > details > summary:hover { color: var(--lp-text-primary); }
+.db-secondary-body { padding: 0 0 var(--lp-space-10); }
+
+/* ==========================================================================
+   Responsive
+   ========================================================================== */
+
+/* The approved band model (RESPONSIVE_SPEC.md). The Database Explorer honours
+ * exactly three responsive transitions and nothing else:
+ *
+ *   <=1279  bp/tablet-landscape and below — interaction targets grow to 44 px,
+ *           the toolbar and footer may wrap, and column resize keeps a 44 px
+ *           drag target
+ *   <=1023  bp/tablet-portrait and below — the filter panel becomes the
+ *           `RSP-002` overlay drawer over a scrim, the row-detail panel becomes
+ *           a full-width overlay, and pointer column resize gives way to the
+ *           column menu's keyboard-first width controls
+ *   <=767   bp/below-min — `RSP-003`: the advisory owns the screen until the
+ *           user accepts it, after which the `RSP-002` layout renders at that
+ *           width
+ *
+ * The table is a table in every one of them. There is no card conversion, no
+ * column stacking and no row expansion at any width.
+ */
+
+@media (max-width: 1279px) {
+  /* Hit area, not visual size: the grid keeps its compact density and its
+     32/34 px control heights, and only the interactive box around them grows
+     (RESPONSIVE_SPEC "Actions and touch targets"). */
+  .db-tool-button,
+  .db-page-button,
+  .db-size,
+  .db-density-option,
+  .db-preset,
+  .db-state-action,
+  .db-cat-open,
+  .db-export-copy,
+  .db-export-submit,
+  .db-panel-add-item,
+  .db-col-action,
+  .db-col-apply,
+  .db-col-clear,
+  .db-cols-move,
+  .db-cols-handle,
+  .db-distribution-pick,
+  .db-row-traverse,
+  .db-row-close,
+  .db-filters-trigger,
+  .db-columns-trigger {
+    min-height: var(--lp-height-control-touch);
+  }
+
+  .db-page-button,
+  .db-size,
+  .db-cols-move,
+  .db-row-traverse,
+  .db-row-close {
+    min-width: var(--lp-height-control-touch);
+  }
+
+  /* A 16 px glyph with a 44 px hit area is the approved shape for both remove
+     affordances. The visual box is untouched; a transparent pseudo-element
+     carries the target, so the chip strip keeps its density. */
+  .db-chip,
+  .db-panel-filter-head { position: relative; }
+
+  .db-chip-remove,
+  .db-panel-remove { position: relative; }
+
+  .db-chip-remove::after,
+  .db-panel-remove::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: var(--lp-height-control-touch);
+    height: var(--lp-height-control-touch);
+    transform: translate(-50%, -50%);
+  }
+
+  /* The resize handle stays a pointer affordance in this band, with the
+     approved 44 px drag target. Its keyboard equivalent lives in the column
+     menu and is unaffected. */
+  .db-col-resize { width: var(--lp-height-control-touch); }
+}
+
+@media (max-width: 1023px) {
+  .db-toolbar,
+  .db-footer { min-height: var(--lp-height-control-touch); padding-top: var(--lp-space-3); padding-bottom: var(--lp-space-3); }
+  .db-toolbar-search input { width: 100%; }
+  /* The frame stops owning the viewport height once the toolbar wraps, so the
+     document scrolls instead of a short table body. The scroll box itself must
+     survive: it is what the sticky header sticks to and what makes the
+     horizontal scroll the approved band expects possible. Removing it — as the
+     pre-approval CSS did — silently unsticks the header. */
+  .db-sheet { height: auto; }
+  .db-table-scroll { max-height: 70vh; overflow: auto; }
+  .db-v { max-width: 220px; }
+  /* RESPONSIVE_SPEC "Filters": in the portrait band the active filters are
+     represented by the count badge on `Filtry` alone. Every filter still
+     appears exactly once — as its entry in the filter drawer's `Aktywne — n`
+     section, with the same remove action (`DB-16`, `DB-19`). `display: none`
+     takes the chip links out of the tab order with them, so nothing here
+     becomes a hidden-but-focusable control. */
+  .db-chips { display: none; }
+  .db-sheet:has(.db-filters[open]) .db-table-scroll { padding-right: 0; }
+  .db-col-panel { max-height: 70vh; max-width: 92vw; }
+
+  /* `DB-001`: the dataset rail moves above the comparison table rather than
+     competing with it for width, and the table keeps its own horizontal scroll
+     so it stays a comparison table rather than becoming a list of cards. */
+  .db-catalogue { flex-direction: column; }
+  .db-rail {
+    flex: 0 0 auto;
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid var(--lp-border-default);
+  }
+  .db-cat-main { width: 100%; }
+  .db-cat-table-wrap { overflow-x: auto; }
+
+  /* Column resize is menu-only below the docked band: a drag handle inside a
+     horizontally scrolling table is a scroll conflict on touch. `display: none`
+     removes it from the tab order as well as the screen, so it cannot become a
+     hidden-but-focusable control. */
+  .db-col-resize { display: none; }
+}
+
+/* ---------- `RSP-002` filter drawer (<=1023 px) ---------- */
+
+/* One panel, one form, one staged state. The drawer is the same DOM the docked
+ * panel uses — relocated by CSS, never duplicated — so a breakpoint change can
+ * neither apply, reset nor double-submit a staged edit, and there is exactly
+ * one successful control per filter parameter at every width.
+ */
+
+.db-filter-scrim { display: none; }
+.db-filter-drawer-head { display: none; }
+
+@media (max-width: 1023px) {
+  .db-filter-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: auto;
+    z-index: 46;
+    display: flex;
+    flex-direction: column;
+    width: min(var(--lp-width-drawer), 100vw);
+    max-width: 100vw;
+    border-left: 1px solid var(--lp-border-strong);
+    box-shadow: var(--lp-elevation-drawer, var(--lp-elevation-menu));
+    animation: db-drawer-in 200ms ease-out;
+  }
+
+  .db-filters[open] .db-filter-scrim {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 45;
+    background: var(--lp-elevation-scrim);
+  }
+
+  .db-filter-drawer-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--lp-space-6);
+    flex: 0 0 auto;
+    padding-bottom: var(--lp-space-5);
+    border-bottom: 1px solid var(--lp-border-default);
+  }
+
+  .db-filter-drawer-title {
+    font-size: 14px;
+    font-weight: var(--lp-weight-semibold);
+    color: var(--lp-text-primary);
+  }
+
+  .db-filter-drawer-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--lp-height-control-touch);
+    height: var(--lp-height-control-touch);
+    border: 1px solid var(--lp-border-strong);
+    border-radius: var(--lp-radius-md);
+    background: var(--lp-action-secondary-bg);
+    color: var(--lp-text-secondary);
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .db-panel-form {
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+    flex: 1 1 auto;
+  }
+
+  .db-panel-scroll { flex: 1 1 auto; min-height: 0; overflow-y: auto; }
+
+  /* `Zastosuj` / `Wyczyść` pinned at the drawer bottom, 44 px (RS-5). */
+  .db-panel-actions {
+    position: sticky;
+    bottom: 0;
+    flex: 0 0 auto;
+    margin-top: 0;
+    padding: var(--lp-space-5) 0 0;
+    background: var(--lp-surface-raised);
+    border-top: 1px solid var(--lp-border-default);
+  }
+
+  .db-panel-apply,
+  .db-panel-clear {
+    min-height: var(--lp-height-control-touch);
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@keyframes db-drawer-in {
+  from { transform: translateX(16px); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+
+/* ---------- `RSP-003` below-minimum advisory (<768 px) ---------- */
+
+/* Revealed by `data-grid-responsive.js`, never by CSS alone: with scripting
+ * unavailable `Otwórz mimo to` could not act, and an advisory whose escape
+ * hatch is dead would be worse than no advisory. The sheet is then hidden with
+ * the `hidden` attribute, so it leaves the tab order and the accessibility tree
+ * together rather than becoming an off-screen focus trap. */
+
+.db-narrow-advisory[hidden] { display: none; }
+
+.db-narrow-advisory {
+  max-width: 60ch;
+  margin: var(--lp-space-12) auto;
+  padding: 0 var(--lp-work-padding-x);
+}
+
+.db-narrow-eyebrow {
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lp-text-muted);
+}
+
+.db-narrow-title {
+  margin: var(--lp-space-4) 0 var(--lp-space-5);
+  font-size: 20px;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.db-narrow-body { margin: 0 0 var(--lp-space-7); color: var(--lp-text-secondary); }
+
+.db-narrow-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-5);
+  margin-bottom: var(--lp-space-7);
+}
+
+.db-narrow-action {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--lp-height-control-touch);
+  padding: 0 var(--lp-space-7);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font: inherit;
+  font-size: 13px;
+  font-weight: var(--lp-weight-medium);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.db-narrow-action.primary {
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  border-color: var(--lp-action-primary-bg);
+}
+
+.db-narrow-footnote { margin: 0; font-size: 12px; color: var(--lp-text-muted); }
+
+@media (prefers-reduced-motion: reduce) {
+  .db-scroll-fade { transition: none; }
+  /* Every layer motion is suppressed: the column menu rise, the docked panel
+     and the `RSP-002` drawer slide. The scrim still appears, and the export
+     progress indicator — the one motion that carries information — keeps its
+     own exemption further down this file. */
+  .db-col-panel,
+  .db-filter-panel { animation: none; }
+}
+
+/* ==========================================================================
+   Legacy module controls (transitional)
+   ========================================================================== */
+
+/* These style the pre-redesign filter form, column picker and row-detail table,
+   which still work and still ship — demoted below the sheet rather than sitting
+   between the user and the data. They previously lived in a dark-only inline
+   <style> block in api/main.py; moving them here retires that blob and puts
+   them on the approved tokens, so they follow light and dark like everything
+   else. The column-menu filter system replaces this whole section in a later
+   stage, at which point most of it can be deleted outright. */
+
+.db-help {
+  margin: var(--lp-space-3) 0 0;
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+/* ---------- Active filter chips ---------- */
+
+.db-active-filters-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-6);
+  flex-wrap: wrap;
+}
+
+.db-active-filters-head h2 { margin: 0; }
+
+.db-chips { display: flex; flex-wrap: wrap; gap: var(--lp-space-4); margin-top: var(--lp-space-5); }
+
+.db-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-height: var(--lp-height-chip);
+  padding: 0 var(--lp-space-3) 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-raised);
+  font-size: 11px;
+}
+
+.db-chip-label { font-weight: var(--lp-weight-semibold); color: var(--lp-text-primary); }
+.db-chip-op { color: var(--lp-accent-on-surface); font-weight: var(--lp-weight-semibold); }
+
+.db-chip-value {
+  color: var(--lp-text-secondary);
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.db-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-inset);
+  color: var(--lp-text-muted);
+  font-weight: var(--lp-weight-semibold);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.db-chip-remove:hover { background: var(--lp-state-negative-bg); color: var(--lp-state-negative-fg); }
+
+/* ---------- Date presets (used by the filter panel) ---------- */
+
+.db-presets { display: flex; flex-wrap: wrap; gap: var(--lp-space-3); align-items: center; margin-bottom: var(--lp-space-6); }
+.db-presets-label { font-size: 11px; color: var(--lp-text-muted); margin-right: var(--lp-space-2); }
+
+.db-preset {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-xs);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font-size: 11px;
+  text-decoration: none;
+}
+
+.db-preset:hover { border-color: var(--lp-text-muted); color: var(--lp-text-primary); }
+.db-preset.active { background: var(--lp-action-segment-on); color: var(--lp-text-primary); }
+
+/* ---------- Column management panel (DB-008) ---------- */
+
+.db-columns { position: relative; }
+
+.db-columns-trigger { list-style: none; }
+.db-columns-trigger::-webkit-details-marker { display: none; }
+
+/* 400 px, per COMPONENT_CATALOG. It overlays rather than docks: unlike the
+   filter panel it is a transient layer, dismissed as soon as it is committed. */
+.db-columns-panel {
+  position: absolute;
+  z-index: 30;
+  top: calc(100% + var(--lp-space-3));
+  left: 0;
+  width: 400px;
+  max-width: calc(100vw - var(--lp-space-8));
+  padding: var(--lp-space-7);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+  box-shadow: var(--lp-shadow-panel, 0 12px 32px rgba(0, 0, 0, 0.22));
+  animation: db-col-menu-in 160ms ease-out;
+}
+
+.db-cols-search { margin-bottom: var(--lp-space-4); }
+.db-cols-search input { width: 100%; }
+
+.db-cols-tabs { display: flex; gap: var(--lp-space-3); margin-bottom: var(--lp-space-4); }
+
+.db-cols-tab {
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+  background: transparent;
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.db-cols-tab[aria-pressed="true"] {
+  background: var(--lp-action-segment-on);
+  color: var(--lp-text-primary);
+}
+
+.db-cols-list {
+  list-style: none;
+  margin: var(--lp-space-4) 0 0;
+  padding: 0;
+  max-height: 360px;
+  overflow: auto;
+}
+
+.db-cols-row {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  padding: var(--lp-space-3) var(--lp-space-2);
+  border-radius: var(--lp-radius-sm);
+  font-size: 12px;
+}
+
+.db-cols-row:hover { background: var(--lp-surface-subtle); }
+.db-cols-row[data-db-dragging="true"] { opacity: 0.5; }
+.db-cols-row[data-db-drop="before"] { box-shadow: inset 0 2px 0 0 var(--lp-accent-base); }
+.db-cols-row[data-db-drop="after"] { box-shadow: inset 0 -2px 0 0 var(--lp-accent-base); }
+
+.db-cols-handle {
+  flex: 0 0 auto;
+  color: var(--lp-text-muted);
+  cursor: grab;
+  background: none;
+  border: 0;
+  line-height: 1;
+}
+
+.db-cols-handle:active { cursor: grabbing; }
+.db-cols-handle[hidden] { display: none; }
+
+.db-cols-visible { display: flex; align-items: center; gap: var(--lp-space-3); flex: 1 1 auto; min-width: 0; }
+.db-cols-visible input { flex: 0 0 auto; accent-color: var(--lp-accent-base); }
+
+.db-cols-label { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* A hidden column is stated by its unchecked box and by this label treatment;
+   the pairing is what keeps it from being colour-only. */
+.db-cols-row[data-db-state="hidden"] .db-cols-label { color: var(--lp-text-faint); }
+
+.db-cols-type {
+  flex: 0 0 auto;
+  padding: 0 var(--lp-space-3);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-muted);
+  font-size: 10px;
+  text-transform: uppercase;
+}
+
+.db-cols-pin { display: flex; align-items: center; gap: var(--lp-space-2); flex: 0 0 auto; color: var(--lp-text-secondary); }
+.db-cols-pin input { accent-color: var(--lp-accent-base); }
+
+.db-cols-moves { display: inline-flex; gap: var(--lp-space-2); flex: 0 0 auto; }
+
+.db-cols-move {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-muted);
+  text-decoration: none;
+  font-size: 10px;
+}
+
+.db-cols-move:hover { background: var(--lp-surface-subtle); color: var(--lp-text-primary); }
+
+.db-cols-warning {
+  margin: var(--lp-space-4) 0 0;
+  padding: var(--lp-space-4);
+  border-left: 2px solid var(--lp-state-warning, var(--lp-accent-base));
+  color: var(--lp-text-primary);
+  font-size: 12px;
+}
+
+.db-columns-actions { margin-top: var(--lp-space-6); }
+
+/* ---------- Column resize affordance (DB-29) ---------- */
+
+.db-col-resize {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 9px;
+  cursor: col-resize;
+  /* A link, so `Enter` autofits with no script at all; it carries no text, so
+     its accessible name comes from aria-label and names its column. */
+  text-decoration: none;
+}
+
+.db-col-resize::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  right: 4px;
+  bottom: 6px;
+  width: 1px;
+  background: var(--lp-border-default);
+}
+
+.db-col-resize:hover::after,
+.db-col-resize:focus-visible::after { background: var(--lp-accent-base); width: 2px; }
+.db-col-resize:focus-visible { outline: 2px solid var(--lp-accent-base); outline-offset: -2px; }
+
+/* The live guide follows the pointer during a drag (grid spec §1.7). */
+.db-resize-guide {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--lp-accent-base);
+  pointer-events: none;
+  z-index: 60;
+}
+
+.db-col-width { display: flex; align-items: center; gap: var(--lp-space-3); margin-top: var(--lp-space-4); }
+.db-col-width label { flex: 1 1 auto; color: var(--lp-text-secondary); font-size: 11px; }
+.db-col-width input { width: 72px; }
+
+.db-col-refusal { color: var(--lp-text-secondary); }
+
+.db-col-actions-section { border-top: 1px solid var(--lp-border-default); }
+
+/* ---------- Export controls ---------- */
+
+.db-export-form { display: flex; align-items: center; gap: var(--lp-space-4); flex-wrap: wrap; }
+.db-export-form select { width: auto; min-width: 160px; }
+.db-export-note { margin: var(--lp-space-6) 0 var(--lp-space-3); font-size: 11px; }
+.db-export-actions { margin-top: var(--lp-space-2); }
+
+/* ---------- Row detail table ---------- */
+
+.db-detail-col { white-space: nowrap; }
+
+.db-detail-table th.db-detail-key {
+  width: 30%;
+  text-align: left;
+  vertical-align: top;
+  color: var(--lp-text-muted);
+  font-weight: var(--lp-weight-medium);
+}
+
+.db-detail-table td { word-break: break-word; white-space: normal; }
+.db-detail-table td .db-v { max-width: none; white-space: normal; }
+
+.db-browser .db-meta .db-client {
+  font-size: 15px;
+  font-weight: var(--lp-weight-semibold);
+  margin: 0 0 var(--lp-space-3);
+}
+
+/* ==========================================================================
+   Column-centric filtering and sorting (DB-005)
+   ========================================================================== */
+
+/* The whole system is <details> elements. Collapsed, a column menu is just its
+   header label; expanded, it is a 298 px panel over the rows. Nothing here
+   depends on JavaScript for correctness — the script only adds dismissal,
+   focus return and operator-aware field switching. */
+
+.db-col-menu { display: block; }
+
+.db-col-trigger {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-2);
+  cursor: pointer;
+  list-style: none;
+  color: inherit;
+}
+
+.db-col-trigger::-webkit-details-marker { display: none; }
+.db-col-trigger:hover { color: var(--lp-text-primary); }
+.db-col-trigger:hover .db-col-caret { color: var(--lp-text-secondary); }
+
+/* The caret is visible at rest: a control the user cannot see does not exist
+   (INTERACTION_SPEC.md §10). */
+.db-col-caret {
+  margin-left: auto;
+  padding-left: var(--lp-space-3);
+  color: var(--lp-text-muted);
+  font-size: 10px;
+}
+
+/* Numeric columns right-align, and the caret group stays adjacent to the
+   values, so the trigger flips its order there (grid spec §1.2). */
+.db-table thead th.db-num .db-col-trigger { flex-direction: row-reverse; }
+.db-table thead th.db-num .db-col-caret { margin-left: 0; margin-right: auto; padding: 0 var(--lp-space-3) 0 0; }
+
+/* A filtered column carries a tint AND the `≡` marker; colour is never the
+   only signal (ACCESSIBILITY_SPEC.md §3). */
+.db-table thead th.db-col-filtered {
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+}
+
+.db-col-filtered-mark { color: var(--lp-accent-on-surface); font-size: 11px; }
+
+.db-col-panel {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  z-index: 20;
+  width: 298px;
+  max-height: 60vh;
+  overflow-y: auto;
+  padding: var(--lp-space-6);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+  box-shadow: 0 8px 24px rgb(0 0 0 / 28%);
+  white-space: normal;
+  font-weight: var(--lp-weight-regular);
+  animation: db-col-menu-in 120ms ease-out;
+}
+
+/* Anchored to a right-hand column the panel would open past the scroller edge;
+   the script flips it. */
+.db-col-menu-flip .db-col-panel { left: auto; right: 0; }
+
+@keyframes db-col-menu-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+
+.db-col-identity {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--lp-space-4);
+  margin: 0 0 var(--lp-space-5);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+.db-col-identity-type { font-family: var(--lp-font-mono); font-size: 10px; color: var(--lp-text-faint); }
+
+.db-col-section {
+  border-top: 1px solid var(--lp-border-default);
+  padding-top: var(--lp-space-5);
+  margin-top: var(--lp-space-5);
+}
+
+.db-col-section:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+
+.db-col-section-head,
+.db-panel-heading {
+  margin: 0 0 var(--lp-space-4);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  font-weight: var(--lp-weight-regular);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--lp-text-faint);
+}
+
+.db-col-action {
+  display: block;
+  padding: var(--lp-space-3) var(--lp-space-4);
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.db-col-action:hover { background: var(--lp-surface-subtle); color: var(--lp-text-primary); }
+
+.db-col-action.active {
+  background: var(--lp-action-segment-on);
+  color: var(--lp-text-primary);
+  font-weight: var(--lp-weight-semibold);
+}
+
+.db-col-note {
+  margin: var(--lp-space-3) 0 0;
+  font-size: 10px;
+  color: var(--lp-text-faint);
+}
+
+.db-filter-controls { display: flex; flex-direction: column; gap: var(--lp-space-4); }
+.db-filter-controls select,
+.db-filter-controls input,
+.db-filter-controls textarea { width: 100%; }
+.db-filter-value { display: flex; flex-direction: column; gap: var(--lp-space-2); }
+.db-filter-range { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: var(--lp-space-3); }
+/* `hidden` has to win here.
+ *
+ * The operator select decides which value block is on screen, and the script
+ * says so with the `hidden` attribute. But the UA's `[hidden] { display: none }`
+ * comes from the user-agent origin, so ANY author `display` rule beats it —
+ * the two rules above were quietly re-showing the inactive block, which after
+ * UI-20260831-02 meant a third date field on screen in both modes.
+ *
+ * Every author `display` rule on an element this app hides with the attribute
+ * needs a counterpart like these two. `test_portal_database_date_range_filter`
+ * asserts that for the rendered markup, so a new `display` rule cannot
+ * resurrect a hidden block again. */
+.db-filter-value[hidden],
+.db-filter-range[hidden] { display: none; }
+.db-filter-range label,
+.db-filter-multi label { font-size: 11px; color: var(--lp-text-muted); }
+.db-filter-multi textarea { font-family: var(--lp-font-mono); font-size: 12px; }
+
+/* ---- the date filter's fields and its on-demand calendar ---------------
+ * UI-20260831-02: one visible field per endpoint, written `dd.mm.rrrr gg:mm`.
+ * The control the server rendered is still there behind it as a hidden carrier
+ * of the wire value. The calendar is collapsed until a field is focused. */
+.db-date-field {
+  width: 100%;
+  min-height: var(--lp-height-control-sm);
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.db-date-field.invalid {
+  border-color: var(--lp-state-negative-border);
+  background: var(--lp-state-negative-bg);
+}
+
+.db-date-calendar[hidden] { display: none; }
+.db-date-calendar {
+  margin-top: var(--lp-space-4);
+  padding: var(--lp-space-3);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-inset);
+}
+.db-date-cal-head {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: var(--lp-space-2);
+  margin-bottom: var(--lp-space-2);
+}
+.db-date-cal-title {
+  text-align: center;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--lp-text-primary);
+}
+.db-date-nav {
+  min-width: var(--lp-height-control-xs);
+  min-height: var(--lp-height-control-xs);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-secondary);
+  cursor: pointer;
+  line-height: 1;
+}
+.db-date-nav:hover { background: var(--lp-surface-subtle); color: var(--lp-text-primary); }
+
+.db-date-weekdays,
+.db-date-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+.db-date-weekdays span {
+  text-align: center;
+  font-size: 10px;
+  color: var(--lp-text-faint);
+  padding-bottom: 2px;
+}
+.db-date-blank { display: block; }
+.db-date-day {
+  display: block;
+  width: 100%;
+  padding: var(--lp-space-1) 0;
+  border: 1px solid transparent;
+  border-radius: var(--lp-radius-xs);
+  background: transparent;
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  cursor: pointer;
+}
+.db-date-day:hover { background: var(--lp-surface-subtle); color: var(--lp-text-primary); }
+/* The span between the two endpoints. Kept a tint rather than a solid fill so
+   the endpoints stay the strongest thing in the grid. */
+.db-date-day.in-range {
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+  border-radius: 0;
+}
+.db-date-day.range-start,
+.db-date-day.range-end {
+  background: var(--lp-accent-base);
+  color: var(--lp-accent-on-surface);
+  font-weight: 600;
+}
+.db-date-day.range-start { border-top-right-radius: 0; border-bottom-right-radius: 0; }
+.db-date-day.range-end { border-top-left-radius: 0; border-bottom-left-radius: 0; }
+/* A one-day range is both endpoints at once and must not lose its corners. */
+.db-date-day.range-start.range-end { border-radius: var(--lp-radius-xs); }
+
+.db-date-clear {
+  margin-top: var(--lp-space-3);
+  padding: 0 var(--lp-space-3);
+  min-height: var(--lp-height-control-xs);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-secondary);
+  font-size: 11px;
+  cursor: pointer;
+}
+.db-date-clear:hover { color: var(--lp-text-primary); }
+
+.db-date-status {
+  margin-top: var(--lp-space-2);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+.db-date-status.invalid { color: var(--lp-state-negative-fg); }
+
+/* Touch targets: below the tablet breakpoint the grid gets full-size hit
+   areas, matching the rest of the responsive contract. */
+@media (max-width: 1023px) {
+  .db-date-day { padding: var(--lp-space-2) 0; min-height: var(--lp-height-control-touch); }
+}
+
+@media (forced-colors: active) {
+  .db-date-day.in-range,
+  .db-date-day.range-start,
+  .db-date-day.range-end { forced-color-adjust: none; background: Highlight; color: HighlightText; }
+}
+
+.db-col-actions { display: flex; align-items: center; gap: var(--lp-space-4); margin-top: var(--lp-space-5); }
+
+.db-col-apply {
+  min-height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-6);
+  border: 1px solid transparent;
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+  cursor: pointer;
+}
+
+.db-col-apply[aria-disabled="true"] { opacity: 0.4; cursor: default; }
+
+.db-col-clear {
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.db-col-clear:hover { color: var(--lp-text-primary); }
+
+.db-col-hint {
+  margin: var(--lp-space-4) 0 0;
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  color: var(--lp-text-faint);
+}
+
+/* ---------- Filter panel (352 px, docked) ---------- */
+
+/* `Filtry n` is the panel's own summary, so collapsed it leaves nothing behind
+   but the toolbar button — which is exactly the approved collapsed state. */
+.db-sheet { position: relative; }
+.db-filters { position: static; }
+.db-filters-trigger { list-style: none; }
+.db-filters-trigger::-webkit-details-marker { display: none; }
+
+.db-filter-panel {
+  position: absolute;
+  top: var(--lp-height-toolbar);
+  right: 0;
+  bottom: var(--lp-height-footer);
+  z-index: 15;
+  width: 352px;
+  overflow-y: auto;
+  padding: var(--lp-space-7);
+  border-left: 1px solid var(--lp-border-strong);
+  background: var(--lp-surface-raised);
+  animation: db-col-menu-in 160ms ease-out;
+}
+
+/* Docked, not overlaid, where the engine can express it: the table gives up the
+   panel's width instead of hiding behind it. */
+.db-sheet:has(.db-filters[open]) .db-table-scroll { padding-right: 352px; }
+
+.db-panel-section {
+  border-top: 1px solid var(--lp-border-default);
+  padding-top: var(--lp-space-6);
+  margin-top: var(--lp-space-6);
+}
+
+.db-panel-section:first-of-type { border-top: 0; padding-top: 0; margin-top: 0; }
+.db-panel-heading:focus-visible { outline: 2px solid var(--lp-accent-base); outline-offset: 2px; }
+
+.db-panel-filter {
+  padding: var(--lp-space-5) 0;
+  border-bottom: 1px solid var(--lp-border-row);
+}
+
+.db-panel-filter-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-4);
+  margin-bottom: var(--lp-space-4);
+}
+
+.db-panel-filter-label { font-size: 12px; font-weight: var(--lp-weight-semibold); color: var(--lp-text-primary); }
+
+.db-panel-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-inset);
+  color: var(--lp-text-muted);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.db-panel-remove:hover { background: var(--lp-state-negative-bg); color: var(--lp-state-negative-fg); }
+.db-panel-empty { margin: 0; font-size: 12px; color: var(--lp-text-muted); }
+.db-panel-find { width: 100%; margin-bottom: var(--lp-space-4); }
+.db-panel-add-list { display: flex; flex-direction: column; max-height: 220px; overflow-y: auto; }
+
+.db-panel-add-item {
+  padding: var(--lp-space-3) var(--lp-space-4);
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.db-panel-add-item:hover { background: var(--lp-surface-subtle); color: var(--lp-text-primary); }
+.db-panel-actions { display: flex; align-items: center; gap: var(--lp-space-4); margin-top: var(--lp-space-7); }
+
+/* ---------- Toolbar chip strip ---------- */
+
+/* Inside the toolbar band, taking the space the spacer would have taken. It
+   scrolls horizontally rather than wrapping, because a wrapping strip would
+   grow the toolbar and push the table header below its approved 168 px. */
+.db-chips {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  gap: var(--lp-space-4);
+  padding: 0 var(--lp-space-6);
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.db-chips .db-chip { flex: 0 0 auto; }
+
+/* ==========================================================================
+   Value distributions (DB-005 section 4)
+   ========================================================================== */
+
+/* Fetched when a menu opens, never rendered into the initial page. The body is
+   empty until then, so an unopened menu costs nothing but its container. */
+
+.db-col-identity-count { color: var(--lp-text-faint); font-size: 10px; }
+
+.db-distribution-body { min-height: 24px; }
+
+.db-distribution-note,
+.db-distribution-meta,
+.db-distribution-scope,
+.db-distribution-error {
+  margin: var(--lp-space-3) 0 0;
+  font-size: 10px;
+  color: var(--lp-text-faint);
+}
+
+.db-distribution-meta { color: var(--lp-text-muted); }
+.db-distribution-error { color: var(--lp-state-negative-fg); }
+
+.db-distribution-search { width: 100%; margin: var(--lp-space-4) 0 var(--lp-space-2); }
+.db-distribution-limit { margin: var(--lp-space-3) 0 0; font-size: 10px; color: var(--lp-state-negative-fg); }
+/* Selected values submit as hidden inputs; the container itself is never seen. */
+.db-filter-exact { display: none; }
+
+.db-distribution-values {
+  list-style: none;
+  margin: var(--lp-space-4) 0 0;
+  padding: 0;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+.db-distribution-value {
+  display: grid;
+  grid-template-columns: 1fr 44px auto;
+  align-items: center;
+  gap: var(--lp-space-3);
+  padding: var(--lp-space-2) 0;
+  font-size: 11px;
+}
+
+.db-distribution-pick {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-width: 0;
+  cursor: pointer;
+}
+
+.db-distribution-pick input { flex: 0 0 auto; accent-color: var(--lp-accent-base); }
+
+/* NULL and empty string offer `puste` rather than joining an `in (…)` list,
+   because `in` compares text and cannot express either of them. */
+.db-distribution-blank {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.db-distribution-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--lp-text-primary);
+}
+
+.db-distribution-marker { font-style: italic; color: var(--lp-text-faint); }
+
+/* 44 px track with a proportional fill, per ASSET_MANIFEST. */
+.db-distribution-bar {
+  display: block;
+  width: 44px;
+  height: 6px;
+  border-radius: var(--lp-radius-xs);
+  background: var(--lp-viz-bar-neutral);
+  overflow: hidden;
+}
+
+.db-distribution-fill {
+  display: block;
+  height: 100%;
+  background: var(--lp-viz-bar-accent);
+}
+
+.db-distribution-count {
+  font-family: var(--lp-font-mono);
+  font-variant-numeric: tabular-nums;
+  color: var(--lp-text-secondary);
+}
+
+/* ---------- Numeric histogram (14 buckets) ---------- */
+
+.db-histogram {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 56px;
+  margin-top: var(--lp-space-4);
+}
+
+.db-histogram-bar {
+  flex: 1 1 0;
+  min-width: 0;
+  border-radius: var(--lp-radius-xs);
+  background: var(--lp-viz-bar-neutral);
+}
+
+/* The threshold the user is typing, marked before the filter is applied. */
+.db-histogram-marked { background: var(--lp-viz-bar-accent); }
+
+.db-histogram-axis {
+  margin: var(--lp-space-2) 0 0;
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  color: var(--lp-text-muted);
+}
+
+/* ---------------------------------------------------------------------------
+   Row detail panel — approved stage S6 (`DB-006`, `DB-36`..`DB-39`)
+   ---------------------------------------------------------------------------
+   A DOCKED panel, not a modal. The approved component catalogue states the
+   design contains no modal dialog, and the accessibility contract lists the
+   docked row panel as explicitly not focus-trapped, so it sits beside the table
+   in normal flow and the sheet behind it stays operable and keeps its scroll.
+   -------------------------------------------------------------------------- */
+.db-sheet { display: flex; flex: 1 1 auto; min-height: 0; min-width: 0; }
+.db-sheet > .db-table-viewport { flex: 1 1 auto; min-width: 0; }
+
+.db-row-detail {
+  flex: 0 0 520px;
+  width: 520px;
+  max-width: 100%;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow-y: auto;
+  border-left: 1px solid var(--lp-border-strong);
+  background: var(--lp-surface-raised);
+}
+.db-row-detail:focus { outline: none; }
+.db-row-detail-head {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-4);
+  padding: var(--lp-space-5) var(--lp-space-6);
+  border-bottom: 1px solid var(--lp-border-default);
+  background: var(--lp-surface-raised);
+}
+.db-row-detail-title { margin: 0; font: var(--lp-type-section-title, inherit); }
+.db-row-detail-title:focus { outline: none; }
+.db-row-detail-actions { display: flex; align-items: center; gap: var(--lp-space-2); }
+
+.db-row-traverse,
+.db-row-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-secondary);
+  text-decoration: none;
+}
+.db-row-traverse:hover,
+.db-row-close:hover { color: var(--lp-text-primary); border-color: var(--lp-border-strong); }
+/* Disabled traversal is communicated by state, not by colour alone. */
+.db-row-traverse.is-disabled { opacity: 0.45; cursor: default; pointer-events: none; }
+
+.db-row-scope {
+  display: flex;
+  gap: var(--lp-space-2);
+  padding: var(--lp-space-4) var(--lp-space-6);
+  border-bottom: 1px solid var(--lp-border-default);
+}
+.db-row-scope-option {
+  padding: 2px var(--lp-space-3);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  color: var(--lp-text-secondary);
+  text-decoration: none;
+  font-size: var(--lp-font-size-sm, 0.875rem);
+}
+.db-row-scope-option.is-active {
+  border-color: var(--lp-accent-base);
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint, var(--lp-text-primary));
+}
+
+.db-row-detail-body { padding: var(--lp-space-5) var(--lp-space-6) var(--lp-space-7); }
+.db-row-section { margin-bottom: var(--lp-space-6); }
+.db-row-section-head {
+  margin: 0 0 var(--lp-space-3);
+  font: var(--lp-type-eyebrow, inherit);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--lp-text-secondary);
+}
+.db-row-section-count { color: var(--lp-text-muted); }
+
+.db-row-field {
+  padding: var(--lp-space-3) 0;
+  border-bottom: 1px solid var(--lp-border-subtle, var(--lp-border-default));
+}
+.db-row-field-label { color: var(--lp-text-secondary); font-size: var(--lp-font-size-sm, 0.875rem); }
+.db-row-field-physical { color: var(--lp-text-muted); font-size: var(--lp-font-size-xs, 0.75rem); }
+/* The panel is the escape hatch for values the grid truncates, so it wraps. */
+.db-row-field-value {
+  margin-top: 2px;
+  color: var(--lp-text-primary);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+.db-row-unavailable { padding: var(--lp-space-6); color: var(--lp-text-secondary); }
+
+/* The open row reads as one unit with its panel. */
+.db-table tbody tr.db-row-selected > td { background: var(--lp-accent-tint); }
+.db-table tbody tr.db-row-selected > td.db-sticky-col {
+  background: var(--lp-accent-tint);
+  box-shadow: inset 2px 0 0 0 var(--lp-accent-base);
+}
+
+/* `RSP-002`: from the tablet-portrait band down the row panel is a full-width
+   overlay rather than the 520 px docked drawer (RESPONSIVE_SPEC "Table"). The
+   pre-approval 768 px rule left the whole 768-1023 band docked at 520 px on a
+   viewport that cannot hold it, and is superseded here. */
+@media (max-width: 1023px) {
+  .db-sheet.has-row-detail { position: relative; }
+  .db-row-detail {
+    position: absolute;
+    inset: 0;
+    z-index: 40;
+    flex-basis: auto;
+    width: 100%;
+    border-left: none;
+  }
+}
+
+/* ==========================================================================
+   Grid selection and clipboard (DB-44, AC-2) — approved stage S7
+   ==========================================================================
+
+   MOVED to `css/grid-selection.css`, which every page shipping
+   `data-grid-selection.js` loads immediately after this file. The rules are
+   unchanged; they are scoped to the `[data-db-sheet]` selection host instead of
+   to `.db-table`, which weighs the same and therefore preserves every
+   specificity relationship they had here, including the ties with the hover and
+   sticky-column rules above that they win on source order.
+
+   They left because the Eco Driving tables had a hand-written copy of them that
+   silently drifted. One sheet for one behaviour is what keeps the two surfaces
+   from disagreeing again.
+
+   `.db-copyable`'s cursor moved there too, for the same reason. */
+
+/* ==========================================================================
+   Export panel (DB-009) and background export states (DB-007) — stage S8
+   ========================================================================== */
+
+.db-export-panel > summary { cursor: pointer; }
+
+.db-export-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-5);
+  max-width: 400px;
+}
+
+.db-export-group {
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+  padding: var(--lp-space-4) var(--lp-space-5) var(--lp-space-5);
+  margin: 0;
+}
+
+.db-export-group > legend {
+  padding: 0 var(--lp-space-3);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--lp-text-muted);
+}
+
+/* A radio row: one-of-N with its own count (COMPONENT_CATALOG "Radio row"). */
+.db-export-option {
+  display: flex;
+  align-items: baseline;
+  gap: var(--lp-space-3);
+  padding: var(--lp-space-2) 0;
+  cursor: pointer;
+}
+
+.db-export-option.is-inline { display: inline-flex; margin-right: var(--lp-space-5); }
+.db-export-option-label { flex: 1 1 auto; color: var(--lp-text-primary); }
+.db-export-option-note {
+  flex: 1 1 100%;
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+.db-export-count {
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  color: var(--lp-text-secondary);
+}
+
+.db-export-count.is-unknown { color: var(--lp-text-muted); }
+.db-export-unit { font-size: 11px; color: var(--lp-text-muted); }
+
+/* An input the panel refuses is genuinely unavailable, so it carries the
+   approved disabled treatment and states its reason in words next to it. */
+.db-export-option input[disabled] + .db-export-option-label { opacity: 0.4; }
+
+/* The path notice: positive when the file downloads immediately, warning when
+   it is prepared in the background, negative above the hard ceiling. The tone
+   is never the only carrier — the sentence itself says which path it is. */
+.db-export-path {
+  margin: 0;
+  padding: var(--lp-space-4);
+  border-radius: var(--lp-radius-md);
+  border-left: 3px solid var(--lp-border-strong);
+  background: var(--lp-surface-subtle);
+  font-size: 12px;
+  color: var(--lp-text-primary);
+}
+
+.db-export-path.is-direct { border-left-color: var(--lp-status-positive, var(--lp-accent-base)); }
+.db-export-path.is-background { border-left-color: var(--lp-accent-base); }
+.db-export-path.is-refused { border-left-color: var(--lp-status-negative, var(--lp-accent-base)); }
+
+.db-export-threshold { margin: 0; font-size: 11px; }
+
+.db-export-submit {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-5);
+  flex-wrap: wrap;
+}
+
+.db-export-link { font-size: 12px; }
+
+/* ---------- Background export list (DB-007) ---------- */
+
+.db-export-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-4);
+}
+
+.db-export-card {
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+  padding: var(--lp-space-5);
+  background: var(--lp-surface-raised);
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-3);
+}
+
+.db-export-head {
+  display: flex;
+  align-items: baseline;
+  gap: var(--lp-space-4);
+  flex-wrap: wrap;
+}
+
+.db-export-title {
+  display: flex;
+  align-items: baseline;
+  gap: var(--lp-space-4);
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+}
+
+/* The state badge is a word first (ACCESSIBILITY_SPEC 3: no state is carried by
+   colour alone); the tint and the left edge are the second and third signals. */
+.db-export-badge {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  padding: 2px var(--lp-space-4);
+  border-radius: var(--lp-radius-md);
+  border: 1px solid var(--lp-border-strong);
+  color: var(--lp-text-primary);
+}
+
+.db-export-badge.is-running { background: var(--lp-accent-tint); border-color: var(--lp-accent-base); }
+.db-export-badge.is-ready { background: var(--lp-surface-subtle); }
+.db-export-badge.is-expired { background: var(--lp-surface-inset, var(--lp-surface-subtle)); color: var(--lp-text-muted); }
+.db-export-badge.is-failed { background: var(--lp-surface-subtle); border-style: dashed; }
+
+.db-export-meta {
+  display: flex;
+  gap: var(--lp-space-5);
+  flex-wrap: wrap;
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+.db-export-progress-label { font-size: 11px; color: var(--lp-text-secondary); }
+
+.db-export-progress {
+  height: 4px;
+  margin-top: var(--lp-space-2);
+  border-radius: 2px;
+  background: var(--lp-surface-subtle);
+  overflow: hidden;
+}
+
+.db-export-progress-fill {
+  display: block;
+  height: 100%;
+  background: var(--lp-accent-base);
+}
+
+/* Determinate where a denominator exists. The indeterminate variant animates,
+   and that motion carries information rather than decoration — but the approved
+   reduced-motion rule still gets a static, honest fallback. */
+.db-export-progress.is-indeterminate .db-export-progress-fill {
+  width: 40%;
+  animation: db-export-progress-slide 1.4s linear infinite;
+}
+
+@keyframes db-export-progress-slide {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(250%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .db-export-progress.is-indeterminate .db-export-progress-fill {
+    animation: none;
+    width: 100%;
+    opacity: 0.4;
+  }
+}
+
+.db-export-failure { margin: 0; font-size: 12px; color: var(--lp-text-primary); }
+
+.db-export-reference {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  font-size: 11px;
+}
+
+.db-export-copy {
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  font: inherit;
+  font-size: 11px;
+  padding: 2px var(--lp-space-4);
+  cursor: pointer;
+}
+
+.db-export-actions {
+  display: flex;
+  gap: var(--lp-space-4);
+  flex-wrap: wrap;
+}
+
+.db-export-action { margin: 0; }
+
+.db-export-empty {
+  padding: var(--lp-space-6);
+  border: 1px dashed var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+}
+
+.db-export-empty p { margin: 0 0 var(--lp-space-3); }
+
+/* ---------------------------------------------------------------------------
+   Saved views and named column sets (approved stage S13, `D-007`, `DB-30`)
+
+   Token-only and theme-following, like every other module component. Both
+   controls are `<details>` over ordinary links and forms, so they work with
+   scripting unavailable and need no module script of their own.
+   --------------------------------------------------------------------------- */
+
+.db-cat-views {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-3);
+}
+
+.db-cat-view-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 var(--lp-space-4);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-pill, 999px);
+  background: var(--lp-surface-subtle);
+  color: var(--lp-text-primary);
+  font-size: 11px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.db-cat-view-chip:hover { border-color: var(--lp-border-strong); }
+
+.db-cat-views-empty { color: var(--lp-text-faint); }
+
+.db-views { position: relative; }
+
+.db-views-trigger {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+  max-width: 220px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.db-views-trigger::-webkit-details-marker { display: none; }
+
+.db-views-panel {
+  position: absolute;
+  right: 0;
+  z-index: 40;
+  width: 320px;
+  margin-top: var(--lp-space-3);
+  padding: var(--lp-space-5);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-panel);
+  box-shadow: var(--lp-shadow-panel, 0 8px 24px rgba(0, 0, 0, 0.18));
+  text-align: left;
+}
+
+.db-views-active { margin: 0 0 var(--lp-space-4); font-size: 12px; }
+
+.db-views-modified { color: var(--lp-text-muted); font-style: italic; }
+
+.db-views-list {
+  list-style: none;
+  margin: 0 0 var(--lp-space-4);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+}
+
+.db-views-item,
+.db-colsets-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-4);
+}
+
+.db-views-open,
+.db-colsets-apply {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--lp-text-primary);
+  font-size: 12px;
+  text-decoration: none;
+}
+
+.db-views-item.is-active .db-views-open { font-weight: var(--lp-weight-semibold); }
+
+.db-views-action,
+.db-colsets-action {
+  border: 0;
+  background: none;
+  color: var(--lp-text-muted);
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.db-views-action:hover,
+.db-colsets-action:hover { color: var(--lp-text-primary); }
+
+.db-views-save,
+.db-views-update,
+.db-colsets-save {
+  display: flex;
+  gap: var(--lp-space-3);
+  margin-top: var(--lp-space-4);
+}
+
+.db-views-name,
+.db-colsets-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: var(--lp-height-control, 28px);
+  padding: 0 var(--lp-space-4);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-input, var(--lp-surface-panel));
+  color: var(--lp-text-primary);
+  font: inherit;
+  font-size: 12px;
+}
+
+.db-colsets { margin-bottom: var(--lp-space-4); }
+
+.db-colsets-trigger {
+  cursor: pointer;
+  color: var(--lp-accent-on-surface);
+  font-size: 12px;
+  list-style: none;
+}
+
+.db-colsets-trigger::-webkit-details-marker { display: none; }
+
+.db-colsets-panel { padding-top: var(--lp-space-3); }
+
+.db-colsets-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+}
+
+/* `RESPONSIVE_SPEC`: from 1024 px down every interactive target grows to 44 px,
+   and these are no exception. The query matches the repository's existing
+   1023 px boundary (the recorded S10 deviation, `docs/33`) rather than
+   introducing a fourth breakpoint. Grid density is untouched. */
+@media (max-width: 1023px) {
+  .db-views-open,
+  .db-colsets-apply,
+  .db-views-action,
+  .db-colsets-action,
+  .db-cat-view-chip {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+  }
+
+  .db-views-panel { width: min(320px, calc(100vw - 32px)); }
+}
+
+/* The grid states which timezone its rendered times are in (`UI-20260827-06`).
+   Visible rather than a tooltip: it qualifies every timestamp on the page, and
+   a qualifier nobody sees is not a qualifier. */
+.db-scope-note {
+  flex: 0 0 auto;
+  margin: 0;
+  padding: var(--lp-space-3) var(--lp-work-padding-x);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+  border-top: 1px solid var(--lp-border-default);
+}

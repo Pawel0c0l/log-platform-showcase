@@ -1,0 +1,13 @@
+[Unit]
+Description=Complete Workflow B at 06:00 and 20:00 Europe/Warsaw
+
+[Timer]
+OnCalendar=*-*-* 06:00:00 Europe/Warsaw
+OnCalendar=*-*-* 20:00:00 Europe/Warsaw
+Persistent=true
+AccuracySec=1min
+RandomizedDelaySec=0
+Unit=log-workflow-b.service
+
+[Install]
+WantedBy=timers.target

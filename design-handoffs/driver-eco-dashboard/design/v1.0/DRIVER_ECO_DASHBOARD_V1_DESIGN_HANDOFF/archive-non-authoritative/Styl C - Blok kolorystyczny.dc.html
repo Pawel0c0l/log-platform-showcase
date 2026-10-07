@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kierunek C — Blok kolorystyczny</title>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Roboto+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #0F1512; }
+  * { box-sizing: border-box; }
+  a { color: #FF6B4A; text-decoration: none; }
+  a:hover { color: #FF8E75; }
+  @keyframes drawRing { from { stroke-dashoffset: 1400; } }
+  @keyframes riseIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: none; } }
+  @keyframes growH { from { height: 0; } }
+  @keyframes sweep { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+</style>
+</helmet>
+
+<div style="font-family: Archivo, Helvetica, sans-serif; color: #0F1512; background: #0F1512; min-height: 100vh; padding: 26px 24px 70px 24px;">
+  <div style="max-width: 1200px; margin: 0 auto;">
+
+    <div style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center; justify-content: space-between; color: #F2F5F1; animation: riseIn .5s ease both;">
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <div style="width: 42px; height: 42px; border-radius: 14px; background: #C6F24E;"></div>
+        <div>
+          <div style="font-size: 11px; font-weight: 700; letter-spacing: 0.24em; text-transform: uppercase; color: #C6F24E;">Ecodriving</div>
+          <div style="font-size: 23px; font-weight: 900; letter-spacing: -0.02em;">Twoje Eco Driving</div>
+        </div>
+      </div>
+      <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+        <div style="border: 1px solid #34413A; border-radius: 14px; padding: 9px 15px; font-size: 12px; font-weight: 600; color: #A9B8AD;">{{ range }} · zamknięta migawka</div>
+        <div style="display: flex; gap: 4px; background: #1A2320; border-radius: 14px; padding: 4px;">
+          <span style="padding: 8px 15px; border-radius: 11px; background: #C6F24E; color: #16210F; font-size: 12px; font-weight: 800;">TYGODNIOWY</span>
+          <span style="padding: 8px 15px; border-radius: 11px; color: #8C9C92; font-size: 12px; font-weight: 800;">MIESIĘCZNY</span>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; margin-top: 22px;">
+
+      <div style="grid-column: 1 / -1; background: #C6F24E; border-radius: 30px; padding: 30px; position: relative; overflow: hidden; animation: riseIn .6s ease both;">
+        <div style="position: absolute; inset: 0; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent); animation: sweep 3.4s ease-in-out 1;"></div>
+        <div style="position: relative; display: flex; flex-wrap: wrap; gap: 30px; align-items: center; justify-content: space-between;">
+          <div>
+            <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #4A6118;">Wynik okresu</div>
+            <div style="display: flex; align-items: flex-end; gap: 14px; margin-top: 6px;">
+              <span style="font-family: 'Roboto Mono', monospace; font-size: 108px; font-weight: 700; line-height: .88; letter-spacing: -0.05em;">71</span>
+              <span style="font-size: 18px; font-weight: 800; padding-bottom: 12px;">/ 100 PKT</span>
+            </div>
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;">
+              <span style="background: #16210F; color: #C6F24E; border-radius: 12px; padding: 9px 15px; font-size: 13px; font-weight: 800;">◦ AKCEPTOWALNY 40–84</span>
+              <span style="background: #FFFFFF; border-radius: 12px; padding: 9px 15px; font-size: 13px; font-weight: 800;">▲ 4 PKT vs {{ prevRange }}</span>
+            </div>
+          </div>
+          <div style="position: relative; width: 176px; height: 176px;">
+            <svg width="176" height="176" viewBox="0 0 176 176" style="transform: rotate(-90deg);">
+              <circle cx="88" cy="88" r="72" fill="none" stroke="rgba(22,33,15,0.16)" strokeWidth="18"></circle>
+              <circle cx="88" cy="88" r="72" fill="none" stroke="#16210F" strokeWidth="18" strokeLinecap="round" strokeDasharray="452" strokeDashoffset="131" style="animation: drawRing 1.5s cubic-bezier(.2,.9,.2,1) both;"></circle>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center;">
+              <div style="font-size: 12px; font-weight: 800; color: #4A6118;">DO PROGU 85</div>
+              <div style="font-family: 'Roboto Mono', monospace; font-size: 40px; font-weight: 700; line-height: 1;">14</div>
+              <div style="font-size: 12px; font-weight: 800; color: #4A6118;">PKT</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style="grid-column: 1 / -1; display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; animation: riseIn .7s ease both;">
+        <sc-for list="{{ kpis }}" as="k" hint-placeholder-count="3">
+          <div style="background: {{ k.bg }}; color: {{ k.fg }}; border-radius: 24px; padding: 20px 22px; transition: transform .18s ease, filter .18s ease; cursor: default;" style-hover="transform: translateY(-4px) scale(1.012); filter: saturate(1.15);">
+            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+              <div style="font-size: 11px; font-weight: 800; letter-spacing: 0.18em; text-transform: uppercase; opacity: .72;">{{ k.label }}</div>
+              <div style="font-size: 15px; font-weight: 800;">{{ k.glyph }}</div>
+            </div>
+            <div style="display: flex; align-items: baseline; gap: 7px; margin-top: 8px;">
+              <span style="font-family: 'Roboto Mono', monospace; font-size: 36px; font-weight: 700; line-height: 1;">{{ k.value }}</span>
+              <span style="font-size: 14px; font-weight: 800; opacity: .8;">{{ k.unit }}</span>
+            </div>
+            <div style="font-size: 12px; font-weight: 600; opacity: .8; margin-top: 8px;">{{ k.delta }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; margin-top: 14px;">
+
+      <div style="background: #F2F5F1; border-radius: 30px; padding: 26px; animation: riseIn .8s ease both;">
+        <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 12px;">
+          <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.02em;">GDZIE TRACISZ PUNKTY</div>
+          <div style="font-size: 11px; font-weight: 700; color: #7C8A80;">NAJEDŹ NA SŁUPEK</div>
+        </div>
+        <div style="display: flex; align-items: flex-end; gap: 12px; height: 190px; margin-top: 24px;">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="5">
+            <div onMouseEnter="{{ b.enter }}" style="flex: 1; display: flex; flex-direction: column; justify-content: flex-end; align-items: center; gap: 8px; height: 100%; cursor: pointer;">
+              <div style="font-family: 'Roboto Mono', monospace; font-size: 14px; font-weight: 700; color: {{ b.labelFg }};">{{ b.value }}</div>
+              <div style="width: 100%; height: {{ b.h }}; border-radius: 14px 14px 6px 6px; background: {{ b.color }}; border: {{ b.border }}; transition: filter .18s ease, transform .18s ease; transform-origin: bottom; animation: growH 1.1s cubic-bezier(.2,.9,.2,1) both; filter: {{ b.filter }};"></div>
+              <div style="font-size: 11px; font-weight: 800; text-align: center; color: {{ b.labelFg }}; line-height: 1.25; min-height: 28px;">{{ b.short }}</div>
+            </div>
+          </sc-for>
+        </div>
+        <div style="margin-top: 14px; background: #FFFFFF; border-radius: 18px; padding: 14px 16px;">
+          <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.12em; text-transform: uppercase; color: #7C8A80;">{{ activeLabel }}</div>
+          <div style="font-size: 14px; font-weight: 600; color: #2A332C; line-height: 1.55; margin-top: 6px;">{{ activeExplain }}</div>
+        </div>
+      </div>
+
+      <div style="background: #FF6B4A; color: #2A0E06; border-radius: 30px; padding: 26px; animation: riseIn .9s ease both;">
+        <div style="font-size: 12px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; opacity: .7;">Najbliższy próg</div>
+        <div style="font-size: 30px; font-weight: 900; letter-spacing: -0.02em; line-height: 1.1; margin-top: 8px;">Przyspieszenia:<br>+5 punktów</div>
+        <div style="font-size: 14px; font-weight: 600; line-height: 1.6; margin-top: 12px; opacity: .88;">Wskaźnik 1 → 0 zdarzeń na 100 km. Przy 3 418 km to maksymalnie 17 zdarzeń w okresie.</div>
+        <div style="display: flex; gap: 6px; margin-top: 22px;">
+          <sc-for list="{{ ladder }}" as="l" hint-placeholder-count="5">
+            <div style="flex: 1; text-align: center;">
+              <div style="height: 44px; border-radius: 14px; background: {{ l.bg }}; border: {{ l.border }}; color: {{ l.fg }}; display: flex; align-items: center; justify-content: center; font-family: 'Roboto Mono', monospace; font-size: 13px; font-weight: 700;">{{ l.lost }}</div>
+              <div style="font-size: 11px; font-weight: 800; margin-top: 6px; opacity: .75;">{{ l.label }}</div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:880}}">
+class Component extends DCLogic {
+  state = { active: 0 };
+
+  DATA = [
+    { label: 'Postój na biegu jałowym', short: 'POSTÓJ', value: 10, coef: 5, band: '5', color: '#FF6B4A' },
+    { label: 'Gwałtowne hamowania', short: 'HAMOW.', value: 6, coef: 2, band: '2–4', color: '#FFB020' },
+    { label: 'Gwałtowne przyspieszenia', short: 'PRZYSP.', value: 5, coef: 1, band: '1', color: '#C6F24E' },
+    { label: 'Prędkość 140–160', short: '140–160', value: 5, coef: 1, band: '1–2', color: '#4ECBF2' },
+    { label: 'Gwałtowne skręty', short: 'SKRĘTY', value: 3, coef: 6, band: '5–7', color: '#A98CF2' }
+  ];
+
+  renderVals() {
+    const max = 12;
+    const a = this.DATA[this.state.active];
+    return {
+      range: '01.07 – 19.07.2026',
+      prevRange: '01.07 – 12.07',
+      bars: this.DATA.map((d, i) => ({
+        short: d.short,
+        value: '−' + d.value,
+        h: Math.round((d.value / max) * 148) + 'px',
+        color: d.color,
+        border: this.state.active === i ? '3px solid #0F1512' : '3px solid transparent',
+        filter: this.state.active === i ? 'saturate(1.2)' : 'saturate(.85)',
+        labelFg: this.state.active === i ? '#0F1512' : '#7C8A80',
+        enter: () => this.setState({ active: i })
+      })),
+      activeLabel: a.label,
+      activeExplain: 'Wskaźnik ' + a.coef + ' zdarzeń na 100 km trafia w próg „' + a.band + '”, który odbiera ' + a.value + ' pkt w tym obszarze. Kolor pochodzi z progu, nie z liczby zdarzeń.',
+      kpis: [
+        { label: 'Ranking', value: '18', unit: '/ 158', glyph: '▲', bg: '#1A2320', fg: '#F2F5F1', delta: '6 miejsc w górę vs 01.07 – 12.07' },
+        { label: 'Twoja grupa', value: '52,5', unit: '%', glyph: '◦', bg: '#4ECBF2', fg: '#06232B', delta: 'uczestników w grupie akceptowalnych' },
+        { label: 'Dystans', value: '3 418', unit: 'km', glyph: '≡', bg: '#F2F5F1', fg: '#0F1512', delta: '▲ 1 312 km · 214 przejazdów' }
+      ],
+      ladder: [
+        { label: '0', lost: '0', bg: '#C6F24E', border: '2px solid #A8D63A', fg: '#2A3A0C' },
+        { label: '1', lost: '−5', bg: '#FFFFFF', border: '3px solid #2A0E06', fg: '#2A0E06' },
+        { label: '2', lost: '−10', bg: 'rgba(42,14,6,0.12)', border: '2px solid rgba(42,14,6,0.25)', fg: '#2A0E06' },
+        { label: '3–4', lost: '−15', bg: 'rgba(42,14,6,0.2)', border: '2px solid rgba(42,14,6,0.3)', fg: '#2A0E06' },
+        { label: '>4', lost: '−20', bg: 'rgba(42,14,6,0.3)', border: '2px solid rgba(42,14,6,0.35)', fg: '#FFE7E0' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

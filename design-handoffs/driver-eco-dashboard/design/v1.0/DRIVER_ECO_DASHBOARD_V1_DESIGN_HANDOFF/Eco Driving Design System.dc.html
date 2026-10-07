@@ -1,0 +1,512 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Eco Driving Dashboard V1 — system wizualny (kanoniczny)</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  html, body { margin: 0; padding: 0; background: #F4F7FA; }
+  * { box-sizing: border-box; }
+  a { color: #C2410C; text-decoration: none; }
+  a:hover { color: #8F3A04; text-decoration: underline; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes drawRing { from { stroke-dashoffset: 520; } }
+  @keyframes growCol { from { transform: scaleY(0); } }
+</style>
+</helmet>
+
+<div style="font-family: Manrope, Helvetica, Arial, sans-serif; color: #101828; background: linear-gradient(180deg, #EEF3F9, #F7F9FC 320px); min-height: 100vh; padding: 0 0 80px 0;">
+
+  <div style="background: linear-gradient(150deg, #101828, #1D2939); color: #E4E7EC; padding: 30px 28px;">
+    <div style="max-width: 1180px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 18px; align-items: center; justify-content: space-between;">
+      <div style="display: flex; gap: 14px; align-items: center;">
+        <div style="width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(140deg, #FF7300, #FF9A3D); box-shadow: 0 6px 20px rgba(255,115,0,0.4);"></div>
+        <div>
+          <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.2em; text-transform: uppercase; color: #FF9A3D;">Driver Eco Driving Dashboard V1</div>
+          <div style="font-size: 25px; font-weight: 800; letter-spacing: -0.02em; margin-top: 4px;">System wizualny i inwentarz komponentów</div>
+        </div>
+      </div>
+      <div style="background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.16); border-radius: 14px; padding: 12px 16px; font-size: 12px; line-height: 1.6; max-width: 380px;">
+        Kanoniczne źródło tokenów. Kolory statusu pochodzą wyłącznie z tabeli punktowej Eco Driving — nigdy z surowej liczby zdarzeń. Wszystkie wartości przykładowe są syntetyczne.
+      </div>
+    </div>
+  </div>
+
+  <div style="max-width: 1180px; margin: 0 auto; padding: 28px 28px 0 28px; display: grid; gap: 20px;">
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .5s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">01 · Typografia</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 24px; margin-top: 16px;">
+        <div>
+          <div style="font-variant-numeric: tabular-nums; font-size: 52px; font-weight: 800; line-height: 1; letter-spacing: -0.03em; color: #7C3A05;">71</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 6px;">display-score · Manrope 800 · 52/1.0 · cyfry tabularne · kolor z progu wyniku</div>
+          <div style="font-variant-numeric: tabular-nums; font-size: 28px; font-weight: 600; margin-top: 20px;">18 / 158</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px;">metric-lg · 28/1.1 — kafle KPI</div>
+          <div style="font-variant-numeric: tabular-nums; font-size: 25px; font-weight: 600; margin-top: 20px;">01.07 – 19.07.2026</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px;">metric-md · 25/1.15 — zakres okresu</div>
+        </div>
+        <div>
+          <div style="font-size: 23px; font-weight: 800; letter-spacing: -0.02em;">Twoje Eco Driving</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px;">title · 23/1.3 · 800</div>
+          <div style="font-size: 17px; font-weight: 800; margin-top: 18px;">Punkty według obszarów</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px;">section · 17/1.35 · 800</div>
+          <div style="font-size: 13px; font-weight: 700; margin-top: 18px;">Postój na biegu jałowym</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px;">body-strong · 13/1.4 · 700 — etykiety wierszy</div>
+          <div style="font-size: 13px; color: #475467; line-height: 1.6; margin-top: 18px;">Wskaźnik 5 zdarzeń na 100 km mieści się w progu „5”, który odbiera 10 z 10 pkt tego obszaru.</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px;">body · 13/1.6 — wyjaśnienia · micro 11/1.5 — podpisy (minimum w produkcie)</div>
+          <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085; margin-top: 16px;">eyebrow · 10–11 · 800 · 0.14em</div>
+        </div>
+      </div>
+      <div style="margin-top: 18px; padding-top: 14px; border-top: 1px dashed #E9EDF5; font-size: 12px; color: #475467; line-height: 1.65;">
+        Jedna rodzina: <strong>Manrope</strong> 400–800, subset latin-ext (polskie znaki), <span style="font-variant-numeric: tabular-nums;">display=swap</span> + fallback systemowy. Brak rodziny monospace — liczby używają <strong>font-variant-numeric: tabular-nums</strong>, więc kolumny się równają bez technicznego charakteru. Minimalny rozmiar tekstu w produkcie: 11 px (tylko podpisy).
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .55s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">02 · Powierzchnie, tekst, akcent programu</div>
+      <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 16px;">
+        <sc-for list="{{ neutrals }}" as="sw" hint-placeholder-count="12">
+          <div style="width: 126px;">
+            <div style="height: 52px; border-radius: 12px; background: {{ sw.hex }}; border: 1px solid {{ sw.border }};"></div>
+            <div style="font-size: 12px; font-weight: 700; margin-top: 7px;">{{ sw.token }}</div>
+            <div style="font-variant-numeric: tabular-nums; font-size: 11px; color: #667085;">{{ sw.hex }}</div>
+            <div style="font-size: 11px; color: #475467; line-height: 1.4; margin-top: 2px;">{{ sw.use }}</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="margin-top: 16px; background: #FFF7F0; border: 1px solid #FFD8B5; border-radius: 14px; padding: 14px 16px; font-size: 12px; color: #8F3A04; line-height: 1.65;">
+        <strong>Akcent programu Telematics — #FF7300.</strong> Znak programu, aktywna nawigacja, znaczniki celu i sekcja „potencjał”. Na białym tle tekst akcentowy to <strong>#C2410C</strong>, na tincie <strong>#8F3A04</strong>. Akcent <strong>nigdy</strong> nie oznacza statusu ani wyniku — dzięki temu nie da się go pomylić z oceną.
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .6s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">03 · Semantyka statusu — jedyna paleta znaczeniowa</div>
+      <div style="font-size: 13px; color: #475467; line-height: 1.65; margin-top: 8px; max-width: 900px;">
+        Łańcuch przyczynowy jest niezmienny: <strong>zdarzenia + dystans kwalifikujący → wskaźnik Eco na 100 km → istniejący próg punktowy → punkty → status</strong>. Dwie identyczne liczby zdarzeń mogą mieć różny kolor, bo różnią się ekspozycją. Kolor nigdy nie wynika bezpośrednio z liczby zdarzeń.
+      </div>
+      <div style="margin-top: 12px; background: #F7F9FC; border: 1px solid #E3E8F0; border-radius: 12px; padding: 12px 14px; font-size: 12px; color: #475467; line-height: 1.6;">
+        <strong style="color: #101828;">100 km = bramka całego okresu, nigdy dnia.</strong> Jeśli cały zamknięty okres ma mniej niż 100 km, nie pokazujemy żadnych danych Eco dla tego okresu. Jeśli okres ma co najmniej 100 km, dni z 1–99 km pozostają normalnie widoczne: dystans i sumy zdarzeń są pokazywane, a status każdej kategorii wynika ze współczynnika policzonego z faktycznego dziennego dystansu. 0 km oznacza neutralny „brak jazdy”.
+      </div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(252px, 1fr)); gap: 14px; margin-top: 18px;">
+        <sc-for list="{{ statuses }}" as="st" hint-placeholder-count="4">
+          <div style="border: 1px solid {{ st.border }}; border-radius: 16px; overflow: hidden;">
+            <div style="height: 34px; background: {{ st.band }}; background-image: {{ st.pattern }};"></div>
+            <div style="padding: 15px; background: {{ st.bg }};">
+              <div style="display: flex; gap: 8px; align-items: center;">
+                <span style="font-size: 14px; font-weight: 800; color: {{ st.fg }};">{{ st.glyph }}</span>
+                <span style="font-size: 14px; font-weight: 800; color: {{ st.fg }};">{{ st.name }}</span>
+              </div>
+              <div style="font-size: 12px; color: #475467; line-height: 1.55; margin-top: 7px;">{{ st.rule }}</div>
+              <div style="font-variant-numeric: tabular-nums; font-size: 11px; color: #667085; line-height: 1.55; margin-top: 8px;">{{ st.tokens }}</div>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 9px; margin-top: 18px;">
+        <sc-for list="{{ chips }}" as="c" hint-placeholder-count="9">
+          <span style="display: inline-flex; gap: 6px; align-items: center; background: {{ c.bg }}; border: 1px solid {{ c.border }}; color: {{ c.fg }}; border-radius: 9px; padding: 5px 10px; font-size: 12px; font-weight: 700;">
+            <span>{{ c.glyph }}</span>{{ c.label }}
+          </span>
+        </sc-for>
+      </div>
+      <div style="font-size: 11px; color: #667085; margin-top: 10px; line-height: 1.55;">
+        StatusMarker i DeltaChip we wszystkich wariantach. Minimalna wysokość 24 px; jako element interaktywny 44 × 44 px. Każde wystąpienie ma kolor <strong>i</strong> znak <strong>i</strong> słowo — kolor nigdy nie występuje sam. Kierunek zmiany nigdy nie jest przenoszony wyłącznie strzałką ani kolorem: zawsze towarzyszy mu wartość i jednostka.
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .65s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">04 · Kolory klasyfikacji i pierścień wyniku</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 18px; margin-top: 16px; align-items: start;">
+        <div style="display: grid; gap: 10px;">
+          <sc-for list="{{ ratings }}" as="r" hint-placeholder-count="4">
+            <div style="display: grid; grid-template-columns: 44px 1fr auto; gap: 12px; align-items: center; border: 1px solid {{ r.border }}; background: {{ r.tint }}; border-radius: 14px; padding: 12px 14px;">
+              <div style="width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(140deg, {{ r.from }}, {{ r.to }});"></div>
+              <div>
+                <div style="font-size: 13px; font-weight: 800; color: {{ r.textFg }};">{{ r.glyph }} {{ r.label }}</div>
+                <div style="font-size: 11px; color: #475467; margin-top: 2px;">{{ r.range }}</div>
+              </div>
+              <div style="text-align: right; font-variant-numeric: tabular-nums; font-size: 11px; color: #475467; line-height: 1.5;">{{ r.tokens }}</div>
+            </div>
+          </sc-for>
+          <div style="font-size: 11px; color: #667085; line-height: 1.6; margin-top: 4px;">
+            Rozdział tokenów jest kontraktem dostępności: <strong>żywe</strong> barwy (#1F8A4C / #F5B700 / #DC2626) tylko na wypełnieniach — pierścienie, słupki, progi, obwódki. <strong>Tekstowe</strong> warianty (#14653B / #7C3A05 / #912018) dla liczb i etykiet, bo tylko one spełniają kontrast na jasnym tle.
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 22px; align-items: center; justify-content: center; background: #F9FAFC; border: 1px solid #E9EDF5; border-radius: 18px; padding: 22px;">
+          <div style="position: relative; width: 176px; height: 176px;">
+            <svg width="176" height="176" viewBox="0 0 176 176" style="transform: rotate(-90deg);">
+              <defs>
+                <linearGradient id="dsRing" x1="0" y1="0" x2="1" y2="1">
+                  <stop offset="0%" stopColor="#F5B700"></stop>
+                  <stop offset="100%" stopColor="#FFD666"></stop>
+                </linearGradient>
+              </defs>
+              <circle cx="88" cy="88" r="72" fill="none" stroke="#EEF2F7" strokeWidth="14"></circle>
+              <circle cx="88" cy="88" r="56" fill="none" stroke="#F5F7FA" strokeWidth="8"></circle>
+              <circle cx="88" cy="88" r="72" fill="none" stroke="url(#dsRing)" strokeWidth="14" strokeLinecap="round" strokeDasharray="452" strokeDashoffset="131" style="animation: drawRing 1.4s cubic-bezier(.2,.9,.2,1) both;"></circle>
+              <circle cx="88" cy="88" r="56" fill="none" stroke="#C7CEDB" strokeWidth="8" strokeLinecap="round" strokeDasharray="352" strokeDashoffset="116" style="animation: drawRing 1.7s cubic-bezier(.2,.9,.2,1) both;"></circle>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;">
+              <div style="font-variant-numeric: tabular-nums; font-size: 44px; font-weight: 800; line-height: 1; color: #7C3A05;">71</div>
+              <div style="font-size: 11px; font-weight: 700; color: #667085; margin-top: 3px;">z 100 pkt</div>
+              <div style="font-size: 10px; color: #98A2B3; margin-top: 6px;">poprzedni okres: 67</div>
+            </div>
+          </div>
+          <div style="font-size: 12px; color: #475467; line-height: 1.65; max-width: 200px;">
+            <strong style="color: #101828;">ScoreRing (C-02).</strong> Pierścień zewnętrzny = wynik obecnego zamkniętego okresu w kolorze swojego progu; wewnętrzny szary = poprzedni okres. Znacznik progu 85 pkt na obwodzie. Liczba w wariancie tekstowym tego samego progu.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .7s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">05 · Oś punktacji (C-10) — element definiujący</div>
+      <div style="font-size: 13px; color: #475467; line-height: 1.65; margin-top: 8px; max-width: 900px;">
+        Rozwinięcie semantyki z obecnego mailingu miesięcznego: cała drabina istniejących progów, znacznik kierowcy i wycena najbliższego lepszego progu. Szerokości komórek są równe, bo przedziały są nierówne i otwarte — oś jest <strong>porządkowa</strong>, nie liczbowa.
+      </div>
+      <div style="margin-top: 20px; border: 1px solid #E9EDF5; border-radius: 18px; padding: 20px; background: #F9FAFC;">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: baseline;">
+          <div style="font-size: 14px; font-weight: 800;">Gwałtowne hamowania</div>
+          <div style="font-size: 12px; color: #475467;">74 zdarzenia · 3 418 km · wskaźnik <strong>2 na 100 km</strong></div>
+        </div>
+        <div style="display: grid; grid-template-columns: 150px 1fr; gap: 12px; margin-top: 18px; align-items: center;">
+          <div style="font-size: 11px; color: #667085; text-align: right;">1 · przedział wskaźnika<br>(zdarzenia na 100 km)</div>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
+            <sc-for list="{{ axisBands }}" as="b" hint-placeholder-count="7">
+              <div style="text-align: center; font-variant-numeric: tabular-nums; font-size: 11px; color: #475467;">{{ b.label }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size: 11px; color: #667085; text-align: right;">2 · próg (kolor + wzór)</div>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
+            <sc-for list="{{ axisBands }}" as="b" hint-placeholder-count="7">
+              <div style="height: 26px; border-radius: 8px; background: {{ b.bg }}; background-image: {{ b.pattern }}; border: {{ b.border }};"></div>
+            </sc-for>
+          </div>
+          <div style="font-size: 11px; color: #667085; text-align: right;">3 · utracone punkty</div>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
+            <sc-for list="{{ axisBands }}" as="b" hint-placeholder-count="7">
+              <div style="text-align: center; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800; color: {{ b.lostFg }};">{{ b.lost }}</div>
+            </sc-for>
+          </div>
+          <div style="font-size: 11px; color: #667085; text-align: right;">4 · znaczniki</div>
+          <div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px;">
+            <sc-for list="{{ axisBands }}" as="b" hint-placeholder-count="7">
+              <div style="text-align: center;">
+                <div style="font-size: 13px; font-weight: 800; color: {{ b.markerColor }};">{{ b.marker }}</div>
+                <div style="font-size: 10px; font-weight: 700; color: {{ b.markerColor }}; line-height: 1.25; min-height: 26px;">{{ b.caption }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px;">
+          <div style="flex: 1; min-width: 230px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 14px; padding: 13px 15px;">
+            <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Stan obecny</div>
+            <div style="font-size: 12px; color: #344054; margin-top: 6px; line-height: 1.55;">Wskaźnik 2 na 100 km → próg „2–4” → 4 z 10 pkt (−6 pkt).</div>
+          </div>
+          <div style="flex: 1; min-width: 230px; background: #FFF7F0; border: 1px solid #FFD8B5; border-radius: 14px; padding: 13px 15px;">
+            <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #8F3A04;">Potencjał</div>
+            <div style="font-size: 12px; color: #344054; margin-top: 6px; line-height: 1.55;">Próg „1” daje +4 pkt. Wymaga wskaźnika ≤ 1 na 100 km. Komunikujemy <strong>wskaźnik i próg</strong> — nigdy dopuszczalnej liczby zdarzeń.</div>
+          </div>
+          <div style="flex: 1; min-width: 210px; background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 14px; padding: 13px 15px;">
+            <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.1em; text-transform: uppercase; color: #667085;">Zmiana</div>
+            <div style="font-size: 12px; color: #344054; margin-top: 6px; line-height: 1.55;">Wskaźnik spadł z 5 do 2 na 100 km wobec okresu 01.07 – 12.07.2026 (+2 pkt).</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); gap: 14px; margin-top: 16px;">
+        <div style="border: 1px solid #E9EDF5; border-radius: 18px; padding: 18px;">
+          <div style="font-size: 13px; font-weight: 800;">Wariant wąski / przy dużym powiększeniu</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px; line-height: 1.55;">Ta sama drabina pionowo. Bez przewijania w poziomie, bez ukrywania progów.</div>
+          <div style="display: grid; gap: 5px; margin-top: 12px;">
+            <sc-for list="{{ axisBands }}" as="b" hint-placeholder-count="7">
+              <div style="display: grid; grid-template-columns: 5px 1fr auto; gap: 10px; align-items: center; border: {{ b.vBorder }}; border-radius: 10px; padding: 7px 9px; background: #FFFFFF;">
+                <div style="height: 20px; border-radius: 3px; background: {{ b.bg }}; background-image: {{ b.pattern }};"></div>
+                <div style="font-size: 12px;"><span style="font-variant-numeric: tabular-nums; font-weight: 700;">{{ b.label }}</span> <span style="color: #667085;">{{ b.vNote }}</span></div>
+                <div style="font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800; color: {{ b.lostFg }};">{{ b.lost }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="border: 1px solid #E9EDF5; border-radius: 18px; padding: 18px;">
+          <div style="font-size: 13px; font-weight: 800;">Trend zamkniętych okresów (C-11)</div>
+          <div style="font-size: 11px; color: #667085; margin-top: 4px; line-height: 1.55;">Każdy słupek to <strong>odrębny zamknięty okres</strong> liczony od 1. dnia miesiąca — jest osobno etykietowany i osobno odczytywalny. Linia łączy wierzchołki słupków, aby pokazać kierunek; nie sugeruje pomiaru między okresami ani danych na żywo.</div>
+          <div style="position: relative; height: 150px; margin-top: 16px;">
+            <div style="position: absolute; left: 0; right: 0; top: 15%; border-top: 1px dashed #E3E8F0;"></div>
+            <div style="position: absolute; left: 0; right: 0; top: 60%; border-top: 1px dashed #E3E8F0;"></div>
+            <div style="position: absolute; right: 0; top: 15%; transform: translateY(-100%); font-size: 10px; color: #98A2B3;">85 pkt</div>
+            <div style="position: absolute; right: 0; top: 60%; transform: translateY(-100%); font-size: 10px; color: #98A2B3;">40 pkt</div>
+            <svg viewBox="0 0 100 100" preserveAspectRatio="none" style="position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible;">
+              <polyline points="16.67,42 50,33 83.33,29" fill="none" stroke="#101828" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" vectorEffect="non-scaling-stroke"></polyline>
+            </svg>
+            <div style="position: absolute; inset: 0; display: flex; gap: 0; align-items: flex-end;">
+              <sc-for list="{{ trend }}" as="t" hint-placeholder-count="3">
+                <div style="flex: 1; position: relative; height: 100%;">
+                  <div style="position: absolute; left: 0; right: 0; text-align: center; bottom: {{ t.labelBottom }}; font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; color: {{ t.fg }};">{{ t.score }}</div>
+                  <div style="position: absolute; left: 0; right: 0; margin: 0 auto; bottom: 0; width: 62%; max-width: 56px; height: {{ t.h }}; border-radius: 10px 10px 3px 3px; background: {{ t.bg }}; background-image: {{ t.pattern }}; border: {{ t.border }}; transform-origin: bottom; animation: growCol .8s {{ t.delay }} cubic-bezier(.2,.9,.2,1) both;">
+                    <div style="position: absolute; left: 0; right: 0; margin: 0 auto; top: -5px; width: 10px; height: 10px; border-radius: 50%; background: {{ t.dot }}; border: 2px solid #FFFFFF;"></div>
+                  </div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          <div style="display: flex; gap: 0; margin-top: 8px;">
+            <sc-for list="{{ trend }}" as="t" hint-placeholder-count="3">
+              <div style="flex: 1; text-align: center; font-size: 10px; font-variant-numeric: tabular-nums; color: {{ t.fg }};">{{ t.label }}</div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .75s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">06 · Siatka dzienna (C-14) — komórki i stany</div>
+      <div style="font-size: 13px; color: #475467; line-height: 1.65; margin-top: 8px; max-width: 900px;">
+        Wiersze to dni, kolumny to obszary, w komórce <strong>suma zdarzeń dnia</strong>. Bez glifów w komórkach i <strong>bez zbiorczego statusu dnia</strong> — żadna zatwierdzona reguła nie zwija niezależnych obszarów w jeden dzienny kolor. Tło komórki niesie próg wskaźnika tego dnia w tym obszarze.
+      </div>
+      <div style="margin-top: 18px; border: 1px solid #E9EDF5; border-radius: 16px; overflow: hidden;">
+        <div style="display: grid; grid-template-columns: 104px 84px repeat(4, minmax(0, 1fr)); background: #F2F4F7; border-bottom: 2px solid #E3E8F0; font-size: 10px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: #475467;">
+          <div style="padding: 10px 12px; border-right: 1px solid #E3E8F0;">Dzień</div>
+          <div style="padding: 10px 12px; border-right: 1px solid #E3E8F0;">Dystans</div>
+          <div style="padding: 10px 8px; border-right: 1px solid #E3E8F0; text-align: center;">Hamowania</div>
+          <div style="padding: 10px 8px; border-right: 1px solid #E3E8F0; text-align: center;">Postój</div>
+          <div style="padding: 10px 8px; border-right: 1px solid #E3E8F0; text-align: center;">Skręty</div>
+          <div style="padding: 10px 8px; text-align: center;">140–160</div>
+        </div>
+        <sc-for list="{{ gridRows }}" as="row" hint-placeholder-count="4">
+          <div style="display: grid; grid-template-columns: 104px 84px repeat(4, minmax(0, 1fr)); border-bottom: 1px solid #F2F4F7;">
+            <div style="padding: 10px 12px; border-right: 1px solid #F2F4F7; font-variant-numeric: tabular-nums; font-size: 13px; font-weight: 700;">{{ row.date }} <span style="font-size: 11px; font-weight: 400; color: #667085;">{{ row.dow }}</span></div>
+            <div style="padding: 10px 12px; border-right: 1px solid #F2F4F7; font-variant-numeric: tabular-nums; font-size: 13px; color: {{ row.kmFg }};">{{ row.km }}</div>
+            <sc-for list="{{ row.cells }}" as="c" hint-placeholder-count="4">
+              <div title="{{ c.title }}" aria-label="{{ c.title }}" role="img" style="border-right: 1px solid #F2F4F7; background: {{ c.bg }}; display: flex; align-items: center; justify-content: center; padding: 9px 4px; font-variant-numeric: tabular-nums; font-size: 14px; font-weight: 700; color: {{ c.fg }};">{{ c.n }}</div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <div style="display: grid; grid-template-columns: 104px 84px repeat(4, minmax(0, 1fr)); background: #101828; color: #FFFFFF;">
+          <div style="padding: 11px 12px; font-size: 11px; font-weight: 800;">Suma okresu</div>
+          <div style="padding: 11px 12px; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800;">3 418 km</div>
+          <div style="padding: 11px 4px; text-align: center; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800;">74</div>
+          <div style="padding: 11px 4px; text-align: center; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800;">168</div>
+          <div style="padding: 11px 4px; text-align: center; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800;">202</div>
+          <div style="padding: 11px 4px; text-align: center; font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800;">41</div>
+        </div>
+      </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 14px; margin-top: 12px; font-size: 11px; color: #475467;">
+        <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 14px; height: 14px; border-radius: 4px; background: #E6F4EE; border: 1px solid #B4DCC8;"></span>pełne punkty</span>
+        <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 14px; height: 14px; border-radius: 4px; background: #FEF3E2; border: 1px solid #F6DCAE;"></span>podwyższony</span>
+        <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 14px; height: 14px; border-radius: 4px; background: #FDECEA; border: 1px solid #F3C4BE;"></span>strata punktów</span>
+        <span style="display: inline-flex; gap: 6px; align-items: center;"><span style="width: 14px; height: 14px; border-radius: 4px; background: #F2F4F7; border: 1px solid #E3E8F0;"></span>brak oceny / brak jazdy</span>
+      </div>
+      <div style="font-size: 11px; color: #667085; margin-top: 10px; line-height: 1.6;">
+        Każda komórka ma <span style="font-weight: 700;">title</span> i <span style="font-weight: 700;">aria-label</span> z pełnym opisem słownym („Postój na biegu jałowym: 7 zdarzeń · 4 na 100 km · próg 3–4”), więc informacja nie zależy od koloru ani od hovera. Dzienne punkty nie są pokazywane — nie sumują się do wyniku okresu.
+      </div>
+    </div>
+
+    <div style="background: #FFFFFF; border: 1px solid #E9EDF5; border-radius: 22px; padding: 24px; box-shadow: 0 1px 3px rgba(16,24,40,0.06); animation: fadeUp .8s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #667085;">07 · Rozkład strat według obszarów — paleta pierścienia</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-top: 16px; align-items: center;">
+        <div style="display: grid; gap: 8px;">
+          <sc-for list="{{ slices }}" as="s" hint-placeholder-count="5">
+            <div style="display: grid; grid-template-columns: 16px 1fr auto; gap: 12px; align-items: center; border: 1px solid #E9EDF5; border-radius: 12px; padding: 10px 12px;">
+              <span style="width: 16px; height: 16px; border-radius: 5px; background: {{ s.color }};"></span>
+              <span style="font-size: 12px; font-weight: 700; color: #344054;">{{ s.label }}</span>
+              <span style="font-variant-numeric: tabular-nums; font-size: 12px; font-weight: 800; color: #475467;">{{ s.value }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size: 12px; color: #475467; line-height: 1.7;">
+          <strong style="color: #101828;">Trzy barwy w dwóch nasyceniach.</strong> Dwa największe źródła straty w odcieniach czerwieni, dwa kolejne w żółciach, najmniejsze na zielono. Obszary o <strong>równej stracie dzielą jeden kolor</strong> — kolor koduje wielkość straty, nie tożsamość obszaru.<br><br>
+          Pierścień to wyłącznie wzbogacenie: segmenty są <span style="font-variant-numeric: tabular-nums;">aria-hidden</span>, a kontrolką są wiersze legendy (przyciski z <span style="font-variant-numeric: tabular-nums;">aria-expanded</span>). Każdy wiersz podaje nazwę obszaru i utratę punktów tekstem, więc rozkład da się odczytać bez widzenia kolorów.
+        </div>
+      </div>
+    </div>
+
+    <div style="background: linear-gradient(150deg, #101828, #1D2939); color: #D0D5DD; border-radius: 22px; padding: 24px 26px; animation: fadeUp .85s ease both;">
+      <div style="font-size: 10px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; color: #FF9A3D;">08 · Kanoniczne etykiety obszarów i maksima punktowe</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: 12px; margin-top: 16px;">
+        <sc-for list="{{ labels }}" as="l" hint-placeholder-count="8">
+          <div style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 12px 14px;">
+            <div style="font-variant-numeric: tabular-nums; font-size: 10px; color: #98A2B3;">{{ l.key }}</div>
+            <div style="font-size: 13px; font-weight: 700; color: #FFFFFF; margin-top: 4px;">{{ l.label }}</div>
+            <div style="font-size: 11px; color: #C7CEDB; margin-top: 3px;">skrót: {{ l.short }} · maks. {{ l.max }} pkt</div>
+          </div>
+        </sc-for>
+      </div>
+      <div style="font-size: 12px; color: #C7CEDB; margin-top: 16px; line-height: 1.7;">
+        Zbiór <span style="font-variant-numeric: tabular-nums;">AREA_SCORE_METRICS.label_html</span> jest kanoniczny; wartości <span style="font-variant-numeric: tabular-nums;">top_1_validation</span> / <span style="font-variant-numeric: tabular-nums;">top_2_validation</span> muszą być mapowane na te etykiety, nigdy renderowane surowo.<br>
+        <strong style="color: #FFFFFF;">Nadmierne obroty</strong> pozostają w modelu 100 pkt i w liście obszarów, wizualnie wyciszone (62 % krycia) z neutralnym podpisem „pełne 15 pkt w obecnym okresie”. Nie podajemy technicznej przyczyny, której audyt nie potwierdza, i nie włączamy tego obszaru do coachingu.
+      </div>
+    </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:900}}">
+class Component extends DCLogic {
+  renderVals() {
+    const fill = {
+      green: { band: '#C6E7D6', pattern: 'none', border: '1px solid #9FD3BB' },
+      yellow: { band: '#FBE3B8', pattern: 'radial-gradient(rgba(180,120,10,0.38) 1px, transparent 1.4px)', border: '1px solid #EFCB93' },
+      red: { band: '#F7C9C3', pattern: 'repeating-linear-gradient(135deg, rgba(180,35,24,0.3) 0 3px, transparent 3px 7px)', border: '1px solid #E9AAA2' },
+      neutral: { band: '#E4E7EC', pattern: 'none', border: '1px solid #D0D5DD' }
+    };
+    const lostFg = { green: '#14653B', yellow: '#7C3A05', red: '#912018', neutral: '#475467' };
+
+    const axisBands = [
+      { label: '0', lost: '0', status: 'green' },
+      { label: '1', lost: '−2', status: 'yellow', target: true },
+      { label: '2–4', lost: '−6', status: 'yellow', current: true },
+      { label: '5–6', lost: '−8', status: 'yellow' },
+      { label: '7–8', lost: '−10', status: 'yellow' },
+      { label: '9–10', lost: '−15', status: 'red' },
+      { label: '>10', lost: '−20', status: 'red' }
+    ].map(b => {
+      const f = fill[b.status];
+      return {
+        label: b.label, lost: b.lost, lostFg: lostFg[b.status],
+        bg: f.band, pattern: f.pattern,
+        border: b.current ? '2px solid #101828' : (b.target ? '2px dashed #FF7300' : f.border),
+        vBorder: b.current ? '2px solid #101828' : (b.target ? '2px dashed #FF7300' : '1px solid #E9EDF5'),
+        marker: b.current ? '▲' : (b.target ? '◇' : ''),
+        markerColor: b.current ? '#101828' : '#8F3A04',
+        caption: b.current ? 'Twój wskaźnik' : (b.target ? 'próg docelowy: +4 pkt' : ''),
+        vNote: b.current ? '· Twój wskaźnik' : (b.target ? '· próg docelowy, +4 pkt' : '')
+      };
+    });
+
+    const cellTone = {
+      green: { bg: '#E6F4EE', fg: '#14653B' },
+      yellow: { bg: '#FEF3E2', fg: '#7C3A05' },
+      red: { bg: '#FDECEA', fg: '#912018' },
+      neutral: { bg: '#F2F4F7', fg: '#475467' }
+    };
+    const cell = (n, status, label, meaning) => ({
+      n: n, bg: cellTone[status].bg, fg: cellTone[status].fg,
+      title: label + ': ' + n + ' zdarzeń · ' + meaning
+    });
+
+    const trendPoints = [
+      { label: '01.07–05.07', score: 58, status: 'yellow' },
+      { label: '01.07–12.07', score: 67, status: 'yellow' },
+      { label: '01.07–19.07', score: 71, status: 'yellow', current: true }
+    ];
+
+    return {
+      neutrals: [
+        { token: 'canvas', hex: '#F4F7FA', border: '#E3E8F0', use: 'tło strony' },
+        { token: 'surface', hex: '#FFFFFF', border: '#E9EDF5', use: 'karty' },
+        { token: 'surface-sunken', hex: '#F9FAFC', border: '#E9EDF5', use: 'panele, nagłówki' },
+        { token: 'surface-alt', hex: '#F2F4F7', border: '#E3E8F0', use: 'nagłówki tabeli' },
+        { token: 'hairline', hex: '#E9EDF5', border: '#E3E8F0', use: 'obwódki kart' },
+        { token: 'hairline-2', hex: '#E3E8F0', border: '#D0D5DD', use: 'linie tabeli' },
+        { token: 'ink', hex: '#101828', border: '#101828', use: 'tekst główny, ciemne pasy' },
+        { token: 'ink-2', hex: '#344054', border: '#344054', use: 'tekst wtórny' },
+        { token: 'ink-3', hex: '#475467', border: '#475467', use: 'opisy, wartości pomocnicze' },
+        { token: 'ink-4', hex: '#667085', border: '#667085', use: 'podpisy ≥ 11 px' },
+        { token: 'accent', hex: '#FF7300', border: '#C2410C', use: 'program, nawigacja, cel' },
+        { token: 'accent-tint', hex: '#FFF3E8', border: '#FFD8B5', use: 'sekcja potencjału' }
+      ],
+      statuses: [
+        { name: 'green · pełne punkty', glyph: '✓', rule: 'points == points_max — obszar nie stracił nic', tokens: 'chip #E6F4EE / #B4DCC8 / #14653B · próg #C6E7D6', bg: '#E6F4EE', border: '#B4DCC8', fg: '#14653B', band: fill.green.band, pattern: fill.green.pattern },
+        { name: 'yellow · podwyższony', glyph: '!', rule: '0 ≤ points < points_max — punkty utracone, obszar nadal dodaje do wyniku', tokens: 'chip #FEF3E2 / #F6DCAE / #7C3A05 · próg #FBE3B8 + kropki', bg: '#FEF3E2', border: '#F6DCAE', fg: '#7C3A05', band: fill.yellow.band, pattern: fill.yellow.pattern },
+        { name: 'red · strata punktów', glyph: '✕', rule: 'points < 0 — obszar odejmuje od wyniku', tokens: 'chip #FDECEA / #F3C4BE / #912018 · próg #F7C9C3 + skos', bg: '#FDECEA', border: '#F3C4BE', fg: '#912018', band: fill.red.band, pattern: fill.red.pattern },
+        { name: 'neutral · brak oceny', glyph: '–', rule: 'wskaźnik nie jest wyliczalny w istniejącym kontrakcie punktacji (np. brak jazdy) — stan projektowany, nie błąd', tokens: 'chip #F2F4F7 / #E3E8F0 / #475467', bg: '#F2F4F7', border: '#E3E8F0', fg: '#475467', band: fill.neutral.band, pattern: fill.neutral.pattern }
+      ],
+      chips: [
+        { bg: '#E6F4EE', border: '#B4DCC8', fg: '#14653B', glyph: '✓', label: '0 na 100 km' },
+        { bg: '#FEF3E2', border: '#F6DCAE', fg: '#7C3A05', glyph: '!', label: '2 na 100 km' },
+        { bg: '#FDECEA', border: '#F3C4BE', fg: '#912018', glyph: '✕', label: '8 na 100 km' },
+        { bg: '#F2F4F7', border: '#E3E8F0', fg: '#475467', glyph: '–', label: 'brak oceny' },
+        { bg: '#E6F4EE', border: '#B4DCC8', fg: '#14653B', glyph: '▲', label: '4 pkt' },
+        { bg: '#FDECEA', border: '#F3C4BE', fg: '#912018', glyph: '▼', label: '3 pkt' },
+        { bg: '#F2F4F7', border: '#E3E8F0', fg: '#475467', glyph: '=', label: 'bez zmian' },
+        { bg: '#F2F4F7', border: '#E3E8F0', fg: '#475467', glyph: '·', label: 'brak bazy porównania' },
+        { bg: '#FFF3E8', border: '#FFD8B5', fg: '#8F3A04', glyph: '★', label: 'Nowo w rankingu' }
+      ],
+      ratings: [
+        { label: 'bezpieczny', glyph: '▬', range: 'próg 85–100 pkt', tint: '#E7F7EE', border: '#B4DCC8', textFg: '#14653B', from: '#1F8A4C', to: '#5FCB92', tokens: 'fill #1F8A4C\ntext #14653B' },
+        { label: 'akceptowalny', glyph: '◦', range: 'próg 40–84 pkt', tint: '#FEF3C7', border: '#F6DCAE', textFg: '#7C3A05', from: '#F5B700', to: '#FFD666', tokens: 'fill #F5B700\ntext #7C3A05' },
+        { label: 'niebezpieczny', glyph: '◤', range: 'próg poniżej 40 pkt', tint: '#FEE4E2', border: '#F3C4BE', textFg: '#912018', from: '#DC2626', to: '#F87171', tokens: 'fill #DC2626\ntext #912018' },
+        { label: 'brak klasyfikacji', glyph: '–', range: 'wynik nie został wyliczony dla tego okresu', tint: '#F2F4F7', border: '#E3E8F0', textFg: '#475467', from: '#667085', to: '#C7CEDB', tokens: 'fill #C7CEDB\ntext #475467' }
+      ],
+      axisBands,
+      trend: trendPoints.map((p, i) => {
+        const f = fill[p.status];
+        const dot = p.status === 'green' ? '#1F8A4C' : p.status === 'yellow' ? '#F5B700' : '#DC2626';
+        return {
+          label: p.label, score: p.score, h: p.score + '%', labelBottom: 'calc(' + p.score + '% + 8px)',
+          bg: f.band, pattern: f.pattern,
+          border: p.current ? '2px solid #101828' : f.border,
+          dot, fg: p.current ? '#101828' : '#667085', delay: (i * 150) + 'ms'
+        };
+      }),
+      gridRows: [
+        {
+          date: '13.07', dow: 'Pn', km: '161 km', kmFg: '#101828',
+          cells: [
+            cell('3', 'yellow', 'Gwałtowne hamowania', '2 na 100 km · próg 2–4'),
+            cell('7', 'yellow', 'Postój na biegu jałowym', '4 na 100 km · próg 3–4'),
+            cell('9', 'yellow', 'Gwałtowne skręty', '6 na 100 km · próg 5–7'),
+            cell('0', 'green', 'Prędkość 140–160 km/h', '0 na 100 km · próg 0')
+          ]
+        },
+        {
+          date: '14.07', dow: 'Wt', km: '129 km', kmFg: '#101828',
+          cells: [
+            cell('2', 'yellow', 'Gwałtowne hamowania', '2 na 100 km · próg 2–4'),
+            cell('8', 'red', 'Postój na biegu jałowym', '6 na 100 km · próg 6'),
+            cell('4', 'green', 'Gwałtowne skręty', '3 na 100 km · próg 0–4'),
+            cell('1', 'yellow', 'Prędkość 140–160 km/h', '1 na 100 km · próg 1–2')
+          ]
+        },
+        {
+          date: '15.07', dow: 'Śr', km: '283 km', kmFg: '#101828',
+          cells: [
+            cell('8', 'yellow', 'Gwałtowne hamowania', '3 na 100 km · próg 2–4'),
+            cell('7', 'yellow', 'Postój na biegu jałowym', '2 na 100 km · próg 1–2'),
+            cell('12', 'yellow', 'Gwałtowne skręty', '4 na 100 km · próg 0–4'),
+            cell('3', 'yellow', 'Prędkość 140–160 km/h', '1 na 100 km · próg 1–2')
+          ]
+        },
+        {
+          date: '06.07', dow: 'Pn', km: '—', kmFg: '#667085',
+          cells: [
+            cell('0', 'neutral', 'Gwałtowne hamowania', 'brak przejazdów kwalifikujących'),
+            cell('0', 'neutral', 'Postój na biegu jałowym', 'brak przejazdów kwalifikujących'),
+            cell('0', 'neutral', 'Gwałtowne skręty', 'brak przejazdów kwalifikujących'),
+            cell('0', 'neutral', 'Prędkość 140–160 km/h', 'brak przejazdów kwalifikujących')
+          ]
+        }
+      ],
+      slices: [
+        { label: 'Postój na biegu jałowym', value: '−10 pkt', color: '#9F1208' },
+        { label: 'Gwałtowne hamowania', value: '−6 pkt', color: '#F0563F' },
+        { label: 'Gwałtowne przyspieszenia', value: '−5 pkt', color: '#E3A008' },
+        { label: 'Prędkość 140–160 km/h', value: '−5 pkt', color: '#E3A008' },
+        { label: 'Gwałtowne skręty', value: '−3 pkt', color: '#1F8A4C' }
+      ],
+      labels: [
+        { key: 'overrev', label: 'Nadmierne obroty', short: 'Obroty', max: '15' },
+        { key: 'harsh_braking', label: 'Gwałtowne hamowania', short: 'Hamowania', max: '10' },
+        { key: 'harsh_acceleration', label: 'Gwałtowne przyspieszenia', short: 'Przyspieszenia', max: '10' },
+        { key: 'harsh_turning', label: 'Gwałtowne skręty', short: 'Skręty', max: '10' },
+        { key: 'idle', label: 'Postój na biegu jałowym', short: 'Postój', max: '10' },
+        { key: 'speeding_140_160', label: 'Prędkość 140–160 km/h', short: '140–160', max: '15' },
+        { key: 'speeding_160_170', label: 'Prędkość 160–170 km/h', short: '160–170', max: '15' },
+        { key: 'speeding_170_plus', label: 'Prędkość powyżej 170 km/h', short: '>170', max: '15' }
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Eco Dashboard — podgląd (preview only)</title>
+<link rel="stylesheet" href="../production/css/dashboard.css">
+<style>
+  .pv-bar{position:sticky;top:0;z-index:100;display:flex;gap:10px;align-items:center;
+    flex-wrap:wrap;padding:10px 16px;background:#101828;color:#fff;font:13px/1.4 system-ui}
+  .pv-bar label{font-weight:700}
+  .pv-bar select,.pv-bar button{font:inherit;padding:6px 10px;border-radius:8px;border:0}
+  .pv-bar button{background:#FF7300;color:#fff;font-weight:700;cursor:pointer}
+  .pv-note{opacity:.6}
+</style>
+</head>
+<body>
+<!-- PREVIEW ONLY. Never served in production (Worker denies /preview*). -->
+<div class="pv-bar">
+  <label for="pv-fixture">Fixture:</label>
+  <select id="pv-fixture"></select>
+  <label for="pv-access">Stan dostępu:</label>
+  <select id="pv-access">
+    <option value="">— (dashboard)</option>
+    <option>INVALID_LINK</option>
+    <option>LINK_EXPIRED</option>
+    <option>SNAPSHOT_UNAVAILABLE</option>
+    <option>SERVICE_UNAVAILABLE</option>
+  </select>
+  <button id="pv-go" type="button">Renderuj</button>
+  <span class="pv-note">uruchom przez: python3 -m http.server 8731 --bind 127.0.0.1 (z katalogu pakietu)</span>
+</div>
+<div id="eco-root" data-snapshot-url="/api/snapshot"></div>
+<script src="../production/js/format.js"></script>
+<script src="../production/js/render.js"></script>
+<script src="./repo-owned/snapshot-source.js"></script>
+<script src="../production/js/app.js"></script>
+<script>
+(function () {
+  "use strict";
+  var FIXTURES = [
+    "weekly_ranked_sparse",
+    "weekly_ranked_dangerous",
+    "weekly_ranked_safe_zero_events",
+    "weekly_not_ranked_by_configuration",
+    "weekly_not_on_roster",
+    "weekly_left_ranking",
+    "weekly_newly_ranked",
+    "weekly_no_comparison",
+    "weekly_no_driving_day",
+    "weekly_first_closed_period",
+    "weekly_skipped_period_in_series",
+    "weekly_insufficient_distance",
+    "weekly_report_not_ready",
+    "monthly_31_days"
+  ];
+  var sel = document.getElementById("pv-fixture");
+  FIXTURES.forEach(function (f) {
+    var o = document.createElement("option");
+    o.value = f; o.textContent = f;
+    sel.appendChild(o);
+  });
+  var params = new URLSearchParams(location.search);
+  var initial = params.get("fixture");
+  if (initial && FIXTURES.indexOf(initial) !== -1) sel.value = initial;
+
+  function run() {
+    var access = document.getElementById("pv-access").value;
+    if (access) {
+      document.getElementById("eco-root").innerHTML =
+        window.EcoRender.renderAccessState(access);
+      return;
+    }
+    window.EcoApp.boot({
+      source: window.EcoSnapshotSource.createFixtureSource({
+        name: sel.value, basePath: "./fixtures/"
+      })
+    });
+  }
+  document.getElementById("pv-go").addEventListener("click", function () {
+    var url = new URL(location.href);
+    url.searchParams.set("fixture", sel.value);
+    history.replaceState(null, "", url);
+    run();
+  });
+  sel.addEventListener("change", function () {
+    var url = new URL(location.href);
+    url.searchParams.set("fixture", sel.value);
+    history.replaceState(null, "", url);
+    run();
+  });
+  run();
+})();
+</script>
+</body>
+</html>

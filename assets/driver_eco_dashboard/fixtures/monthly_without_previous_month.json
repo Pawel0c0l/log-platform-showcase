@@ -1,0 +1,2730 @@
+{
+  "schema_version": 1,
+  "contract_id": "driver_eco_dashboard_snapshot",
+  "generated_at_utc": "2026-07-20T04:40:11Z",
+  "timezone": "Europe/Warsaw",
+  "locale": "pl-PL",
+  "constants": {
+    "min_qualifying_distance_km": 100,
+    "rating_thresholds": {
+      "safe": 85,
+      "acceptable": 40
+    },
+    "score_max": 100
+  },
+  "periods": {
+    "weekly": null,
+    "monthly": {
+      "status": "OK",
+      "period_identity": {
+        "period_type": "monthly",
+        "period_label": "2026-07",
+        "period_start_date": "2026-07-01",
+        "period_end_date_exclusive": "2026-08-01",
+        "period_end_date_display": "2026-07-31",
+        "period_sequence_in_month": null,
+        "closed_periods_in_month": 5,
+        "is_partial_period": false,
+        "snapshot_updated_at_utc": "2026-07-20T04:40:11Z"
+      },
+      "current": {
+        "period_type": "monthly",
+        "period_label": "2026-07",
+        "period_start_date": "2026-07-01",
+        "period_end_date_exclusive": "2026-08-01",
+        "period_end_date_display": "2026-07-31",
+        "period_sequence_in_month": null,
+        "closed_periods_in_month": 5,
+        "is_partial_period": false,
+        "snapshot_updated_at_utc": "2026-07-20T04:40:11Z",
+        "qualification_status": "QUALIFIED",
+        "scoring_complete": true,
+        "ranking_state": "RANKED",
+        "ranking_transition": "NO_COMPARISON_BASIS",
+        "eco_score_total": 85,
+        "rating_type": "safe",
+        "total_kilometers": 1656,
+        "trips_count": 54,
+        "ranking_position": 18,
+        "ranking_total_participants": 158,
+        "rating_group_share_percent": 50.63,
+        "rating_group_distribution": {
+          "safe": 41.77,
+          "acceptable": 50.63,
+          "dangerous": 7.59
+        },
+        "comparison": null,
+        "categories": [
+          {
+            "key": "overrev",
+            "label": "Nadmierne obroty",
+            "short_label": "Obroty",
+            "deemphasize": true,
+            "count": 0,
+            "coefficient_per_100km": 0,
+            "points": 15,
+            "points_max": 15,
+            "points_lost": 0,
+            "status": "green",
+            "band_label": "0",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 15,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1–2",
+                "upper_bound": 2,
+                "points": 11,
+                "points_lost": -4,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "3–5",
+                "upper_bound": 5,
+                "points": 7,
+                "points_lost": -8,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "6–9",
+                "upper_bound": 9,
+                "points": 4,
+                "points_lost": -11,
+                "status": "yellow"
+              },
+              {
+                "index": 4,
+                "label": "10–13",
+                "upper_bound": 13,
+                "points": 0,
+                "points_lost": -15,
+                "status": "yellow"
+              },
+              {
+                "index": 5,
+                "label": "14–20",
+                "upper_bound": 20,
+                "points": -7,
+                "points_lost": -22,
+                "status": "red"
+              },
+              {
+                "index": 6,
+                "label": "> 20",
+                "upper_bound": null,
+                "points": -15,
+                "points_lost": -30,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 0,
+            "target_band_index": null,
+            "target_band_label": null,
+            "target_upper_bound": null,
+            "target_points_gain": null,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "harsh_braking",
+            "label": "Gwałtowne hamowania",
+            "short_label": "Hamowania",
+            "deemphasize": false,
+            "count": 22,
+            "coefficient_per_100km": 1,
+            "points": 8,
+            "points_max": 10,
+            "points_lost": -2,
+            "status": "yellow",
+            "band_label": "1",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 10,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1",
+                "upper_bound": 1,
+                "points": 8,
+                "points_lost": -2,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "2–4",
+                "upper_bound": 4,
+                "points": 4,
+                "points_lost": -6,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "5–6",
+                "upper_bound": 6,
+                "points": 2,
+                "points_lost": -8,
+                "status": "yellow"
+              },
+              {
+                "index": 4,
+                "label": "7–8",
+                "upper_bound": 8,
+                "points": 0,
+                "points_lost": -10,
+                "status": "yellow"
+              },
+              {
+                "index": 5,
+                "label": "9–10",
+                "upper_bound": 10,
+                "points": -5,
+                "points_lost": -15,
+                "status": "red"
+              },
+              {
+                "index": 6,
+                "label": "> 10",
+                "upper_bound": null,
+                "points": -10,
+                "points_lost": -20,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 1,
+            "target_band_index": 0,
+            "target_band_label": "0",
+            "target_upper_bound": 0,
+            "target_points_gain": 2,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "harsh_acceleration",
+            "label": "Gwałtowne przyspieszenia",
+            "short_label": "Przyspieszenia",
+            "deemphasize": false,
+            "count": 11,
+            "coefficient_per_100km": 1,
+            "points": 5,
+            "points_max": 10,
+            "points_lost": -5,
+            "status": "yellow",
+            "band_label": "1",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 10,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1",
+                "upper_bound": 1,
+                "points": 5,
+                "points_lost": -5,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "2",
+                "upper_bound": 2,
+                "points": 0,
+                "points_lost": -10,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "3–4",
+                "upper_bound": 4,
+                "points": -5,
+                "points_lost": -15,
+                "status": "red"
+              },
+              {
+                "index": 4,
+                "label": "> 4",
+                "upper_bound": null,
+                "points": -10,
+                "points_lost": -20,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 1,
+            "target_band_index": 0,
+            "target_band_label": "0",
+            "target_upper_bound": 0,
+            "target_points_gain": 5,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "harsh_turning",
+            "label": "Gwałtowne skręty",
+            "short_label": "Skręty",
+            "deemphasize": false,
+            "count": 66,
+            "coefficient_per_100km": 4,
+            "points": 10,
+            "points_max": 10,
+            "points_lost": 0,
+            "status": "green",
+            "band_label": "0–4",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0–4",
+                "upper_bound": 4,
+                "points": 10,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "5–7",
+                "upper_bound": 7,
+                "points": 7,
+                "points_lost": -3,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "8–12",
+                "upper_bound": 12,
+                "points": 4,
+                "points_lost": -6,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "13–16",
+                "upper_bound": 16,
+                "points": 0,
+                "points_lost": -10,
+                "status": "yellow"
+              },
+              {
+                "index": 4,
+                "label": "17–23",
+                "upper_bound": 23,
+                "points": -4,
+                "points_lost": -14,
+                "status": "red"
+              },
+              {
+                "index": 5,
+                "label": "24–30",
+                "upper_bound": 30,
+                "points": -8,
+                "points_lost": -18,
+                "status": "red"
+              },
+              {
+                "index": 6,
+                "label": "> 30",
+                "upper_bound": null,
+                "points": -10,
+                "points_lost": -20,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 0,
+            "target_band_index": null,
+            "target_band_label": null,
+            "target_upper_bound": null,
+            "target_points_gain": null,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "idle",
+            "label": "Postój na biegu jałowym",
+            "short_label": "Postój",
+            "deemphasize": false,
+            "count": 33,
+            "coefficient_per_100km": 2,
+            "points": 7,
+            "points_max": 10,
+            "points_lost": -3,
+            "status": "yellow",
+            "band_label": "1–2",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 10,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1–2",
+                "upper_bound": 2,
+                "points": 7,
+                "points_lost": -3,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "3–4",
+                "upper_bound": 4,
+                "points": 4,
+                "points_lost": -6,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "5",
+                "upper_bound": 5,
+                "points": 0,
+                "points_lost": -10,
+                "status": "yellow"
+              },
+              {
+                "index": 4,
+                "label": "6",
+                "upper_bound": 6,
+                "points": -5,
+                "points_lost": -15,
+                "status": "red"
+              },
+              {
+                "index": 5,
+                "label": "7–8",
+                "upper_bound": 8,
+                "points": -7,
+                "points_lost": -17,
+                "status": "red"
+              },
+              {
+                "index": 6,
+                "label": "> 8",
+                "upper_bound": null,
+                "points": -10,
+                "points_lost": -20,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 1,
+            "target_band_index": 0,
+            "target_band_label": "0",
+            "target_upper_bound": 0,
+            "target_points_gain": 3,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "speeding_140_160",
+            "label": "Prędkość 140–160 km/h",
+            "short_label": "140–160",
+            "deemphasize": false,
+            "count": 11,
+            "coefficient_per_100km": 1,
+            "points": 10,
+            "points_max": 15,
+            "points_lost": -5,
+            "status": "yellow",
+            "band_label": "1–2",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 15,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1–2",
+                "upper_bound": 2,
+                "points": 10,
+                "points_lost": -5,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "3–4",
+                "upper_bound": 4,
+                "points": 5,
+                "points_lost": -10,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "5–6",
+                "upper_bound": 6,
+                "points": 0,
+                "points_lost": -15,
+                "status": "yellow"
+              },
+              {
+                "index": 4,
+                "label": "7–8",
+                "upper_bound": 8,
+                "points": -5,
+                "points_lost": -20,
+                "status": "red"
+              },
+              {
+                "index": 5,
+                "label": "9–10",
+                "upper_bound": 10,
+                "points": -10,
+                "points_lost": -25,
+                "status": "red"
+              },
+              {
+                "index": 6,
+                "label": "> 10",
+                "upper_bound": null,
+                "points": -15,
+                "points_lost": -30,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 1,
+            "target_band_index": 0,
+            "target_band_label": "0",
+            "target_upper_bound": 0,
+            "target_points_gain": 5,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "speeding_160_170",
+            "label": "Prędkość 160–170 km/h",
+            "short_label": "160–170",
+            "deemphasize": false,
+            "count": 0,
+            "coefficient_per_100km": 0,
+            "points": 15,
+            "points_max": 15,
+            "points_lost": 0,
+            "status": "green",
+            "band_label": "0",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 15,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1",
+                "upper_bound": 1,
+                "points": 10,
+                "points_lost": -5,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "2",
+                "upper_bound": 2,
+                "points": 5,
+                "points_lost": -10,
+                "status": "yellow"
+              },
+              {
+                "index": 3,
+                "label": "3",
+                "upper_bound": 3,
+                "points": 0,
+                "points_lost": -15,
+                "status": "yellow"
+              },
+              {
+                "index": 4,
+                "label": "4",
+                "upper_bound": 4,
+                "points": -5,
+                "points_lost": -20,
+                "status": "red"
+              },
+              {
+                "index": 5,
+                "label": "5",
+                "upper_bound": 5,
+                "points": -10,
+                "points_lost": -25,
+                "status": "red"
+              },
+              {
+                "index": 6,
+                "label": "> 5",
+                "upper_bound": null,
+                "points": -15,
+                "points_lost": -30,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 0,
+            "target_band_index": null,
+            "target_band_label": null,
+            "target_upper_bound": null,
+            "target_points_gain": null,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          },
+          {
+            "key": "speeding_170_plus",
+            "label": "Prędkość powyżej 170 km/h",
+            "short_label": ">170",
+            "deemphasize": false,
+            "count": 0,
+            "coefficient_per_100km": 0,
+            "points": 15,
+            "points_max": 15,
+            "points_lost": 0,
+            "status": "green",
+            "band_label": "0",
+            "bands": [
+              {
+                "index": 0,
+                "label": "0",
+                "upper_bound": 0,
+                "points": 15,
+                "points_lost": 0,
+                "status": "green"
+              },
+              {
+                "index": 1,
+                "label": "1",
+                "upper_bound": 1,
+                "points": 0,
+                "points_lost": -15,
+                "status": "yellow"
+              },
+              {
+                "index": 2,
+                "label": "2",
+                "upper_bound": 2,
+                "points": -7,
+                "points_lost": -22,
+                "status": "red"
+              },
+              {
+                "index": 3,
+                "label": "> 2",
+                "upper_bound": null,
+                "points": -15,
+                "points_lost": -30,
+                "status": "red"
+              }
+            ],
+            "marker_band_index": 0,
+            "target_band_index": null,
+            "target_band_label": null,
+            "target_upper_bound": null,
+            "target_points_gain": null,
+            "previous_count": null,
+            "previous_coefficient_per_100km": null,
+            "previous_points_lost": null
+          }
+        ],
+        "near_threshold": [
+          {
+            "category_key": "harsh_acceleration",
+            "rank": 1,
+            "coefficient_now": 1,
+            "target_upper_bound": 0,
+            "target_band_label": "0",
+            "points_gain": 5,
+            "coefficient_distance": 1
+          },
+          {
+            "category_key": "speeding_140_160",
+            "rank": 2,
+            "coefficient_now": 1,
+            "target_upper_bound": 0,
+            "target_band_label": "0",
+            "points_gain": 5,
+            "coefficient_distance": 1
+          }
+        ],
+        "coaching": [
+          {
+            "code": "LARGEST_LOSS",
+            "category_key": "harsh_acceleration",
+            "selected_by": "points_lost",
+            "value": {
+              "points": -5
+            },
+            "inputs": {
+              "coefficient": 1,
+              "previous_coefficient": null,
+              "band_label": "1",
+              "points_max": 10,
+              "points_lost": -5,
+              "previous_points_lost": null,
+              "kilometers": 1656,
+              "previous_kilometers": null,
+              "target_band_label": "0",
+              "target_upper_bound": 0,
+              "target_points_gain": 5
+            }
+          },
+          {
+            "code": "BEST_OPPORTUNITY",
+            "category_key": "harsh_acceleration",
+            "selected_by": "threshold_gain",
+            "value": {
+              "points_gain": 5,
+              "coefficient_distance": 1
+            },
+            "inputs": {
+              "coefficient": 1,
+              "previous_coefficient": null,
+              "band_label": "1",
+              "points_max": 10,
+              "points_lost": -5,
+              "previous_points_lost": null,
+              "kilometers": 1656,
+              "previous_kilometers": null,
+              "target_band_label": "0",
+              "target_upper_bound": 0,
+              "target_points_gain": 5
+            }
+          }
+        ],
+        "days": [
+          {
+            "date": "2026-07-01",
+            "weekday_short": "Śr",
+            "kilometers": 70,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-02",
+            "weekday_short": "Cz",
+            "kilometers": 85,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-03",
+            "weekday_short": "Pt",
+            "kilometers": 0,
+            "trips_count": 0,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-04",
+            "weekday_short": "So",
+            "kilometers": 92,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 4,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-05",
+            "weekday_short": "Nd",
+            "kilometers": 64,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 5,
+                "band_label": "5–7",
+                "status": "yellow"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-06",
+            "weekday_short": "Pn",
+            "kilometers": 20,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 1,
+                "coefficient_per_100km": 5,
+                "band_label": "5–7",
+                "status": "yellow"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-07",
+            "weekday_short": "Wt",
+            "kilometers": 0,
+            "trips_count": 0,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-08",
+            "weekday_short": "Śr",
+            "kilometers": 78,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 3,
+                "band_label": "3–4",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-09",
+            "weekday_short": "Cz",
+            "kilometers": 88,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 3,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-10",
+            "weekday_short": "Pt",
+            "kilometers": 95,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 4,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-11",
+            "weekday_short": "So",
+            "kilometers": 60,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 3,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-12",
+            "weekday_short": "Nd",
+            "kilometers": 5,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-13",
+            "weekday_short": "Pn",
+            "kilometers": 0,
+            "trips_count": 0,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-14",
+            "weekday_short": "Wt",
+            "kilometers": 99,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 4,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-15",
+            "weekday_short": "Śr",
+            "kilometers": 84,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-16",
+            "weekday_short": "Cz",
+            "kilometers": 91,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 4,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-17",
+            "weekday_short": "Pt",
+            "kilometers": 77,
+            "trips_count": 3,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 2,
+                "coefficient_per_100km": 3,
+                "band_label": "3–4",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-18",
+            "weekday_short": "So",
+            "kilometers": 49,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-19",
+            "weekday_short": "Nd",
+            "kilometers": 43,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 5,
+                "band_label": "5–7",
+                "status": "yellow"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-20",
+            "weekday_short": "Pn",
+            "kilometers": 55,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-21",
+            "weekday_short": "Wt",
+            "kilometers": 62,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 3,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-22",
+            "weekday_short": "Śr",
+            "kilometers": 0,
+            "trips_count": 0,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-23",
+            "weekday_short": "Cz",
+            "kilometers": 71,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 1,
+                "coefficient_per_100km": 1,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-24",
+            "weekday_short": "Pt",
+            "kilometers": 66,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 3,
+                "coefficient_per_100km": 5,
+                "band_label": "5–7",
+                "status": "yellow"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-25",
+            "weekday_short": "So",
+            "kilometers": 58,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 3,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-26",
+            "weekday_short": "Nd",
+            "kilometers": 44,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 5,
+                "band_label": "5–7",
+                "status": "yellow"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-27",
+            "weekday_short": "Pn",
+            "kilometers": 39,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 5,
+                "band_label": "5–7",
+                "status": "yellow"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 3,
+                "band_label": "3–4",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-28",
+            "weekday_short": "Wt",
+            "kilometers": 51,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-29",
+            "weekday_short": "Śr",
+            "kilometers": 47,
+            "trips_count": 1,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 4,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-30",
+            "weekday_short": "Cz",
+            "kilometers": 63,
+            "trips_count": 2,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "2–4",
+                "status": "yellow"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 2,
+                "coefficient_per_100km": 3,
+                "band_label": "0–4",
+                "status": "green"
+              },
+              {
+                "key": "idle",
+                "count": 1,
+                "coefficient_per_100km": 2,
+                "band_label": "1–2",
+                "status": "yellow"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": 0,
+                "band_label": "0",
+                "status": "green"
+              }
+            ]
+          },
+          {
+            "date": "2026-07-31",
+            "weekday_short": "Pt",
+            "kilometers": 0,
+            "trips_count": 0,
+            "categories": [
+              {
+                "key": "overrev",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_braking",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_acceleration",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "harsh_turning",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "idle",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_140_160",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_160_170",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              },
+              {
+                "key": "speeding_170_plus",
+                "count": 0,
+                "coefficient_per_100km": null,
+                "band_label": null,
+                "status": "neutral"
+              }
+            ]
+          }
+        ]
+      },
+      "previous": null,
+      "series": [
+        {
+          "period_label": "2026-07-W1",
+          "start_date": "2026-07-01",
+          "end_date_display": "2026-07-05",
+          "eco_score_total": 68,
+          "is_current": false
+        },
+        {
+          "period_label": "2026-07-W2",
+          "start_date": "2026-07-01",
+          "end_date_display": "2026-07-12",
+          "eco_score_total": 71,
+          "is_current": false
+        },
+        {
+          "period_label": "2026-07-W3",
+          "start_date": "2026-07-01",
+          "end_date_display": "2026-07-19",
+          "eco_score_total": 75,
+          "is_current": false
+        }
+      ],
+      "series_reference": null
+    }
+  }
+}

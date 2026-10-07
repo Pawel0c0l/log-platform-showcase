@@ -1,0 +1,104 @@
+# Driver Eco Dashboard V1 — delivery Worker configuration.
+#
+# THIS FILE DEFINES BINDINGS ONLY. It creates nothing. The R2 bucket, the D1
+# database and the secrets are provisioned by an operator in a separately
+# authorized deployment step. The R2 and D1 identifiers below name the real
+# provisioned EU-jurisdiction resources. The rate limiting namespace below is
+# created implicitly by the first deploy that declares it — it is a counter
+# namespace, not a resource to provision in advance.
+#
+# No account id, API token, secret or capability value belongs in this file or
+# anywhere else in Git. Secrets are set with `wrangler secret put`.
+
+name = "driver-eco-dashboard"
+main = "worker/index.js"
+compatibility_date = "2026-08-01"
+workers_dev = false
+
+# Static frontend served from the same origin as the API, so the session cookie
+# is same-origin, no CORS is needed and no separate Pages project exists.
+[assets]
+directory = "../../assets/driver_eco_dashboard"
+binding = "ASSETS"
+# The Worker runs first for every path and serves only its allowlist
+# (worker/lib/assets.js); fixtures/ and preview.html are never reachable.
+run_worker_first = true
+
+# Private R2 bucket. EU jurisdiction is required by the design handoff.
+# No public bucket access, no custom domain, no signed URLs.
+[[r2_buckets]]
+binding = "SNAPSHOTS"
+bucket_name = "driver-eco-snapshots"
+jurisdiction = "eu"
+
+# Authorization store. D1 is chosen for strongly consistent revocation and
+# transactional rotation — see worker/lib/store.js for the full rationale.
+[[d1_databases]]
+binding = "AUTHORIZATION_DB"
+database_name = "driver-eco-authorization"
+database_id = "6edd9e95-14b7-4f53-8140-695c6e939b92"
+
+# Worker-native rate limiting for the unauthenticated session exchange.
+#
+# WHY IT IS HERE. `POST /api/session` is the only route reachable before any
+# credential is examined, and it is the entry point to a body read and a D1
+# lookup. Zone-level WAF rate limiting does not exist on `*.workers.dev`, where
+# this Worker must be verified before it is put behind any hostname, so the
+# control has to travel with the Worker. This binding does exactly that.
+#
+# WHAT IT IS NOT. Declaring it enforces nothing on its own: a Workers rate
+# limit applies only where the code calls `.limit()`. worker/lib/rate_limit.js
+# is the single call site, and worker/index.js invokes it for POST /api/session
+# and for no other route.
+#
+# NAMESPACE ID. Account-unique positive integer, as a string. Two bindings that
+# share a namespace_id share counters — across Workers, not just within one — so
+# this value is reserved for the Driver Eco Dashboard session exchange and must
+# not be reused by any other Worker in this account. 1001 was chosen after
+# confirming (read-only account inspection, 2026-08-20) that `driver-eco-dashboard`
+# is the only Worker in the account and that it carried no rate limit binding,
+# and it deliberately avoids the low single digits a future Worker is most
+# likely to reach for first.
+#
+# POLICY. 60 requests per 60 seconds per pre-authentication actor. The actor
+# key is the Cloudflare-reported client address (`CF-Connecting-IP`), which
+# aggregates everyone behind one NAT or privacy proxy — so the limit is
+# deliberately generous, roughly one exchange per second for a whole shared
+# egress address, and is sized against automated enumeration volume rather than
+# against a second visitor in the same office. `period` accepts only 10 or 60.
+#
+# The limit is also per Cloudflare location, so the effective global allowance
+# for one actor is higher than 60/minute, never lower.
+[[ratelimits]]
+name = "SESSION_RATE_LIMIT"
+namespace_id = "1001"
+simple = { limit = 60, period = 60 }
+
+[vars]
+# Intentionally empty. ALLOW_INSECURE_COOKIES exists only for the local runtime
+# and must never be set in a deployed environment.
+
+# Secrets (set out of band, never in Git):
+#   wrangler secret put CAPABILITY_PEPPER
+#     Optional but recommended: turns the stored capability digest into an
+#     HMAC, so a leaked authorization table cannot be probed offline. It also
+#     covers the publisher credential digest, so rotating the pepper is a single
+#     lever that invalidates every capability and the machine credential.
+#
+#   wrangler secret put PUBLISHER_KEY_DIGEST
+#     REQUIRED before the publisher write transport can be used. This is the
+#     DIGEST of the machine token, not the token: the usable value stays on the
+#     calculation host and never exists in Cloudflare configuration or in Git.
+#     Compute it with `publisherKeyDigest(token, pepper)` from
+#     worker/lib/publisher_auth.js. With this unset the write transport refuses
+#     every request, which is the intended default for any environment that is
+#     not publishing.
+#     Rotation: generate a new token on the host, set the new digest, then
+#     retire the old token. There is deliberately no dual-digest window — the
+#     publisher is a single machine and a brief coordinated swap is safer than
+#     accepting two credentials.
+
+[observability]
+enabled = true
+# Worker logs are structured and pass through worker/lib/log.js, which redacts
+# anything shaped like a capability or session id before it is emitted.

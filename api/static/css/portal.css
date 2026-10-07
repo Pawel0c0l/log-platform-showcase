@@ -1,0 +1,1110 @@
+/* Log Platform — shared application shell and base component layer.
+ *
+ * Implements the approved shell (SHL-001 / SHL-002 / SHL-003):
+ * 56 px app bar + 64 px client context bar + a full-width working area.
+ * All values come from tokens.css; no colour or dimension is hard-coded here
+ * except the few structural constants the token file does not name.
+ *
+ * The `.portal-*` block near the bottom restyles the pre-redesign component
+ * classes onto the approved token layer so module surfaces that have not been
+ * redesigned yet render coherently inside the new shell. Those rules are a
+ * compatibility layer, not the target design system.
+ */
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+  background: var(--lp-surface-page);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--lp-surface-page);
+  color: var(--lp-text-primary);
+  font-family: var(--lp-font-sans);
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: var(--lp-weight-regular);
+  -webkit-font-smoothing: antialiased;
+}
+
+a { color: inherit; }
+
+code, pre, kbd, samp { font-family: var(--lp-font-mono); }
+
+h1, h2, h3, h4 {
+  margin: 0;
+  font-weight: var(--lp-weight-semibold);
+  letter-spacing: -0.02em;
+  color: var(--lp-text-primary);
+}
+
+h1 { font-size: 30px; line-height: 1.15; }
+h2 { font-size: 14px; line-height: 1.35; letter-spacing: 0; }
+h3 { font-size: 13px; line-height: 1.35; letter-spacing: 0; }
+
+p { margin: 0; }
+
+/* Focus is never removed and never replaced by hover alone
+   (ACCESSIBILITY_SPEC §3). */
+:focus-visible {
+  outline: 2px solid var(--lp-accent-base);
+  outline-offset: 2px;
+  border-radius: var(--lp-radius-sm);
+}
+
+.lp-mono { font-family: var(--lp-font-mono); }
+
+.lp-visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.lp-skip-link {
+  position: absolute;
+  left: var(--lp-space-4);
+  top: -60px;
+  z-index: 60;
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-6);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-primary);
+  border: 1px solid var(--lp-border-strong);
+  font-size: 13px;
+  font-weight: var(--lp-weight-semibold);
+  text-decoration: none;
+  transition: top 120ms ease;
+}
+
+.lp-skip-link:focus { top: var(--lp-space-4); }
+
+/* ==========================================================================
+   Shell frame
+   ========================================================================== */
+
+.lp-shell {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---------- App bar (56 px, `surface/appbar` — dark in both themes) ------- */
+
+.lp-appbar {
+  height: var(--lp-height-appbar);
+  flex: 0 0 var(--lp-height-appbar);
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-13);
+  padding: 0 var(--lp-space-12);
+  background: var(--lp-surface-appbar);
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.lp-appbar :focus-visible { outline-color: var(--lp-accent-base); }
+
+.lp-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  flex: 0 0 auto;
+}
+
+.lp-brand-mark {
+  width: 6px;
+  height: 18px;
+  border-radius: var(--lp-radius-xs);
+  background: var(--lp-accent-base);
+}
+
+.lp-brand-word {
+  font-size: 14px;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-on-appbar);
+  white-space: nowrap;
+}
+
+/* ---------- Primary navigation ---------- */
+
+.lp-nav {
+  display: flex;
+  align-items: stretch;
+  gap: var(--lp-space-1);
+  height: var(--lp-height-appbar);
+  min-width: 0;
+}
+
+.lp-nav-item {
+  display: inline-flex;
+  align-items: center;
+  padding: 0 var(--lp-space-7);
+  font-size: 13px;
+  line-height: 1.3;
+  font-weight: var(--lp-weight-regular);
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--lp-text-on-appbar-idle);
+}
+
+/* Tools group renders one step quieter than the three data modes (SH-4). */
+.lp-nav-item[data-nav-group="tools"] { color: var(--lp-text-on-appbar-quiet); }
+
+.lp-nav-item:hover { color: var(--lp-text-on-appbar); }
+
+/* Active state carries three independent signals: a 2 px accent underline,
+   weight 600 and a colour step — plus `aria-current` in the markup (SH-5). */
+.lp-nav-item[aria-current] {
+  color: var(--lp-text-on-appbar);
+  font-weight: var(--lp-weight-semibold);
+  box-shadow: inset 0 -2px 0 var(--lp-accent-base);
+}
+
+.lp-nav-toggle {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--lp-height-control-touch);
+  height: var(--lp-height-control-touch);
+  padding: 0;
+  border: 0;
+  border-radius: var(--lp-radius-md);
+  background: transparent;
+  color: var(--lp-text-on-appbar);
+  font-family: var(--lp-font-sans);
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.lp-nav-toggle:hover { background: rgba(255, 255, 255, 0.08); }
+
+.lp-appbar-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-7);
+  min-width: 0;
+}
+
+/* ---------- Theme switcher (SHL-003) ---------- */
+
+.lp-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-1);
+  height: var(--lp-height-segment);
+  padding: var(--lp-space-1);
+  border-radius: var(--lp-radius-md);
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.lp-theme-option {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 22px;
+  min-width: 22px;
+  padding: 0 var(--lp-space-4);
+  border: 0;
+  border-radius: var(--lp-radius-sm);
+  background: transparent;
+  color: var(--lp-text-on-appbar-quiet);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  font-weight: var(--lp-weight-regular);
+  line-height: 1;
+  cursor: pointer;
+}
+
+.lp-theme-option:hover { color: var(--lp-text-on-appbar); }
+
+.lp-theme-option[aria-pressed="true"] {
+  background: var(--lp-text-on-appbar);
+  color: var(--lp-surface-appbar);
+  font-weight: var(--lp-weight-semibold);
+}
+
+/* Without JavaScript the browser-local switcher cannot act, so it is not
+   offered as a control; AUTO still applies through `prefers-color-scheme`. The
+   server-backed form (approved stage S13) is a real form and is never hidden. */
+.lp-theme[hidden] { display: none; }
+
+/* The theme form must not change the app bar's geometry: `SH-10` requires the
+   same layout in both themes and at every width, so the status line is taken
+   out of flow and only announced. */
+.lp-theme-status {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---------- Account ---------- */
+
+.lp-account {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  min-width: 0;
+}
+
+.lp-account-name {
+  font-size: 12px;
+  color: var(--lp-text-on-appbar-idle);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 220px;
+}
+
+.lp-avatar {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  border-radius: var(--lp-radius-md);
+  background: #2b3038;
+  color: #e8ebef;
+  font-size: 11px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.lp-logout {
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+  color: var(--lp-text-on-appbar-idle);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lp-logout:hover { color: var(--lp-text-on-appbar); text-decoration: underline; }
+
+/* ---------- Collapsed navigation drawer (<=1024 px) ---------- */
+
+.lp-nav-scrim {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background: var(--lp-elevation-scrim);
+}
+
+.lp-nav-scrim[hidden] { display: none; }
+
+.lp-nav-drawer {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 41;
+  width: min(var(--lp-width-drawer), 86vw);
+  padding: var(--lp-space-9);
+  background: var(--lp-surface-raised);
+  border-right: 1px solid var(--lp-border-default);
+  box-shadow: var(--lp-elevation-menu);
+  overflow-y: auto;
+}
+
+.lp-nav-drawer[hidden] { display: none; }
+
+.lp-nav-drawer-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--lp-space-6);
+  margin-bottom: var(--lp-space-8);
+}
+
+.lp-nav-drawer-title {
+  font-size: 14px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.lp-nav-drawer-close {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--lp-height-control-touch);
+  height: var(--lp-height-control-touch);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-text-secondary);
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.lp-nav-drawer-group {
+  margin: var(--lp-space-8) 0 var(--lp-space-3);
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--lp-text-faint);
+}
+
+.lp-nav-drawer-group:first-of-type { margin-top: 0; }
+
+.lp-nav-drawer-list {
+  display: grid;
+  gap: var(--lp-space-1);
+}
+
+.lp-nav-drawer-item {
+  display: flex;
+  align-items: center;
+  min-height: var(--lp-height-control-touch);
+  padding: 0 var(--lp-space-6);
+  border-radius: var(--lp-radius-md);
+  color: var(--lp-text-secondary);
+  text-decoration: none;
+  font-size: 14px;
+}
+
+.lp-nav-drawer-item:hover { background: var(--lp-surface-subtle); }
+
+/* Account block inside the drawer: at <=1023 px the app bar drops the account
+   name and the sign-out link, so the drawer is where they stay reachable. */
+.lp-nav-drawer-account {
+  display: block;
+  padding: var(--lp-space-4) var(--lp-space-5);
+  color: var(--lp-text-muted);
+  font-size: 12px;
+}
+
+.lp-nav-drawer-item[aria-current] {
+  color: var(--lp-text-primary);
+  font-weight: var(--lp-weight-semibold);
+  box-shadow: inset 2px 0 0 var(--lp-accent-base);
+}
+
+/* ---------- Client context bar (64 px) ---------- */
+
+.lp-context {
+  height: var(--lp-height-context-bar);
+  flex: 0 0 var(--lp-height-context-bar);
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-8);
+  padding: 0 var(--lp-work-padding-x);
+  background: var(--lp-surface-raised);
+  border-bottom: 1px solid var(--lp-border-default);
+}
+
+.lp-context-rule {
+  width: 4px;
+  height: 26px;
+  flex: 0 0 4px;
+  border-radius: var(--lp-radius-xs);
+  background: var(--lp-accent-base);
+}
+
+/* Operator/technical surfaces mark themselves with a neutral rule
+   (ASSET_MANIFEST §2). */
+.lp-context[data-surface="operator"] .lp-context-rule { background: #3e4650; }
+
+.lp-context-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.lp-context-line {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  min-width: 0;
+}
+
+.lp-client-name {
+  font-size: 17px;
+  line-height: 1.3;
+  font-weight: var(--lp-weight-semibold);
+  letter-spacing: -0.01em;
+  color: var(--lp-text-primary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lp-client-code {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+  background: var(--lp-border-row);
+  padding: 2px var(--lp-space-3);
+  border-radius: var(--lp-radius-sm);
+  white-space: nowrap;
+}
+
+.lp-context-sep { color: var(--lp-border-strong); }
+
+.lp-module-name {
+  font-size: 15px;
+  line-height: 1.3;
+  font-weight: var(--lp-weight-medium);
+  color: var(--lp-text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.lp-context-meta {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-5);
+  min-width: 0;
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-faint);
+}
+
+.lp-context-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  flex-wrap: nowrap;
+}
+
+.lp-badge-technical {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 var(--lp-space-3);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-sm);
+  font-family: var(--lp-font-mono);
+  font-size: 9px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-text-muted);
+  white-space: nowrap;
+}
+
+/* ---------- Section (secondary) navigation ----------
+   Administracja and Artefakty group several routes behind one primary nav
+   item. Their sections stay reachable here instead of being duplicated as a
+   second primary navigation. */
+
+.lp-subnav {
+  display: flex;
+  align-items: stretch;
+  gap: var(--lp-space-1);
+  padding: 0 var(--lp-work-padding-x);
+  background: var(--lp-surface-subtle);
+  border-bottom: 1px solid var(--lp-border-default);
+  overflow-x: auto;
+}
+
+.lp-subnav-item {
+  display: inline-flex;
+  align-items: center;
+  height: 38px;
+  padding: 0 var(--lp-space-5);
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+  color: var(--lp-text-muted);
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lp-subnav-item:hover { color: var(--lp-text-primary); }
+
+.lp-subnav-item[aria-current] {
+  color: var(--lp-text-primary);
+  font-weight: var(--lp-weight-semibold);
+  box-shadow: inset 0 -2px 0 var(--lp-accent-base);
+}
+
+/* ---------- Working area ---------- */
+
+.lp-main {
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Full viewport width: the pre-redesign 1280 px cap is deliberately gone
+   (SH-2). Only the horizontal padding step remains. */
+.lp-work {
+  width: 100%;
+  max-width: none;
+  padding: var(--lp-space-10) var(--lp-work-padding-x) var(--lp-space-14);
+}
+
+.lp-page-path {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+  margin-bottom: var(--lp-space-5);
+  font-size: 12px;
+  color: var(--lp-text-muted);
+}
+
+.lp-page-path-sep { color: var(--lp-border-strong); }
+
+.lp-page-path-current { color: var(--lp-text-primary); font-weight: var(--lp-weight-medium); }
+
+.lp-page-head { margin-bottom: var(--lp-space-9); }
+
+/* A page that owns its own vertical rhythm (the Database Explorer sheet) drops
+   the working-area padding so its toolbar, table and footer can reach the full
+   width and the table body can own the remaining height. */
+.lp-work-flush { padding: 0; }
+
+.lp-page-title { font-size: 30px; }
+
+.lp-page-description {
+  margin-top: var(--lp-space-3);
+  max-width: 92ch;
+  color: var(--lp-text-muted);
+  font-size: 13px;
+}
+
+@media (max-width: 1439px) {
+  h1, .lp-page-title { font-size: 28px; }
+}
+
+/* ==========================================================================
+   Pre-redesign component compatibility layer
+   ========================================================================== */
+
+.portal-muted { color: var(--lp-text-muted); }
+.portal-help-text { margin-top: var(--lp-space-2); color: var(--lp-text-muted); font-size: 12px; }
+
+.portal-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--lp-space-7);
+}
+
+.portal-section,
+.portal-panel,
+.portal-card {
+  background: var(--lp-surface-raised);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  box-shadow: none;
+}
+
+.portal-section,
+.portal-panel { padding: var(--lp-space-9); margin-top: var(--lp-space-8); }
+
+.portal-card { padding: var(--lp-space-10); }
+.portal-card p { color: var(--lp-text-muted); }
+
+.portal-page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: var(--lp-space-9);
+  margin-bottom: var(--lp-space-9);
+}
+
+.portal-title { font-size: 30px; line-height: 1.15; font-weight: var(--lp-weight-semibold); }
+.portal-subtitle,
+.portal-description { color: var(--lp-text-muted); max-width: 92ch; }
+
+.portal-pill-row { display: flex; gap: var(--lp-space-4); flex-wrap: wrap; margin-top: var(--lp-space-6); }
+
+.portal-pill {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--lp-height-chip);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-sm);
+  background: var(--lp-surface-subtle);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  font-weight: var(--lp-weight-medium);
+}
+
+.portal-callout,
+.portal-empty-state,
+.portal-error-state {
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-subtle);
+  padding: var(--lp-space-8);
+  margin-top: var(--lp-space-8);
+  color: var(--lp-text-muted);
+}
+
+.portal-empty-state h2,
+.portal-error-state h2 { color: var(--lp-text-primary); margin-bottom: var(--lp-space-2); }
+
+.portal-callout.error,
+.portal-error-state,
+.portal-form-error {
+  background: var(--lp-state-negative-bg);
+  border-color: var(--lp-state-negative-border);
+  color: var(--lp-state-negative-fg);
+}
+
+.portal-callout.success {
+  background: var(--lp-state-positive-bg);
+  border-color: var(--lp-state-positive-border);
+  color: var(--lp-state-positive-fg);
+}
+
+.portal-callout-warning {
+  background: var(--lp-state-warning-bg);
+  border-color: var(--lp-state-warning-border);
+  color: var(--lp-state-warning-fg);
+}
+
+.portal-list { margin: var(--lp-space-5) 0 0; padding-left: var(--lp-space-9); color: var(--lp-text-muted); }
+.portal-list li { margin: var(--lp-space-2) 0; }
+
+.portal-actions {
+  display: flex;
+  gap: var(--lp-space-4);
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: var(--lp-space-7);
+}
+
+.portal-page-header .portal-actions,
+.lp-context-actions .portal-actions { margin-top: 0; }
+
+/* Primary action is the strongest neutral, never alpha
+   (DESIGN_TOKENS §1.5). */
+.portal-button,
+.portal-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-6);
+  border: 1px solid var(--lp-action-primary-bg);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  text-decoration: none;
+  font-family: var(--lp-font-sans);
+  font-size: 13px;
+  font-weight: var(--lp-weight-semibold);
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+.portal-button.secondary,
+.portal-btn-secondary {
+  background: var(--lp-action-secondary-bg);
+  color: var(--lp-action-secondary-fg);
+  border-color: var(--lp-border-strong);
+}
+
+.portal-btn-primary {
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  border-color: var(--lp-action-primary-bg);
+}
+
+.portal-btn-danger,
+.portal-button.danger {
+  background: var(--lp-state-negative-bg);
+  border-color: var(--lp-state-negative-border);
+  color: var(--lp-state-negative-fg);
+}
+
+.portal-btn-ghost,
+.portal-button.ghost {
+  background: transparent;
+  color: var(--lp-accent-on-surface);
+  border-color: transparent;
+  font-weight: var(--lp-weight-medium);
+}
+
+.portal-button:disabled,
+.portal-btn:disabled,
+.portal-button[aria-disabled="true"],
+.portal-btn[aria-disabled="true"] { opacity: 0.55; cursor: not-allowed; }
+
+.portal-link,
+.portal-logout {
+  color: var(--lp-accent-on-surface);
+  font-weight: var(--lp-weight-medium);
+  text-decoration: none;
+}
+
+.portal-link:hover { text-decoration: underline; }
+
+.portal-card-actions { display: flex; gap: var(--lp-space-4); flex-wrap: wrap; margin-top: var(--lp-space-6); }
+
+.portal-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+  margin-top: var(--lp-space-6);
+}
+
+.portal-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  min-width: 840px;
+}
+
+.portal-table th,
+.portal-table td {
+  padding: var(--lp-space-4) var(--lp-space-6);
+  border-bottom: 1px solid var(--lp-border-row);
+  text-align: left;
+  vertical-align: top;
+}
+
+.portal-table th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  height: var(--lp-height-row-header);
+  background: var(--lp-surface-header-cell);
+  border-bottom: 1px solid var(--lp-border-strong);
+  color: var(--lp-text-secondary);
+  font-size: 12px;
+  line-height: 1.15;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.portal-table td { color: var(--lp-text-primary); font-size: 12px; }
+.portal-table tr:last-child td { border-bottom: 0; }
+.portal-table tbody tr:hover td { background: var(--lp-surface-subtle); }
+
+.portal-table-dense th,
+.portal-table-dense td { padding: var(--lp-space-3) var(--lp-space-5); font-size: 12px; line-height: 1.3; }
+
+.portal-pagination { justify-content: space-between; }
+
+.portal-form { display: grid; gap: var(--lp-space-7); max-width: 720px; }
+
+.portal-filterbar {
+  max-width: none;
+  padding: var(--lp-space-7);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-subtle);
+}
+
+.portal-form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: var(--lp-space-7); }
+
+.portal-field label {
+  display: block;
+  margin-bottom: var(--lp-space-2);
+  color: var(--lp-text-secondary);
+  font-weight: var(--lp-weight-semibold);
+  font-size: 12px;
+}
+
+.portal-field input,
+.portal-field select,
+.portal-field textarea,
+.portal-input,
+.portal-select {
+  width: 100%;
+  min-height: var(--lp-height-control-sm);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-field);
+  color: var(--lp-text-primary);
+  padding: var(--lp-space-3) var(--lp-space-5);
+  font: inherit;
+}
+
+.portal-field input::placeholder { color: var(--lp-text-faint); }
+.portal-field select[multiple] { min-height: 118px; }
+
+.portal-checkbox {
+  display: flex;
+  gap: var(--lp-space-4);
+  align-items: flex-start;
+  color: var(--lp-text-secondary);
+  font-weight: var(--lp-weight-medium);
+}
+
+.portal-checkbox input { width: auto; margin-top: var(--lp-space-2); accent-color: var(--lp-accent-base); }
+
+.portal-badge {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--lp-height-badge);
+  padding: 0 var(--lp-space-3);
+  border-radius: var(--lp-radius-sm);
+  border: 1px solid var(--lp-border-strong);
+  background: var(--lp-state-neutral-bg);
+  color: var(--lp-state-neutral-fg);
+  font-size: 11px;
+  font-weight: var(--lp-weight-semibold);
+  white-space: nowrap;
+}
+
+.portal-badge-accent {
+  background: var(--lp-accent-tint);
+  border-color: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+}
+
+.portal-badge-success,
+.portal-badge.ok {
+  background: var(--lp-state-positive-bg);
+  border-color: var(--lp-state-positive-border);
+  color: var(--lp-state-positive-fg);
+}
+
+.portal-badge-warning,
+.portal-badge.warn {
+  background: var(--lp-state-warning-bg);
+  border-color: var(--lp-state-warning-border);
+  color: var(--lp-state-warning-fg);
+}
+
+.portal-badge-danger {
+  background: var(--lp-state-negative-bg);
+  border-color: var(--lp-state-negative-border);
+  color: var(--lp-state-negative-fg);
+}
+
+.portal-badge-off,
+.portal-badge.off { background: var(--lp-state-neutral-bg); color: var(--lp-state-neutral-fg); }
+
+pre {
+  margin: 0;
+  white-space: pre-wrap;
+  overflow: auto;
+  max-height: 560px;
+  padding: var(--lp-space-6);
+  border-radius: var(--lp-radius-lg);
+  border: 1px solid var(--lp-border-default);
+  background: var(--lp-surface-subtle);
+  color: var(--lp-text-secondary);
+}
+
+iframe {
+  width: 100%;
+  min-height: 760px;
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+}
+
+/* ==========================================================================
+   Sign-in page (outside the authenticated shell)
+   ========================================================================== */
+
+.portal-login-shell {
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: var(--lp-space-12);
+  background: var(--lp-surface-page);
+}
+
+.portal-login-panel {
+  width: min(440px, 100%);
+  background: var(--lp-surface-raised);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  padding: var(--lp-space-12);
+}
+
+.portal-login-panel .portal-form { max-width: none; }
+
+.portal-login-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: var(--lp-space-9);
+  font-size: 14px;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.portal-login-brand::before {
+  content: "";
+  width: 6px;
+  height: 18px;
+  border-radius: var(--lp-radius-xs);
+  background: var(--lp-accent-base);
+}
+
+/* ==========================================================================
+   Responsive shell (RESPONSIVE_SPEC.md — shell rows)
+   ========================================================================== */
+
+/* The approved three-band model (RESPONSIVE_SPEC.md "Breakpoints"):
+ *
+ *   >=1280  bp/compact and wider — full fidelity, five inline nav items
+ *   1024-1279  bp/tablet-landscape — nav collapses to the menu button plus the
+ *              active module name; interaction targets grow to 44 px
+ *   768-1023   bp/tablet-portrait — menu button only; the context bar goes to
+ *              two lines; the Database Explorer filter panel becomes a drawer
+ *   <768       bp/below-min — brand mark only; `RSP-003` governs Dane
+ *
+ * Every rule below belongs to one of those four bands. No other shell
+ * breakpoint exists; an ad-hoc width would make the final behaviour
+ * indeterminate.
+ */
+
+/* Rendered only inside the 1024-1279 band. Absent — not merely invisible —
+   everywhere else, so it is never a focusable or announced duplicate of the
+   navigation item that already carries `aria-current`. */
+.lp-nav-current {
+  display: none;
+  align-items: center;
+  color: var(--lp-text-on-appbar);
+  font-size: 13px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+@media (max-width: 1279px) {
+  .lp-appbar {
+    height: 52px;
+    flex-basis: 52px;
+    gap: var(--lp-space-8);
+  }
+
+  .lp-nav { display: none; }
+  .lp-nav-toggle { display: inline-flex; }
+  .lp-nav-current { display: inline-flex; }
+
+  .lp-context { height: 58px; flex-basis: 58px; }
+  .lp-client-name { font-size: 15px; }
+
+  /* RESPONSIVE_SPEC "Client context bar": the physical table name and the
+     approved-column count are the two meta items that give way first. The
+     client name, the client code and `TYLKO ODCZYT` never do. */
+  .lp-context-physical,
+  .lp-context-colcount { display: none; }
+
+  /* Touch targets grow; visual sizes may stay compact (RESPONSIVE_SPEC
+     "Actions and touch targets"). A 44 px hit area around a 16 px glyph is the
+     approved shape, so these set a minimum box — never a font or a density. */
+  .portal-button,
+  .portal-btn { min-height: var(--lp-height-control-touch); }
+
+  .lp-theme-option,
+  .lp-logout,
+  .lp-export-indicator {
+    min-height: var(--lp-height-control-touch);
+    display: inline-flex;
+    align-items: center;
+  }
+}
+
+@media (max-width: 1023px) {
+  /* Menu button only: the module name moves out of the bar, and the context bar
+     below it keeps stating where the user is. */
+  .lp-nav-current { display: none; }
+
+  .lp-context {
+    height: auto;
+    min-height: 56px;
+    flex-basis: auto;
+    padding-top: var(--lp-space-4);
+    padding-bottom: var(--lp-space-4);
+    align-items: flex-start;
+  }
+
+  .lp-context-line { flex-wrap: wrap; }
+  .lp-client-name { font-size: 14px; }
+
+  .lp-context-actions {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+
+  .lp-account-name { display: none; }
+  .lp-logout { display: none; }
+  .portal-grid { grid-template-columns: 1fr; }
+  .portal-page-header { flex-direction: column; }
+}
+
+@media (max-width: 767px) {
+  .lp-brand-word { display: none; }
+  .lp-appbar { gap: var(--lp-space-6); padding: 0 var(--lp-space-7); }
+  /* The client name and code never degrade at any width (RESPONSIVE_SPEC).
+     Truncation is allowed; removal is not, and neither is abbreviating the
+     code — it is the one element that may not degrade. */
+  .lp-client-name,
+  .lp-client-code { display: inline-block; }
+  .lp-client-code { max-width: none; }
+}
+
+/* Motion is opt-out safe. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+
+/* App-bar background-export indicator (DB-007, DB-49) — approved stage S8.
+   Absent at zero; the count is stated in words so the state never depends on
+   the dot, which is decorative. */
+.lp-export-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  padding: 2px var(--lp-space-4);
+  border-radius: var(--lp-radius-md);
+  border: 1px solid var(--lp-accent-base);
+  background: var(--lp-accent-tint);
+  color: var(--lp-accent-text-on-tint);
+  font-size: 11px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.lp-export-indicator:hover { border-color: var(--lp-accent-on-surface); }
+
+.lp-export-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--lp-accent-base);
+}
+
+/* RESPONSIVE_SPEC shell table: below 1280 px the export indicator is the dot
+   only. The link keeps its accessible name, so nothing is lost to a reader. */
+@media (max-width: 1279px) {
+  .lp-export-indicator { padding: 4px; }
+  .lp-export-count { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+}

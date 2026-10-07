@@ -1,0 +1,44 @@
+# PRE-RELEASE-BOUNDARY BOOTSTRAP EXAMPLE — NOT the production unit.
+#
+# This file predates the release boundary and binds the service to a repository
+# checkout, which is exactly the provenance defect ops/release_boundary.py
+# exists to remove. It is kept for bootstrapping a fresh host that has no
+# release root yet, and for deployments that deliberately run from a checkout.
+#
+# On a host where the release boundary is installed, the authoritative unit is
+# ops/systemd/proposed/log-platform-api.service, which resolves its Python
+# source from the active release through /usr/local/bin/log-ops-runner.sh.
+# See docs/07_operations.md § "Release boundary".
+
+[Unit]
+Description=Log Platform API and Portal
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+# Example values only. Create a dedicated unprivileged user/group on the host
+# and adjust all /opt/log-platform paths to the actual repository checkout.
+User=logplatform
+Group=logplatform
+WorkingDirectory=/opt/log-platform
+EnvironmentFile=/etc/log-platform/api.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+ExecStart=/opt/log-platform/.venv/bin/uvicorn api.main:app --host 127.0.0.1 --port 8000
+Restart=on-failure
+RestartSec=5
+TimeoutStartSec=30
+TimeoutStopSec=30
+UMask=0077
+
+# The API writes operational metadata to Postgres/MinIO and temporary files to
+# its private /tmp. Keep the service bound to localhost and expose it through a
+# local reverse proxy with HTTPS termination when remote UI access is needed.
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=full
+ProtectHome=read-only
+ReadWritePaths=/opt/log-platform
+
+[Install]
+WantedBy=multi-user.target

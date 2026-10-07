@@ -1,0 +1,136 @@
+/* ==========================================================================
+   Grid selection and clipboard — the presentation layer, for every grid
+   ==========================================================================
+
+   `data-grid-selection.js` drives more than one table and paints ONE set of
+   class names wherever it runs. This file is the matching half: the appearance
+   of a selection rectangle, an active cell, a copyable cell and the selection
+   footer, defined once and loaded by every page that ships the module.
+
+   It used to be two files. The Database Explorer's rules lived in
+   `data-grid.css` and the Eco Driving tables carried a hand-written mirror of
+   them in `eco-driving.css`, on the reasoning that the two tables defend
+   against different things. The mirror drifted in four places — the Eco tables
+   never got row-hover highlighting, their selection counter lost its accent
+   badge entirely, their copy hint lost the monospace face, and their cells
+   showed `cell` where the Database Explorer showed `copy` — because keeping two
+   copies of a stylesheet in step is a thing a person has to remember, and this
+   one was not remembered. Sharing the rules is what makes the next divergence
+   impossible rather than merely discouraged.
+
+   SCOPED TO THE SELECTION HOST, NOT TO A TABLE CLASS. Every rule below hangs
+   off `[data-db-sheet]`, the element the module already requires and already
+   writes `data-db-selection` onto. That is what makes these rules table
+   agnostic: a grid becomes selectable by declaring a host, not by being named
+   here. `[data-db-sheet]` is an attribute selector and weighs exactly what the
+   `.db-table` class it replaced weighed, so every specificity relationship the
+   Database Explorer relied on is preserved unchanged.
+
+   ORDER MATTERS, as it did when these rules sat at the bottom of
+   `data-grid.css`. Several of the defences below tie on specificity with the
+   hover and sticky-column rules they must beat, and win on source order. Load
+   this sheet AFTER the surface stylesheet it defends against. */
+
+/* `TABLE_AND_DATA_GRID_SPEC.md` §7: a selected range is `accent/tint` with a
+   2 px `accent/base` border around the *rectangle* — not around each cell. The
+   edge classes set only their own side, and one shared box-shadow composes
+   them, so nothing draws an internal rule and a pinned column inside the range
+   reads as part of the same block rather than as a separate one. */
+[data-db-sheet] tbody td.db-cell-in-range {
+  background: var(--lp-accent-tint-cell);
+  box-shadow:
+    inset 0 var(--db-range-top, 0) 0 0 var(--lp-accent-base),
+    inset 0 var(--db-range-bottom, 0) 0 0 var(--lp-accent-base),
+    inset var(--db-range-left, 0) 0 0 0 var(--lp-accent-base),
+    inset var(--db-range-right, 0) 0 0 0 var(--lp-accent-base);
+}
+
+[data-db-sheet] tbody td.db-range-t { --db-range-top: 2px; }
+[data-db-sheet] tbody td.db-range-b { --db-range-bottom: -2px; }
+[data-db-sheet] tbody td.db-range-l { --db-range-left: 2px; }
+[data-db-sheet] tbody td.db-range-r { --db-range-right: -2px; }
+
+/* Hover must not repaint a selected cell back to the hover surface, and a
+   sticky cell must not fall back to its own opaque background: either would
+   punch a hole in the rectangle.
+
+   The sticky and row-selected clauses describe the Database Explorer, which is
+   the only grid that has those states. They are inert on a grid that has
+   neither rather than conditional on which grid this is — a selector that
+   matches nothing costs nothing, and writing them as exceptions would put the
+   knowledge of which surface is which back into this file. */
+[data-db-sheet] tbody tr:hover td.db-cell-in-range,
+[data-db-sheet] tbody td.db-cell-in-range.db-sticky-col,
+[data-db-sheet] tbody tr:hover td.db-cell-in-range.db-sticky-col,
+[data-db-sheet] tbody tr.db-row-selected > td.db-cell-in-range,
+[data-db-sheet] tbody tr.db-row-selected > td.db-cell-in-range.db-sticky-col {
+  background: var(--lp-accent-tint-cell);
+}
+
+/* The active cell is the one the keyboard moves and the one a range grows from.
+   It is distinguished by a solid inset outline on all four sides — a second,
+   geometric signal rather than another shade, because selection is never
+   carried by colour alone (`INTERACTION_SPEC.md` §1). */
+[data-db-sheet] tbody td.db-cell-active {
+  background: var(--lp-accent-tint);
+  box-shadow: inset 0 0 0 2px var(--lp-accent-base);
+}
+
+[data-db-sheet] tbody tr:hover td.db-cell-active,
+[data-db-sheet] tbody td.db-cell-active.db-sticky-col,
+[data-db-sheet] tbody tr:hover td.db-cell-active.db-sticky-col {
+  background: var(--lp-accent-tint);
+}
+
+/* The focused active cell keeps the standard focus ring on top of its outline;
+   the ring is never removed. */
+[data-db-sheet] tbody td.db-cell-active:focus,
+[data-db-sheet] tbody td.db-cell-active:focus-visible {
+  outline: 2px solid var(--lp-accent-base);
+  outline-offset: -4px;
+}
+
+/* What a copyable thing looks like, in one place for both vocabularies.
+
+   The two surfaces put the value in different places: the Database Explorer
+   wraps it in `.db-copyable` inside the cell, and the Eco tables put it
+   directly in the cell. So the pointer is attached to different elements — but
+   it is the same pointer, decided here, rather than each surface deciding for
+   itself and arriving at `copy` on one and `cell` on the other.
+
+   The Eco half is gated on the module being active because below the responsive
+   cutoff there is no drag to promise. The Database Explorer's half is not, and
+   must not become gated: its cursor is unconditional today. */
+.db-copyable,
+[data-db-selection="on"] tbody td[data-eco-column] {
+  cursor: copy;
+}
+
+/* Footer: the selection counter is hidden at zero and the copy hint is
+   permanent (`COMPONENT_CATALOG.md`, `PBC` §2.11). */
+.db-select-count {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--lp-accent-text-on-tint);
+  background: var(--lp-accent-tint);
+  border-radius: var(--lp-radius-md);
+  padding: 2px var(--lp-space-4);
+}
+
+.db-select-count[hidden] { display: none; }
+
+.db-select-hint {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+}
+
+/* `RESPONSIVE_SPEC.md`: cell range selection is disabled at 768 px and below,
+   because a touch drag across cells conflicts with scrolling the table. The
+   module stops interacting at the same width; here the footer stops promising
+   a feature that is not available. The table itself is untouched, and ordinary
+   browser text selection and copy keep working. */
+@media (max-width: 768px) {
+  .db-select-count,
+  .db-select-hint { display: none; }
+}

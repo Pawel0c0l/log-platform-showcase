@@ -1,0 +1,1022 @@
+/* Eco Driving module styles (`ECO-001` / `ECO-002` / `ECO-003`).
+ *
+ * Module-scoped layer over the shared token and shell layer. It defines no
+ * colour of its own: every value resolves to a `--lp-*` token, so the module
+ * follows the light/dark/AUTO switch without a second palette.
+ *
+ * Semantic classes here (`is-ok` / `is-warn` / `is-bad`) are *applied* by the
+ * server from the normalized `/ 100 km` coefficient, never from a displayed
+ * count. The stylesheet cannot enforce that; `score_presentation.py` and its
+ * regression tests do. What this file does guarantee is that every semantic
+ * colour is drawn next to a non-colour carrier — a marker glyph and a
+ * visually-hidden word — so no state depends on hue alone.
+ */
+
+/* -------------------------------------------------------------------------
+ * Period bar — period identity, basis line, fleet distribution
+ * ---------------------------------------------------------------------- */
+
+.eco-period-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--lp-space-12);
+  padding: var(--lp-space-8) 0 var(--lp-space-10);
+  border-bottom: 1px solid var(--lp-border-default);
+  margin-bottom: var(--lp-space-10);
+}
+
+.eco-period-block {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-3);
+  min-width: 0;
+}
+
+.eco-period-block--grow {
+  flex: 1 1 320px;
+}
+
+.eco-eyebrow {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-text-muted);
+}
+
+.eco-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-2);
+  height: var(--lp-height-control-sm);
+}
+
+.eco-stepper-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--lp-height-control-sm);
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-4);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-secondary);
+  text-decoration: none;
+  font-size: 13px;
+}
+
+.eco-stepper-btn:hover {
+  border-color: var(--lp-accent-on-surface);
+  color: var(--lp-accent-on-surface);
+}
+
+.eco-stepper-label {
+  padding: 0 var(--lp-space-6);
+  font-weight: var(--lp-weight-semibold);
+  font-size: 14px;
+  color: var(--lp-text-primary);
+  white-space: nowrap;
+}
+
+.eco-basis {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--lp-text-secondary);
+  max-width: 80ch;
+}
+
+.eco-basis strong {
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.eco-basis-secondary {
+  color: var(--lp-text-muted);
+}
+
+/* -------------------------------------------------------------------------
+ * Fleet distribution histogram
+ * ---------------------------------------------------------------------- */
+
+.eco-histogram {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-3);
+  min-width: 260px;
+  flex: 0 1 420px;
+}
+
+.eco-histogram-head {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--lp-space-8);
+  align-items: baseline;
+}
+
+.eco-histogram-stats {
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  color: var(--lp-text-muted);
+  white-space: nowrap;
+}
+
+.eco-histogram-plot {
+  display: flex;
+  align-items: flex-end;
+  gap: 2px;
+  height: 56px;
+  padding-bottom: 2px;
+  border-bottom: 1px solid var(--lp-border-strong);
+}
+
+.eco-histogram-bar {
+  flex: 1 1 0;
+  min-width: 3px;
+  min-height: 1px;
+  background: var(--lp-viz-bar-neutral);
+  border-radius: var(--lp-radius-xs) var(--lp-radius-xs) 0 0;
+}
+
+.eco-histogram-bar.is-subject {
+  background: var(--lp-viz-bar-accent);
+}
+
+.eco-histogram-axis {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-faint);
+}
+
+/* -------------------------------------------------------------------------
+ * Toolbar — search, group chips, unit toggle
+ * ---------------------------------------------------------------------- */
+
+.eco-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lp-space-8);
+  padding-bottom: var(--lp-space-8);
+}
+
+.eco-toolbar-end {
+  margin-left: auto;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lp-space-8);
+}
+
+.eco-search {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+}
+
+.eco-search input[type="search"] {
+  min-width: 220px;
+  height: var(--lp-height-control-sm);
+}
+
+.eco-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lp-space-3);
+}
+
+.eco-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-3);
+  min-height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-8);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-pill);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-secondary);
+  font-size: 13px;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.eco-chip:hover {
+  border-color: var(--lp-accent-on-surface);
+  color: var(--lp-accent-on-surface);
+}
+
+/* The active chip carries three carriers at once: the tint, the weight step and
+ * `aria-current` — so the selection survives both a monochrome rendering and a
+ * screen reader. */
+.eco-chip[aria-current] {
+  background: var(--lp-accent-tint);
+  border-color: var(--lp-accent-on-surface);
+  color: var(--lp-accent-text-on-tint);
+  font-weight: var(--lp-weight-semibold);
+}
+
+.eco-chip-count {
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  color: var(--lp-text-muted);
+}
+
+.eco-chip[aria-current] .eco-chip-count {
+  color: var(--lp-accent-text-on-tint);
+}
+
+.eco-chip-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  border-radius: var(--lp-radius-pill);
+  color: inherit;
+  text-decoration: none;
+  font-size: 14px;
+  line-height: 1;
+}
+
+.eco-chip-remove:hover {
+  background: var(--lp-surface-inset);
+}
+
+.eco-filter-chip {
+  background: var(--lp-accent-tint);
+  border-color: var(--lp-accent-on-surface);
+  color: var(--lp-accent-text-on-tint);
+}
+
+.eco-unit-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--lp-space-4);
+}
+
+.eco-unit-label {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-text-muted);
+}
+
+.eco-unit-segments {
+  display: inline-flex;
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  overflow: hidden;
+}
+
+.eco-unit-option {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-8);
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  color: var(--lp-text-secondary);
+  background: var(--lp-surface-raised);
+  text-decoration: none;
+  border-right: 1px solid var(--lp-border-strong);
+}
+
+.eco-unit-option:last-child {
+  border-right: 0;
+}
+
+.eco-unit-option:hover {
+  color: var(--lp-accent-on-surface);
+}
+
+.eco-unit-option[aria-current] {
+  background: var(--lp-action-primary-bg);
+  color: var(--lp-action-primary-fg);
+  font-weight: var(--lp-weight-semibold);
+}
+
+/* -------------------------------------------------------------------------
+ * Ranking table
+ * ---------------------------------------------------------------------- */
+
+.eco-table-wrap {
+  overflow-x: auto;
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+}
+
+.eco-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+
+.eco-table th,
+.eco-table td {
+  padding: var(--lp-space-4) var(--lp-space-8);
+  text-align: left;
+  border-bottom: 1px solid var(--lp-border-row);
+  white-space: nowrap;
+}
+
+.eco-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  background: var(--lp-surface-header-cell);
+  color: var(--lp-text-secondary);
+  font-weight: var(--lp-weight-semibold);
+  font-size: 12px;
+  vertical-align: bottom;
+  border-bottom: 1px solid var(--lp-border-strong);
+}
+
+.eco-table tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.eco-th-unit {
+  display: block;
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  font-weight: var(--lp-weight-regular);
+  color: var(--lp-text-faint);
+}
+
+.eco-num {
+  text-align: right;
+  font-family: var(--lp-font-mono);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Position and score are deliberately the same visual weight: neither is a
+ * caption of the other (`EC-8`). */
+.eco-cell-position {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--lp-surface-raised);
+  font-family: var(--lp-font-mono);
+  font-size: 16px;
+  font-weight: var(--lp-weight-semibold);
+  text-align: right;
+}
+
+.eco-table thead .eco-cell-position {
+  background: var(--lp-surface-header-cell);
+  z-index: 2;
+}
+
+.eco-cell-score {
+  background: var(--lp-accent-tint-cell);
+}
+
+.eco-score-value {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-6);
+}
+
+.eco-score-number {
+  font-family: var(--lp-font-mono);
+  font-size: 17px;
+  font-weight: var(--lp-weight-semibold);
+  font-variant-numeric: tabular-nums;
+  min-width: 3.5ch;
+  text-align: right;
+}
+
+.eco-score-bar {
+  position: relative;
+  flex: 1 1 120px;
+  min-width: 80px;
+  height: 6px;
+  border-radius: var(--lp-radius-pill);
+  background: var(--lp-viz-bar-track);
+  overflow: hidden;
+}
+
+.eco-score-fill {
+  display: block;
+  height: 100%;
+  background: var(--lp-viz-bar-neutral);
+}
+
+.eco-score-fill.is-good { background: var(--lp-viz-score-good); }
+.eco-score-fill.is-mid { background: var(--lp-viz-score-mid); }
+.eco-score-fill.is-low { background: var(--lp-viz-score-low); }
+
+.eco-metric-cell.is-ok { color: var(--lp-text-secondary); }
+.eco-metric-cell.is-warn { color: var(--lp-state-warning-fg); }
+.eco-metric-cell.is-bad { color: var(--lp-state-negative-fg); font-weight: var(--lp-weight-semibold); }
+.eco-metric-cell.is-none { color: var(--lp-text-faint); }
+
+.eco-severity-marker {
+  font-size: 9px;
+  margin-left: 3px;
+  vertical-align: 1px;
+}
+
+.eco-rating {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-badge);
+  padding: 0 var(--lp-space-5);
+  border-radius: var(--lp-radius-sm);
+  border: 1px solid var(--lp-state-neutral-bg);
+  background: var(--lp-state-neutral-bg);
+  color: var(--lp-state-neutral-fg);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.eco-rating.is-safe {
+  background: var(--lp-state-positive-bg);
+  border-color: var(--lp-state-positive-border);
+  color: var(--lp-state-positive-fg);
+}
+
+.eco-rating.is-acceptable {
+  background: var(--lp-state-warning-bg);
+  border-color: var(--lp-state-warning-border);
+  color: var(--lp-state-warning-fg);
+}
+
+.eco-rating.is-dangerous {
+  background: var(--lp-state-negative-bg);
+  border-color: var(--lp-state-negative-border);
+  color: var(--lp-state-negative-fg);
+}
+
+.eco-muted {
+  color: var(--lp-text-muted);
+}
+
+.eco-note {
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--lp-text-muted);
+  max-width: 90ch;
+  margin: var(--lp-space-4) 0 var(--lp-space-10);
+}
+
+.eco-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: var(--lp-space-8);
+  padding-top: var(--lp-space-8);
+  font-size: 12px;
+  color: var(--lp-text-muted);
+}
+
+/* -------------------------------------------------------------------------
+ * Driver detail (`ECO-003`)
+ * ---------------------------------------------------------------------- */
+
+.eco-breadcrumb {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--lp-space-6);
+  min-height: var(--lp-height-breadcrumb-bar);
+  padding-bottom: var(--lp-space-6);
+  border-bottom: 1px solid var(--lp-border-default);
+  margin-bottom: var(--lp-space-10);
+  font-size: 13px;
+  color: var(--lp-text-muted);
+}
+
+.eco-breadcrumb-sep {
+  color: var(--lp-text-faint);
+}
+
+.eco-breadcrumb-current {
+  color: var(--lp-text-primary);
+  font-weight: var(--lp-weight-medium);
+}
+
+.eco-breadcrumb-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-6);
+}
+
+.eco-panel {
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-lg);
+  background: var(--lp-surface-raised);
+  padding: var(--lp-space-12);
+  margin-bottom: var(--lp-space-12);
+}
+
+.eco-panel-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: var(--lp-space-8);
+  margin-bottom: var(--lp-space-8);
+}
+
+.eco-panel-head h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.eco-panel-caption {
+  font-size: 12px;
+  color: var(--lp-text-muted);
+}
+
+.eco-panel-head-end {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-8);
+}
+
+.eco-detail-top {
+  display: grid;
+  grid-template-columns: minmax(320px, 4fr) minmax(340px, 7fr);
+  gap: var(--lp-space-12);
+  align-items: start;
+}
+
+.eco-driver-name {
+  margin: 0;
+  font-size: 22px;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.eco-driver-ids {
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  color: var(--lp-text-muted);
+  margin: var(--lp-space-3) 0 var(--lp-space-10);
+}
+
+.eco-hero-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: var(--lp-space-12);
+}
+
+.eco-hero {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-2);
+}
+
+/* Score and position share one treatment on purpose (`EC-8`). */
+.eco-hero-value {
+  font-family: var(--lp-font-mono);
+  font-size: 52px;
+  line-height: 1;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.eco-hero-suffix {
+  font-size: 18px;
+  color: var(--lp-text-faint);
+}
+
+.eco-hero-badges {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-4);
+  align-items: flex-start;
+}
+
+.eco-identity-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1px;
+  background: var(--lp-border-row);
+  border: 1px solid var(--lp-border-row);
+  border-radius: var(--lp-radius-md);
+  overflow: hidden;
+}
+
+.eco-identity-cell {
+  background: var(--lp-surface-raised);
+  padding: var(--lp-space-6) var(--lp-space-8);
+  min-width: 0;
+}
+
+.eco-identity-cell dt {
+  font-family: var(--lp-font-mono);
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--lp-text-faint);
+  margin-bottom: var(--lp-space-2);
+}
+
+.eco-identity-cell dd {
+  margin: 0;
+  font-size: 13px;
+  color: var(--lp-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.eco-trend {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--lp-space-4);
+  min-height: 140px;
+}
+
+.eco-trend-col {
+  flex: 1 1 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--lp-space-2);
+  min-width: 0;
+}
+
+.eco-trend-value {
+  font-family: var(--lp-font-mono);
+  font-size: 13px;
+  font-weight: var(--lp-weight-semibold);
+  color: var(--lp-text-primary);
+}
+
+.eco-trend-bar {
+  width: 100%;
+  background: var(--lp-viz-bar-neutral);
+  border-radius: var(--lp-radius-xs) var(--lp-radius-xs) 0 0;
+  min-height: 2px;
+}
+
+.eco-trend-col.is-current .eco-trend-bar {
+  background: var(--lp-viz-bar-accent);
+}
+
+.eco-trend-label {
+  font-family: var(--lp-font-mono);
+  font-size: 11px;
+  color: var(--lp-text-muted);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.eco-trend-foot {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-10);
+  margin-top: var(--lp-space-8);
+  font-size: 12px;
+  color: var(--lp-text-muted);
+}
+
+.eco-detail-mid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(320px, 400px);
+  gap: var(--lp-space-12);
+  align-items: start;
+}
+
+.eco-loss-cell {
+  background: var(--lp-accent-tint-cell);
+  font-weight: var(--lp-weight-semibold);
+  text-align: right;
+  font-family: var(--lp-font-mono);
+}
+
+.eco-loss-cell.is-zero {
+  font-weight: var(--lp-weight-regular);
+  color: var(--lp-text-muted);
+}
+
+.eco-share {
+  display: flex;
+  align-items: center;
+  gap: var(--lp-space-6);
+  min-width: 180px;
+}
+
+.eco-share-track {
+  flex: 1 1 auto;
+  height: 6px;
+  border-radius: var(--lp-radius-pill);
+  background: var(--lp-viz-bar-track);
+  overflow: hidden;
+}
+
+.eco-share-fill {
+  display: block;
+  height: 100%;
+  background: var(--lp-viz-loss-none);
+}
+
+.eco-share-fill.is-warn { background: var(--lp-viz-loss-mid); }
+.eco-share-fill.is-bad { background: var(--lp-viz-loss-high); }
+
+.eco-share-value {
+  font-family: var(--lp-font-mono);
+  font-size: 12px;
+  min-width: 4ch;
+  text-align: right;
+  color: var(--lp-text-secondary);
+}
+
+.eco-ladder-step {
+  font-family: var(--lp-font-mono);
+  white-space: nowrap;
+}
+
+.eco-ladder-position {
+  color: var(--lp-text-faint);
+  font-size: 11px;
+  margin-left: var(--lp-space-3);
+}
+
+.eco-state {
+  border: 1px solid var(--lp-state-warning-border);
+  background: var(--lp-state-warning-bg);
+  color: var(--lp-state-warning-fg);
+  border-radius: var(--lp-radius-md);
+  padding: var(--lp-space-10) var(--lp-space-12);
+  margin-bottom: var(--lp-space-10);
+}
+
+.eco-state h3 {
+  margin: 0 0 var(--lp-space-4);
+  font-size: 14px;
+  font-weight: var(--lp-weight-semibold);
+}
+
+.eco-state p {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+}
+
+.eco-state--neutral {
+  border-color: var(--lp-border-strong);
+  background: var(--lp-surface-subtle);
+  color: var(--lp-text-secondary);
+}
+
+/* -------------------------------------------------------------------------
+ * Responsive — the Eco-specific part of the shared S10 contract only.
+ * The table never becomes one card per row at any width (`D-015`).
+ * ---------------------------------------------------------------------- */
+
+@media (max-width: 1279px) {
+  .eco-detail-mid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eco-identity-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .eco-hero-value {
+    font-size: 44px;
+  }
+}
+
+@media (max-width: 1023px) {
+  .eco-detail-top {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eco-identity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .eco-hero-value {
+    font-size: 40px;
+  }
+
+  .eco-histogram {
+    flex: 1 1 100%;
+  }
+
+  /* Speed thresholds are the first metric columns to go as width shrinks; they
+   * stay in the markup so the horizontal scroll still reaches them. */
+  .eco-toolbar-end {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 767px) {
+  .eco-identity-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .eco-period-bar {
+    gap: var(--lp-space-8);
+  }
+}
+
+/* --- month + arbitrary-week ranking basis (EC-1..EC-7) --------------------
+ *
+ * The week toggles are real links, so every state below has to survive with
+ * scripting off. Selection is carried by `aria-current` and by a visible border
+ * weight as well as by fill, and partiality is carried by a word, so no state
+ * here is communicated by colour alone.
+ */
+
+.eco-basis-entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-3);
+  padding: var(--lp-space-8) 0;
+  border-bottom: 1px solid var(--lp-border-default);
+  margin-bottom: var(--lp-space-8);
+}
+
+.eco-week-controls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--lp-space-3);
+}
+
+.eco-week-shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-3);
+}
+
+.eco-week-shortcut {
+  display: inline-flex;
+  align-items: center;
+  height: var(--lp-height-control-sm);
+  padding: 0 var(--lp-space-5);
+  border: 1px solid var(--lp-border-strong);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-secondary);
+  font-size: 13px;
+  text-decoration: none;
+}
+
+.eco-week-shortcut:hover {
+  border-color: var(--lp-accent-on-surface);
+  color: var(--lp-accent-on-surface);
+}
+
+.eco-week-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--lp-space-3);
+}
+
+.eco-week-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 2px;
+  min-width: 104px;
+  min-height: 44px;
+  padding: var(--lp-space-2) var(--lp-space-5);
+  border: 1px solid var(--lp-border-default);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-surface-raised);
+  color: var(--lp-text-secondary);
+  text-decoration: none;
+}
+
+.eco-week-card:hover {
+  border-color: var(--lp-accent-on-surface);
+}
+
+.eco-week-card.is-selected {
+  background: var(--lp-accent-tint);
+  border-color: var(--lp-accent-on-surface);
+  color: var(--lp-accent-text-on-tint);
+}
+
+/* A partial trailing week steps its border weight up as a second, non-colour
+ * signal beside the `częściowy` caption. */
+.eco-week-card.is-partial {
+  border-width: 2px;
+  border-style: dashed;
+}
+
+.eco-week-label {
+  font-family: var(--lp-font-mono);
+  font-weight: var(--lp-weight-semibold);
+  font-size: 13px;
+}
+
+.eco-week-range,
+.eco-week-partial {
+  font-size: 11px;
+  color: inherit;
+  opacity: 0.86;
+}
+
+.eco-period-bar--basis {
+  align-items: flex-start;
+}
+
+.eco-callout-warn {
+  padding: var(--lp-space-4) var(--lp-space-6);
+  border: 1px solid var(--lp-state-warning-border);
+  border-radius: var(--lp-radius-md);
+  background: var(--lp-state-warning-bg);
+  color: var(--lp-state-warning-fg);
+  max-width: 90ch;
+}
+
+.eco-basis-context {
+  margin-top: 0;
+}
+
+/* --- composition unit emphasis (S12 carry-forward A) ---------------------
+ *
+ * Both business values stay on screen. The toggle changes which one is
+ * primary; it never removes information, and it never touches the semantic
+ * colour, which comes from the `/ 100 km` coefficient in both modes.
+ */
+
+.eco-metric-secondary {
+  color: var(--lp-text-muted);
+  font-size: 12px;
+}
+
+th.eco-unit-secondary {
+  color: var(--lp-text-muted);
+  font-weight: var(--lp-weight-regular, 400);
+}
+
+.eco-metric-cell.is-primary-unit {
+  font-weight: var(--lp-weight-semibold);
+}
+
+@media (max-width: 767px) {
+  .eco-week-cards {
+    gap: var(--lp-space-2);
+  }
+
+  .eco-week-card {
+    min-width: 88px;
+  }
+}
+
+/* Export bar above the contributing-trip table (UI-20260820-09).
+   Sits between the filter form and the table because that is the order of the
+   sentence: filter, then take what you filtered. The caption is not decoration
+   -- it states that the file is the whole filtered view, not the visible page. */
+.eco-export-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin: 0 0 12px;
+}
+
+.eco-export-caption {
+  color: var(--lp-text-muted);
+  font-size: 12px;
+  margin-right: auto;
+}
+
+/* Row hover, on every Analizy table.
+
+   The Database Explorer has had this since S7 and the Eco tables never did,
+   which is the difference a reader notices first when the two are open side by
+   side: one table follows the pointer and the other does not. It is deliberately
+   NOT scoped to the selectable tables — hovering tells you which row you are
+   reading, which is worth having on a table you cannot select from, and the two
+   grids should not answer the same gesture differently. Selection is the thing
+   that stays opt-in; hover is not selection. */
+.eco-table tbody tr:hover td { background: var(--lp-surface-subtle); }
+
+/* Rectangular cell selection is styled by `css/grid-selection.css`, which the
+   selectable Eco pages load alongside this file.
+
+   This block used to be a hand-written mirror of the Database Explorer's rules,
+   on the reasoning that the two tables defend against different things. The
+   mirror drifted: no row hover, an unstyled selection counter, a proportional
+   copy hint and a `cell` cursor where the other surface showed `copy`. The
+   shared sheet is what stops that happening a second time. Only the footer
+   LAYOUT is still here, because where the footer sits under this table is this
+   table's business; what the counter and hint look like is not. */
+.eco-select-footer {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 2px 0;
+}
+
+/* The hint promises a gesture that the module disables below the cutoff. */
+@media (max-width: 768px) {
+  .eco-select-footer { display: none; }
+}

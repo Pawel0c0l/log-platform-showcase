@@ -1,0 +1,37 @@
+[Unit]
+Description=Weekly global hard-retention sweep
+# NO ACTIVATING DEPENDENCY ON THE SERVICE, DELIBERATELY. A timer's [Unit]
+# dependencies are pulled in when the TIMER starts, not when it fires. This file
+# carried `Requires=platform-hard-retention.service` at activation on 2026-08-29,
+# and `systemctl enable --now platform-hard-retention.timer` therefore ran a full
+# production sweep on the spot — 13:01:58, one second after the timer started,
+# with systemd recording no trigger at all. Every boot would have repeated it,
+# outside the calendar this file declares and outside the backup/prune ordering
+# the [Timer] comment below argues for.
+#
+# `Unit=` in [Timer] is the whole binding: it is what systemd triggers on elapse,
+# and it is what makes the service appear under `systemctl list-timers`. Adding
+# Requires=/Wants=/BindsTo=/Requisite=/PartOf=/Upholds= here adds nothing to the
+# schedule and one unscheduled execution to every timer start.
+# Guarded by test_starting_a_timer_does_not_start_its_service.
+
+[Timer]
+# Weekly, not daily. The ceiling is 13 months: a week of latency at that horizon
+# is immaterial, and the sweep touches every client database and the largest
+# tables on the platform, so it should not compete with nightly work more often
+# than it needs to. Sunday 05:00 local puts it after the 03:00 backup, the 03:30
+# prune and the 04:15 backup-retention window, on the quietest day.
+#
+# The cadence also bounds the BACKUP SHADOW: a record deleted here can still
+# exist inside backup sets taken before the deletion, for at most
+# (backup retention 14 days + this interval). See BACKUP_SHADOW_NOTE in
+# ops/retention_registry.py — that residual is an open owner decision, and
+# shortening this interval is one of the levers for it.
+OnCalendar=Sun *-*-* 05:00:00
+Persistent=true
+AccuracySec=1min
+RandomizedDelaySec=0
+Unit=platform-hard-retention.service
+
+[Install]
+WantedBy=timers.target

@@ -1,0 +1,32 @@
+[Unit]
+Description=Workflow A dispatcher tick (DB-driven scheduler, single job per tick)
+After=network-online.target docker.service postgresql.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=logplatform
+WorkingDirectory=/opt/log-platform
+UMask=0077
+# A single tick is short (one DB scan + at most one Workflow A subprocess).
+# The 2h cap covers the worst case where a single dispatched Telematics sync
+# is itself slow; the dispatcher's strict-queue guard prevents two ticks
+# from running jobs in parallel even if one tick overruns the next timer.
+TimeoutStartSec=2h
+# The dispatcher itself takes no params today. Keep the {} so the runner
+# always sees a well-formed JSON args slot.
+#
+# Production job execution goes through the installed wrapper, never through
+# `python ops/runner.py` directly. The wrapper is the single place that decides
+# which source tree production runs from, so a unit that invokes the runner
+# directly silently pins itself to the development working tree — and would
+# reintroduce that bypass the moment this template were installed over a live
+# release boundary. It also selects the project virtualenv rather than the
+# system interpreter this line previously used. See docs/07_operations.md ->
+# Release boundary.
+ExecStart=/usr/local/bin/log-job-runner.sh jobs.api.telematics.dispatcher {}
+EnvironmentFile=/etc/log-platform/runtime.env
+EnvironmentFile=/etc/log-platform/environment-identity.env
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,25 @@
+[Unit]
+Description=Weekly trigger for Workflow A retention purge
+# NO ACTIVATING DEPENDENCY ON THE SERVICE, DELIBERATELY, AND THIS ONE MATTERS
+# MOST. A timer's [Unit] dependencies are pulled in when the TIMER starts, not
+# when it fires, so `Requires=log-job@retention-purge.service` made
+# `systemctl start` and `enable --now` run the purge immediately and repeat it
+# at every boot. It is harmless only while the paired service passes
+# `{"dry_run":true}`: the day that configuration is flipped to enforce, a
+# timer start or a boot would become an unscheduled DELETE against client
+# business data, outside the Sunday 03:30 UTC window this file declares and
+# outside any operator's expectation. Correcting it now, while it still costs
+# nothing, is the point.
+# `Unit=` in [Timer] is the only binding a timer needs.
+# Guarded by test_starting_a_timer_does_not_start_its_service.
+
+[Timer]
+# Sundays at 03:30 UTC — pick a low-traffic window, off-hours from the
+# Workflow A Telematics syncs (which are scheduled per-client via
+# workflow_a_control.client_dataset_schedule).
+OnCalendar=Sun *-*-* 03:30:00 UTC
+Persistent=true
+Unit=log-job@retention-purge.service
+
+[Install]
+WantedBy=timers.target
