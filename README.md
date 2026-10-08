@@ -1,132 +1,134 @@
+**English** · [Polski](README.pl.md)
+
 # Log Platform
 
-Platforma automatyzacji dla firm, które zarządzają flotą pojazdów. Codziennie pobiera dane telematyczne (przejazdy, zużycie paliwa, przekroczenia prędkości, gwałtowne manewry) z API dostawcy telematyki, utrzymuje je w bazie klienta, liczy ranking Eco Driving dla kierowców i rozsyła im tygodniowe oraz miesięczne podsumowania z osobistym, zabezpieczonym dashboardem. Operator ma do tego portal z raportami, eksploratorem danych i rejestrem artefaktów.
+An automation platform for companies that run vehicle fleets. Every day it pulls telematics data (trips, fuel use, speeding, harsh manoeuvres) from a telematics provider's API, keeps it in the client's own database, computes an Eco Driving ranking for drivers and sends them weekly and monthly summaries with a personal, access-protected dashboard. Operators get a portal with reports, a data explorer and an artifact registry.
 
-System działa produkcyjnie od 2026 roku w modelu „jeden host, wielu klientów”. Ten katalog to **zanonimizowana migawka** kodu produkcyjnego, zobacz [sekcję o tym repozytorium](#o-tym-repozytorium) na dole.
+The system has been in production since 2026 in a "one host, many clients" model. This repository is an **anonymised snapshot** of the production code; see [About this repository](#about-this-repository) at the bottom.
 
-## Co ten system robi
+## What the system does
 
-Dla osoby, która nie czyta kodu:
+For a reader who does not read code:
 
-- **Pobiera dane z telematyki bez udziału człowieka.** Harmonogram (dispatcher) co kilka godzin odpytuje API dostawcy o nowe przejazdy i zdarzenia każdego klienta, a wynik ląduje w osobnej bazie tego klienta. Pobieranie jest odporne na opóźnienia po stronie dostawcy: przejazdy, które „dojechały” z opóźnieniem, są dopisywane przez okna uzgadniania (dobowe, tygodniowe, 32-dniowe).
-- **Liczy program Eco Driving.** Z przejazdów i zdarzeń powstaje wynik 0–100 dla każdego kierowcy, ranking w obrębie floty, progi kwalifikacji (minimalny dystans), porównanie z poprzednim okresem i rozbicie utraconych punktów na kategorie.
-- **Wysyła kierowcom e-maile i dashboard.** Co tydzień i co miesiąc kierowca dostaje wiadomość dopasowaną do swojego wyniku, z linkiem do osobistego dashboardu. Link jest jednorazowym „kluczem” (capability link), nie wymaga konta ani hasła, a serwer nigdy nie widzi sekretu w adresie.
-- **Daje operatorowi portal.** Biblioteka raportów cyklicznych, eksplorator danych klienta (filtry, dystrybucje wartości, eksporty w tle, zapisane widoki), ranking Eco Driving z drążeniem do pojedynczego przejazdu, rejestr artefaktów z weryfikacją integralności.
-- **Pilnuje siebie.** Każde uruchomienie joba ma rejestr runów, logów strukturalnych i artefaktów. Retencja usuwa stare dane według polityk per klient. Błędy i naruszone niezmienniki trafiają do rejestru „podejrzanych błędów” z powiadomieniem e-mail. Operacje produkcyjne (promocja środowiska, odtwarzanie z backupu) mają kontrakty fail-closed: odmawiają działania, gdy tożsamość środowiska się nie zgadza.
+- **Pulls telematics data without a human in the loop.** A scheduler (dispatcher) queries the provider's API every few hours for each client's new trips and events, and the result lands in that client's own database. Ingestion is resilient to provider-side delays: trips that "arrive late" are picked up by reconciliation windows (daily, weekly, 32-day).
+- **Runs the Eco Driving programme.** Trips and events become a 0 to 100 score per driver, a ranking within the fleet, qualification thresholds (minimum distance), a comparison with the previous period and a breakdown of lost points by category.
+- **Sends drivers e-mails and a dashboard.** Every week and every month a driver receives a message matched to their score, with a link to a personal dashboard. The link is a one-off "key" (capability link): no account, no password, and the server never sees the secret in the address.
+- **Gives operators a portal.** A library of recurring reports, a client data explorer (filters, value distributions, background exports, saved views), the Eco Driving ranking with drill-down to a single trip, and an artifact registry with integrity verification.
+- **Watches itself.** Every job run has a record of runs, structured logs and artifacts. Retention removes old data according to per-client policies. Errors and violated invariants land in a "suspected bugs" register with e-mail notification. Production operations (environment promotion, restore from backup) have fail-closed contracts: they refuse to act when the environment identity does not match.
 
-## Zrzuty ekranu
+## Screenshots
 
-Wszystkie dane na zrzutach są syntetyczne.
+All data in the screenshots is synthetic.
 
-**Dashboard kierowcy** (wersja desktop, 1440 px; renderowany z fixture'ów w tym repozytorium):
+**Driver dashboard** (desktop, 1440 px; rendered from the fixtures in this repository):
 
-| Wynik | Wykroczenia | Dni |
+| Score | Violations | Days |
 |---|---|---|
-| ![Dashboard kierowcy, slajd Wynik](docs/portfolio/screenshots/desktop-1440-wynik.png) | ![Dashboard kierowcy, slajd Wykroczenia](docs/portfolio/screenshots/desktop-1440-wykroczenia.png) | ![Dashboard kierowcy, slajd Dni](docs/portfolio/screenshots/desktop-1440-dni.png) |
+| ![Driver dashboard, Score slide](docs/portfolio/screenshots/desktop-1440-wynik.png) | ![Driver dashboard, Violations slide](docs/portfolio/screenshots/desktop-1440-wykroczenia.png) | ![Driver dashboard, Days slide](docs/portfolio/screenshots/desktop-1440-dni.png) |
 
-**Dashboard kierowcy** (wersja mobilna, 390 px) oraz warianty stanów:
+**Driver dashboard** (mobile, 390 px) and state variants:
 
-| Mobile: Wynik | Mobile: Wykroczenia | Kierowca „niebezpieczny” | Okres miesięczny |
+| Mobile: Score | Mobile: Violations | "Dangerous" driver | Monthly period |
 |---|---|---|---|
-| ![Mobile, zakładka Wynik](docs/portfolio/screenshots/mobile-390-wynik.png) | ![Mobile, zakładka Wykroczenia](docs/portfolio/screenshots/mobile-390-wykroczenia.png) | ![Desktop, kierowca niebezpieczny](docs/portfolio/screenshots/desktop-1440-niebezpieczny.png) | ![Desktop, okres miesięczny](docs/portfolio/screenshots/desktop-1440-miesiac.png) |
+| ![Mobile, Score tab](docs/portfolio/screenshots/mobile-390-wynik.png) | ![Mobile, Violations tab](docs/portfolio/screenshots/mobile-390-wykroczenia.png) | ![Desktop, dangerous driver](docs/portfolio/screenshots/desktop-1440-niebezpieczny.png) | ![Desktop, monthly period](docs/portfolio/screenshots/desktop-1440-miesiac.png) |
 
-**Portal operatora** (zatwierdzone projekty ekranów, na podstawie których zbudowano portal; katalog `design-handoffs/log-platform`):
+**Operator portal** (approved screen designs the portal was built from; directory `design-handoffs/log-platform`):
 
-| Ranking Eco Driving | Eksplorator danych | Biblioteka raportów |
+| Eco Driving ranking | Data explorer | Report library |
 |---|---|---|
-| ![Ranking Eco Driving](design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/ECO-001-ranking-light-rate.png) | ![Eksplorator danych z panelem wiersza](design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/DB-006-row-detail-panel.png) | ![Szczegóły raportu](design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/REP-003-report-detail.png) |
+| ![Eco Driving ranking](design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/ECO-001-ranking-light-rate.png) | ![Data explorer with row panel](design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/DB-006-row-detail-panel.png) | ![Report detail](design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/REP-003-report-detail.png) |
 
-Pozostałe ekrany (katalog zbiorów, eksporty w tle, tryb ciemny, tablet, artefakty): `design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/`.
+The remaining screens (dataset catalogue, background exports, dark mode, tablet, artifacts) are in `design-handoffs/log-platform/approved/v1.0/log-platform-approved-design-handoff/reference/screens/`. The product UI is in Polish, as are its users.
 
-## Jak to działa
+## How it works
 
 ```
- API dostawcy telematyki ──► jobs/api/telematics/*  ──► baza biznesowa klienta (Postgres, osobna per klient)
+ telematics provider API ──► jobs/api/telematics/*  ──► client business database (Postgres, one per client)
                                    │                             │
-                                   │ runy / logi / artefakty      │ przejazdy, zdarzenia, paliwo
+                                   │ runs / logs / artifacts      │ trips, events, fuel
                                    ▼                             ▼
-                          api/main.py (FastAPI)          jobs/ecodriving/* ──► ranking, e-maile
+                          api/main.py (FastAPI)          jobs/ecodriving/* ──► ranking, e-mails
                           Postgres + MinIO                       │
                                    │                             ▼
-                                   ▼                    jobs/ecodriving_dashboard/* ──► snapshot kierowcy
-                          portal operatora (HTML/JS)             │
+                                   ▼                    jobs/ecodriving_dashboard/* ──► driver snapshot
+                          operator portal (HTML/JS)              │
                                                                  ▼
-                                               delivery/ (Cloudflare Worker + D1 + R2) ──► dashboard kierowcy
+                                               delivery/ (Cloudflare Worker + D1 + R2) ──► driver dashboard
 ```
 
-Trzy warstwy:
+Three layers:
 
-1. **Rdzeń platformy**: wspólny model uruchomień (`runs`), logów strukturalnych, artefaktów binarnych i retencji. Każdy job, niezależnie od rodzaju, raportuje do tego samego API. Harmonogram hostowy to systemd (timery i unity w `ops/systemd`).
-2. **Workflow A, integracja z API telematyki**: dispatcher, synchronizacja przejazdów i zdarzeń z kontrolą pokrycia czasowego, uzgadnianie opóźnionych danych, agregacje dzienne, retencja per klient, onboarding nowego klienta ze skryptu i pliku YAML. Program Eco Driving (agregacja, e-maile tygodniowe i miesięczne, snapshot dashboardu, bezpieczna publikacja).
-3. **Workflow B, pipeline raportów z poczty** (ścieżka zapasowa, rozwój wstrzymany): pobieranie raportów z IMAP, normalizacja CSV i XLSX, detekcja typu raportu i walidacja, zasilanie bazy klienta z raportów.
+1. **Platform core**: a shared model of runs, structured logs, binary artifacts and retention. Every job, whatever its kind, reports to the same API. The host scheduler is systemd (timers and units in `ops/systemd`).
+2. **Workflow A, telematics API integration**: dispatcher, trip and event sync with time-coverage control, reconciliation of late data, daily aggregates, per-client retention, onboarding of a new client from a script and a YAML file. The Eco Driving programme (aggregation, weekly and monthly e-mails, dashboard snapshot, secure publication).
+3. **Workflow B, e-mail report pipeline** (fallback path, development paused): fetching reports from IMAP, CSV and XLSX normalisation, report type detection and validation, feeding the client database from reports.
 
-Portal operatora i dashboard kierowcy są napisane bez frameworka frontendowego: serwerowo renderowany HTML plus moduły JS bez bundlera. Dashboard kierowcy to jeden statyczny pakiet, którego pięć plików prezentacyjnych jest bajtowo zgodnych z zatwierdzonym projektem (test w repozytorium pilnuje sum SHA-256).
+The operator portal and the driver dashboard are written without a frontend framework: server-rendered HTML plus JS modules with no bundler. The driver dashboard is a single static package whose five presentation files are byte-identical to the approved design (a test in the repository guards their SHA-256 digests).
 
 ## Stack
 
-| Obszar | Technologia |
+| Area | Technology |
 |---|---|
 | Backend | Python 3.12, FastAPI, psycopg 3 |
-| Dane | PostgreSQL 16 (baza platformy plus osobna baza per klient), MinIO / S3 na artefakty |
-| Uruchomienie | Docker Compose (API), systemd (joby, timery, watchdog), jeden host Linux |
-| Frontend | HTML, CSS, JavaScript bez frameworka; tokeny projektowe, motyw jasny i ciemny, WCAG 2.1 AA |
-| Dostarczanie dashboardu | Cloudflare Workers, D1 (uprawnienia), R2 (snapshoty), linki capability, cookie `__Host-` |
-| Testy | 275 plików testów (Python i Node), w tym testy na jednorazowych instancjach Postgres i testy przeglądarkowe przez WebDriver |
+| Data | PostgreSQL 16 (platform database plus one database per client), MinIO / S3 for artifacts |
+| Runtime | Docker Compose (API), systemd (jobs, timers, watchdog), one Linux host |
+| Frontend | HTML, CSS, JavaScript with no framework; design tokens, light and dark theme, WCAG 2.1 AA |
+| Dashboard delivery | Cloudflare Workers, D1 (grants), R2 (snapshots), capability links, `__Host-` cookie |
+| Tests | 275 test files (Python and Node), including tests on disposable Postgres instances and browser tests through WebDriver |
 
-## Skala
+## Scale
 
-| Miara | Wartość |
+| Measure | Value |
 |---|---|
-| Endpointy HTTP w API | 132 |
-| Migracje bazy platformy | 71 |
-| Migracje baz klientów | 45 |
-| Kod API | ok. 62 tys. linii |
-| Kod jobów | ok. 67 tys. linii |
-| Testy | ok. 210 tys. linii |
-| Dokumentacja projektowa | 45 dokumentów w `docs/`, 3 pakiety handoff projektowego |
+| HTTP endpoints in the API | 132 |
+| Platform database migrations | 71 |
+| Client database migrations | 45 |
+| API code | about 62k lines |
+| Job code | about 67k lines |
+| Tests | about 210k lines |
+| Design documentation | 45 documents in `docs/`, 3 design handoff packages |
 
-## Uruchomienie
+## Running it
 
-### Dashboard kierowcy, bez instalowania czegokolwiek
+### Driver dashboard, with nothing to install
 
-Potrzebny jest tylko Python 3 (dowolny serwer statyczny też zadziała):
+Only Python 3 is needed (any static file server works too):
 
 ```bash
 cd assets/driver_eco_dashboard
 python3 -m http.server 8731 --bind 127.0.0.1
 ```
 
-Następnie otwórz `http://127.0.0.1:8731/preview.html`. Lista rozwijana przełącza 16 syntetycznych stanów (kierowca bezpieczny, niebezpieczny, nowy w rankingu, zbyt mały dystans, raport niegotowy i inne). Adres `preview.html?fixture=<nazwa>#weekly/2` otwiera konkretny stan na konkretnym slajdzie.
+Then open `http://127.0.0.1:8731/preview.html`. The drop-down switches between 16 synthetic states (safe driver, dangerous driver, newly ranked, not enough distance, report not ready, and others). The address `preview.html?fixture=<name>#weekly/2` opens a given state on a given slide.
 
-### Cały stack: API, Postgres, MinIO, portal
+### The whole stack: API, Postgres, MinIO, portal
 
-Skrypt w katalogu `demo/` podnosi odizolowany stack na innych portach niż produkcja, nakłada migracje i tworzy konto administratora. Szczegóły i ograniczenia: [demo/README.md](demo/README.md).
+The script in `demo/` brings up an isolated stack on ports that do not collide with a production instance, applies the migrations, onboards two synthetic clients and creates an administrator account. Details and limits: [demo/README.md](demo/README.md).
 
 ```bash
 ./demo/up.sh
 ```
 
-## Gdzie zacząć czytać
+## Where to start reading
 
-Dla programisty albo asystenta AI, który ma ocenić ten kod:
+For a developer, or an AI assistant asked to assess this code:
 
-1. [ARCHITECTURE.md](ARCHITECTURE.md): mapa systemu, przepływ danych, decyzje projektowe.
-2. [CONVENTIONS.md](CONVENTIONS.md): nazewnictwo, obsługa błędów, dyscyplina migracji.
-3. [docs/00_overview.md](docs/00_overview.md) i [docs/05_jobs.md](docs/05_jobs.md): katalog jobów z kontraktami.
-4. [docs/22_portal_ui_foundation_and_shared_shell.md](docs/22_portal_ui_foundation_and_shared_shell.md): dlaczego portal nie ma frameworka i jak jest zbudowany.
-5. [docs/28_driver_eco_dashboard_v1_snapshot_foundation.md](docs/28_driver_eco_dashboard_v1_snapshot_foundation.md) oraz [delivery/driver_eco_dashboard/README.md](delivery/driver_eco_dashboard/README.md): kontrakt snapshotu kierowcy i bezpieczna publikacja.
-6. [docs/06_security.md](docs/06_security.md), [docs/08_retention.md](docs/08_retention.md), [docs/09_disaster_recovery.md](docs/09_disaster_recovery.md): bezpieczeństwo, retencja, odtwarzanie.
-7. Testy: `ops/tests_manual/test_*.py` i `ops/tests_manual/*_harness.mjs`. Większość testów integracyjnych sama podnosi jednorazowy Postgres (`ops/tests_manual/disposable_postgres.py`).
+1. [ARCHITECTURE.md](ARCHITECTURE.md): system map, data flow, design decisions.
+2. [CONVENTIONS.md](CONVENTIONS.md): naming, error handling, migration discipline.
+3. [docs/00_overview.md](docs/00_overview.md) and [docs/05_jobs.md](docs/05_jobs.md): the job catalogue with contracts.
+4. [docs/22_portal_ui_foundation_and_shared_shell.md](docs/22_portal_ui_foundation_and_shared_shell.md): why the portal has no framework and how it is built.
+5. [docs/28_driver_eco_dashboard_v1_snapshot_foundation.md](docs/28_driver_eco_dashboard_v1_snapshot_foundation.md) and [delivery/driver_eco_dashboard/README.md](delivery/driver_eco_dashboard/README.md): the driver snapshot contract and secure publication.
+6. [docs/06_security.md](docs/06_security.md), [docs/08_retention.md](docs/08_retention.md), [docs/09_disaster_recovery.md](docs/09_disaster_recovery.md): security, retention, recovery.
+7. Tests: `ops/tests_manual/test_*.py` and `ops/tests_manual/*_harness.mjs`. Most integration tests start their own disposable Postgres (`ops/tests_manual/disposable_postgres.py`).
 
-Dokumenty w `docs/` numerowane od 12 wzwyż to zapis decyzji projektowych w kolejności ich podejmowania, włącznie z audytami i planami naprawczymi. Nie są podręcznikiem, tylko historią inżynierską systemu.
+The documents in `docs/` numbered 12 and up record design decisions in the order they were made, audits and repair plans included. They are the engineering history of the system, not a manual. The engineering documentation is written in a mix of Polish and English, as it was for the team that built the system; code, identifiers and commit-level comments are in English.
 
-## O tym repozytorium
+## About this repository
 
-To jest migawka prywatnego repozytorium produkcyjnego, wygenerowana automatycznie skryptem eksportu i sprawdzona listą zakazanych tokenów przed publikacją.
+This is a snapshot of a private production repository, generated automatically by an export script and checked against a list of forbidden tokens before publication.
 
-- **Klienci i dostawca są zanonimizowani.** Kody klientów to pseudonimy (`ALPHA00001`, `BRAVO00016`, `DELTA00001` i podobne), dostawca telematyki występuje jako `telematics`, adresy e-mail i hosty wskazują na domeny `example.invalid`. Przemianowanie jest spójne w kodzie, SQL, testach i dokumentacji, więc projekt nadal się kompiluje i testy przechodzą.
-- **Żadne dane produkcyjne nie są dołączone.** Tablice rejestracyjne w testach i dokumentach są deterministycznie sfałszowane, identyfikatory środowisk zhaszowane, a fixture'y dashboardu i prototypów od początku były syntetyczne.
-- **Historia commitów nie jest przenoszona.** Każda publikacja to jeden commit „Snapshot”.
-- **Czego celowo nie ma**: raportów operacyjnych z incydentów, prawdziwych próbek raportów od dostawcy, specyfikacji OpenAPI dostawcy (dokumenty w `docs/` mogą się do niej odwoływać), plików kontekstu dla asystentów AI używanych przy rozwoju.
+- **Clients and the provider are anonymised.** Client codes are pseudonyms (`ALPHA00001`, `BRAVO00016`, `DELTA00001` and the like), the telematics provider appears as `telematics`, e-mail addresses and hosts point at `example.invalid` domains. The renaming is consistent across code, SQL, tests and documentation, so the project still compiles and the tests pass.
+- **No production data is included.** Registration plates in tests and documents are deterministically faked, environment identifiers are hashed, and the dashboard and prototype fixtures were synthetic from the start.
+- **Commit history is not carried over.** Every publication is a single "Snapshot" commit.
+- **Deliberately absent**: operational incident reports, real sample reports from the provider, the provider's OpenAPI specification (documents in `docs/` may refer to it), and the context files for AI assistants used during development.
 
-Autor: Paweł Dzierzek. Kod udostępniony do wglądu jako próbka pracy.
+Author: Paweł Dzierzek. Source made available for review as a work sample.

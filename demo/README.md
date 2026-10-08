@@ -1,50 +1,52 @@
+**English** · [Polski](README.pl.md)
+
 # Demo stack
 
-Podnosi cały stack (Postgres 16, MinIO, API z portalem) jako odizolowany projekt Compose, na portach, które nie kolidują z żadną inną instancją na tej samej maszynie, i wprowadza do niego dwóch syntetycznych klientów tym samym skryptem, którym wprowadza się klientów produkcyjnych.
+Brings up the whole stack (Postgres 16, MinIO, the API with the portal) as an isolated Compose project, on ports that do not collide with any other instance on the same machine, and onboards two synthetic clients with the same script that onboards production clients.
 
 ```bash
 ./demo/up.sh
 ```
 
-Pierwszy przebieg buduje obraz API (kilka minut), kolejne trwają poniżej minuty. Po zakończeniu:
+The first run builds the API image (a few minutes); later runs take under a minute. When it finishes:
 
-| Co | Adres |
+| What | Address |
 |---|---|
-| Zdrowie API | http://127.0.0.1:8010/health |
-| Portal operatora | http://127.0.0.1:8010/login (`admin` / `demo-admin`, hasło można nadpisać zmienną `PORTAL_ADMIN_PASSWORD`) |
-| Konsola MinIO | http://127.0.0.1:9011 (dane logowania w `demo/.env.demo`) |
+| API health | http://127.0.0.1:8010/health |
+| Operator portal | http://127.0.0.1:8010/login (`admin` / `demo-admin`; override the password with `PORTAL_ADMIN_PASSWORD`) |
+| MinIO console | http://127.0.0.1:9011 (credentials in `demo/.env.demo`) |
 
-Po zalogowaniu działają od razu: Artefakty, Administracja (użytkownicy, grupy, dostęp klientów, zbiory danych, uprawnienia Eco Driving, foldery raportów, audyt) oraz Dane. Portal pokazuje użytkownikowi wyłącznie zbiory i foldery raportów, które administrator mu przypisał, więc zakładka Dane jest na początku pusta: dostęp do klientów `ALPHA00001` i `BRAVO00016` nadaje się w Administracja → Dostęp klientów i Zbiory danych. To celowe zachowanie produkcyjne, nie brak demo.
+After logging in, Artifacts, Administration (users, groups, client access, datasets, Eco Driving permissions, report folders, audit) and Data work right away. The portal shows a user only the datasets and report folders an administrator has assigned to them, so the Data tab starts empty: access to clients `ALPHA00001` and `BRAVO00016` is granted under Administration → Client access and Datasets. This is production behaviour, not a gap in the demo.
 
-Sprzątanie, łącznie z wolumenami i obrazem:
+Clean-up, volumes and image included:
 
 ```bash
 ./demo/down.sh
 ```
 
-## Co robi `up.sh`
+## What `up.sh` does
 
-1. Generuje `demo/.env.demo` z `.env.example`: losowe sekrety w miejsce `CHANGE_ME`, świeży UUID tożsamości platformy, porty demo.
-2. Buduje obraz API i uruchamia kontenery (`docker-compose.yml` plus nakładka `demo/docker-compose.demo.yml`), czeka na `/health`, bo tabele bazowe tworzy API przy starcie.
-3. Nakłada migracje bazy platformy skryptem `ops/db_migrate.sh`. Na pustej bazie przebieg zatrzymuje się trzy razy, zgodnie z projektem migracji, i za każdym razem skrypt uzupełnia brakujący stan tak, jak robi to produkcja:
-   - migracja 047 wymaga tożsamości środowiska: skrypt zapisuje marker `local_dev`;
-   - migracja 060 przepisuje harmonogram jednego klienta produkcyjnego i na pustej bazie nie ma czego przepisać: jest odnotowana jako wykonana;
-   - migracja 072 zmienia ograniczenie (ta część się wykonuje), po czym sprawdza stan dwóch klientów produkcyjnych: skrypt wprowadza dwóch klientów syntetycznych, ustawia im wartość, której migracja wymaga, i odnotowuje ją jako wykonaną.
-4. Wprowadza klientów `ALPHA00001` i `BRAVO00016` z `demo/clients/*.yaml` skryptem `scripts/onboard_workflow_a_client.py`: osobna baza biznesowa per klient, DDL z `db/client_business`, uprawnienia, wiersze w control plane. Dostawca telematyki nie jest odpytywany (`--skip-provider-auth-check`). Klienci kończą w stanie `CREATED_DISABLED_STRICT`, pierwszym z dziewięciu stanów maszyny onboardingu; harmonogramy są wyłączone.
-5. Tworzy konto administratora portalu.
+1. Generates `demo/.env.demo` from `.env.example`: random secrets in place of `CHANGE_ME`, a fresh platform identity UUID, demo ports.
+2. Builds the API image and starts the containers (`docker-compose.yml` plus the `demo/docker-compose.demo.yml` overlay), then waits for `/health`, because the API creates the base tables on startup.
+3. Applies the platform database migrations with `ops/db_migrate.sh`. On an empty database the pass stops three times, by design of the migrations, and each time the script creates the missing state the way production does:
+   - migration 047 requires an environment identity: the script writes a `local_dev` marker;
+   - migration 060 rewrites one production client's schedule and has nothing to rewrite on a fresh database: it is recorded as applied;
+   - migration 072 changes a constraint (that part runs) and then asserts the state of two production clients: the script onboards two synthetic clients, sets the value the migration demands, and records it as applied.
+4. Onboards clients `ALPHA00001` and `BRAVO00016` from `demo/clients/*.yaml` with `scripts/onboard_workflow_a_client.py`: a separate business database per client, DDL from `db/client_business`, grants, control-plane rows. The telematics provider is never contacted (`--skip-provider-auth-check`). The clients end in state `CREATED_DISABLED_STRICT`, the first of nine states of the onboarding state machine; schedules are disabled.
+5. Creates the portal administrator account.
 
-Narzędzia hostowe (onboarding, bootstrap admina) nie są instalowane na hoście. Działają w jednorazowym kontenerze `tools` z nakładki, w sieci Compose, więc bazy klientów są widoczne pod tą samą nazwą hosta dla skryptów i dla API.
+Host-side tools (onboarding, admin bootstrap) are not installed on the host. They run in a one-off `tools` container from the overlay, on the Compose network, so the client databases are reachable under the same host name for the scripts and for the API.
 
-## Czego demo nie zawiera
+## What the demo does not include
 
-- **Przejazdów.** Bazy klientów mają pełny schemat, ale są puste. Zasilenie wymaga dostępu do API dostawcy albo syntetycznego generatora przejazdów, którego w tej migawce nie ma.
-- **Harmonogramów.** Produkcyjnie joby uruchamia systemd (`ops/systemd`). W demo nic nie działa cyklicznie.
-- **Dostarczania dashboardu.** Warstwa `delivery/` to Cloudflare Worker z D1 i R2; demo jej nie wdraża. Sam dashboard kierowcy można obejrzeć bez stacku, zobacz główne README.
+- **Trips.** The client databases have the full schema but are empty. Filling them needs access to the provider's API or a synthetic trip generator, which this snapshot does not contain.
+- **Schedules.** In production the jobs are run by systemd (`ops/systemd`). Nothing runs periodically in the demo.
+- **Dashboard delivery.** The `delivery/` layer is a Cloudflare Worker with D1 and R2; the demo does not deploy it. The driver dashboard itself can be viewed without the stack, see the main README.
 
-## Wymagania i stan weryfikacji
+## Requirements and verification status
 
-Docker z pluginem Compose w wersji co najmniej 2.24 (nakładka używa `!override` i `!reset`), Python 3 na hoście tylko do wygenerowania pliku env. Pełny przebieg `up.sh` od pustego stanu został wykonany 2026-10-07 na Linuksie z Dockerem 29 i Compose v5: 71 migracji, dwóch klientów, logowanie do portalu.
+Docker with the Compose plugin version 2.24 or newer (the overlay uses `!override` and `!reset`), and Python 3 on the host only to generate the env file. A full `up.sh` run from an empty state was performed on 2026-10-07 on Linux with Docker 29 and Compose v5: 71 migrations, two clients, portal login.
 
-## Uwaga o obrazie API
+## A note on the API image
 
-Obraz budowany z katalogu `api/` nie zawiera pakietu `ops`, którego od pewnego momentu wymaga `api/platform_prune.py`. Produkcja uruchamia API natywnie z checkoutu repozytorium, gdzie import się rozwiązuje. Nakładka demo montuje `ops/` do kontenera tylko do odczytu.
+The image built from the `api/` directory does not contain the `ops` package, which `api/platform_prune.py` has required for some time. Production runs the API natively from the repository checkout, where the import resolves. The demo overlay mounts `ops/` into the container read-only.
